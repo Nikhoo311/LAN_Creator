@@ -27,8 +27,8 @@ module.exports = {
                 .setDisabled(false)
             
             const ActionRowOne = infoPannelMessage.components[0];
-
-            infoPannelMessage.edit({ embeds: [needToUpdateEmbed], components: [ActionRowOne, new ActionRowBuilder().addComponents(updateTournamentNameBtn).addComponents(addTeamBtn)] })
+                        
+            infoPannelMessage.edit({ embeds: [needToUpdateEmbed], components: [ActionRowOne, new ActionRowBuilder().addComponents(updateTournamentNameBtn).addComponents(addTeamBtn), ...infoPannelMessage.components.slice(2)] })
             await interaction.editReply({ content: `✅ Nom du tournoi défini : \`${message.content}\`` });
             message.delete();
         });
