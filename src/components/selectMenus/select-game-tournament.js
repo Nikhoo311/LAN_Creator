@@ -37,7 +37,7 @@ module.exports = {
                     { name: "**Nom du tournois**", value: '*Non défini*', inline: true },
                     { name: '\u200B', value: '\u200B', inline: true },
                     { name: "**Jeu**", value: `> ${gameChosen.emoji} ${gameChosen.name}`, inline: true },
-                    { name: "**Équipes**", value: '*Aucune équipe(s) enregistrée(s)*' },
+                    { name: "**Équipes**", value: '*Aucune équipe(s) enregistrée(s)*', inline: true },
                 )
         } else {
             infoCreateEmbed = new EmbedBuilder(interaction.message.embeds[0])
@@ -55,7 +55,7 @@ module.exports = {
         
         const addTeamsTournamentBtn = new ButtonBuilder()
             .setCustomId("add-teams-tournament-btn")
-            .setLabel("Ajouter une équipe")
+            .setLabel("Paramètres d'équipes")
             .setEmoji("👥")
             .setStyle(ButtonStyle.Secondary)
             .setDisabled(isDisabled)
