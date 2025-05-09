@@ -10,7 +10,7 @@ module.exports = {
         .setDescription('Permet gérer les tounois'),
 
     async execute(interaction, client) {
-        const message = `# Espace de création de Tournois\nUn espace dédié à la création et à la gestion de tournois, de manière simple, rapide et efficace.\n\n\`\`\`\n🟨 Il faut faire attention que je sois bien ligne pour que tout fonctionne correctement !\n\nDans le cas ou je suis hors ligne, il faut contacter Nikho311\`\`\`\n\n# Informations\n`
+        const message = `# Espace de gestion de Tournois\nUn espace dédié à la gestion et à la gestion de tournois, de manière simple, rapide et efficace.\n\n\`\`\`\n🟨 Il faut faire attention que je sois bien ligne pour que tout fonctionne correctement !\n\nDans le cas ou je suis hors ligne, il faut contacter Nikho311\`\`\`\n\n# Informations\n`
 
         const createTournamentBtn = new ButtonBuilder()
             .setCustomId("create-tournament-btn")

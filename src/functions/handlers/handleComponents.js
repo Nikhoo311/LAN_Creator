@@ -37,6 +37,10 @@ module.exports = (client) => {
                         const filePath = path.join(folderPath, file);
                         const selectMenu = require(filePath);
                         selectMenus.set(selectMenu.data.name, selectMenu);
+
+                        if (selectMenu.data.multi) {
+                            selectMenus.set(selectMenu.data.multi, selectMenu);
+                        }
                     }
                     break;
 
