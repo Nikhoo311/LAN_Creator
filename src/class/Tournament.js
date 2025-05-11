@@ -14,13 +14,12 @@ function generateID() {
 
 class Tournament {
     static #file = "./config/tournament.json";
-    constructor(lanName, name, game, id = null, teams = null, players = null) {
+    constructor(lanName, name, game, id = null, teams = null) {
         this.id = id !== null ? id : generateID();
         this.name = name;
         this.lanName = lanName;
         this.game = game;
         this.teams = teams !== null ? teams : [];
-        this.players = players !== null ? players : {};
         this.matches = [];
         this.scoreA = 0;
         this.scoreB = 0;
@@ -210,7 +209,8 @@ class Tournament {
                if (err) throw new Error("/!\\ Error: Something wrong when we write in the 'lans.json'")
             })  
         } catch (error) {
-           console.error(error)
+           console.error(error);
+           throw error;
         }
      }
  
