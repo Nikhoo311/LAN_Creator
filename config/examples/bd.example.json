@@ -1,3 +1,9 @@
 {
-    "bd": []
+    "bd": [],
+    "tournamentGames": [
+        {
+            "emoji": "",
+            "name": ""
+        }
+    ]
 }
