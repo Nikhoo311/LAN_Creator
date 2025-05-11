@@ -1,4 +1,7 @@
-const { MessageFlags, EmbedBuilder } = require("discord.js");
+const { EmbedBuilder, ButtonBuilder, ButtonStyle, ActionRowBuilder } = require("discord.js");
+
+let changedTeam1 = false;
+let changedTeam2 = false;
 module.exports = {
     data: {
         name: "select-add-players-to-team",
@@ -15,15 +18,29 @@ module.exports = {
             const editedEmbed = new EmbedBuilder(interaction.message.embeds[0].data)
                 .spliceFields(index, 1, field)
             
-            await interaction.update({ embeds: [editedEmbed] }) 
+            if (changedTeam1 && changedTeam2) {
+                const saveTournamentBtn = new ButtonBuilder()
+                    .setCustomId("save-tournament-btn")
+                    .setLabel("Sauvegarder")
+                    .setEmoji("💾")
+                    .setStyle(ButtonStyle.Success)
+                changedTeam1 = false;
+                changedTeam2 = false;
+                
+                return await interaction.update({ embeds: [editedEmbed], components: [...interaction.message.components, new ActionRowBuilder().addComponents(saveTournamentBtn)] });
+            }
+            return await interaction.update({ embeds: [editedEmbed] }) 
         }
+
         // équipe 1
         if (teamNeedToBeChange == "select-add-players-to-team") {
+            changedTeam1 = true;
             await changePlayersInEmbed(3);
         }
         // équipe 2
         else {
-            await changePlayersInEmbed(4)
+            changedTeam2 = true;
+            await changePlayersInEmbed(4);
         }
     }
 }
