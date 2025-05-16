@@ -5,9 +5,11 @@ module.exports = {
         name: "manangement-tournament-btn"
     },
     async execute (interaction, client) {
-        const tournament = JSON.parse(readFileSync('config/tournament.json', "utf-8"));
         // const message = `# Espace d'archivage des LANs : \`${tournament[0]}\`\nCeci est un espace qui permet d'archiver une lan facilement en un clic ! La LAN \`${lanName}\` se clotura dans les 48h qui suit la demande d'archivage.\n\n## Informations\nPour archiver une LAN, il suffit de cliquer sur le bouton \`\`Oui\`\`. Une fois la demande d'archivage fait et le délai dépasser, tous les membres ne pourront plus parler dans les salons textuels et les salons vocaux seront supprimés.\n\n\`\`\`\nEs-tu sûr de bien vouloir archiver ${lanName} ?\`\`\``
-        console.log(tournament);
+        const { tournaments } = client;
+        if (tournaments.size == 0) {
+            return interaction.reply({ content: "❌ Je ne dispose d'aucun Tournois... Pour avoir accès à cette partie, il faut créer un Tournois et toutes les informaitons y seront afficher.", flags: [MessageFlags.Ephemeral] })
+        }
         
         const statsBtn = new ButtonBuilder()
             .setCustomId("stats-tournament-btn")
