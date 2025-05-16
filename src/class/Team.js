@@ -1,4 +1,5 @@
 const { readFileSync, writeFile } = require("fs");
+const { Player } = require("./Player");
 
 function generateSlug(str) {
     return str
@@ -67,6 +68,19 @@ class Team {
     //    }
     }
 
+    static fromJson(jsonObject) {
+        const id = jsonObject.id;
+        const name = jsonObject.name;
+
+        const players = [];
+        jsonObject.players.forEach(playerJson => {
+            const player = Player.fromJson(playerJson);
+            players.push(player);
+        });
+
+        return new Team(name, players, id);
+    }
+    
     static getFile() {
         try {
             return JSON.parse(readFileSync(this.#file, "utf-8"));

@@ -30,7 +30,14 @@ class Player {
         };
     }
 
-    
+    static fromJson(jsonObject) {
+        const id = jsonObject.id;
+        const name = jsonObject.name;
+        const totalKills = jsonObject.totalKills;
+        const totalDeaths = jsonObject.totalDeaths;
+
+        return new Player(name, id, totalKills, totalDeaths)
+    }
 }
 
 module.exports = { Player };

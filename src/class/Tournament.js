@@ -2,6 +2,8 @@ const { createCanvas } = require('canvas');
 const { readFileSync, writeFile } = require("fs");
 const crypto = require('crypto');
 const { v4: uuidv4 } = require('uuid');
+const { Team } = require('./Team');
+const { Match } = require('./Match');
 
 function generateID() {
     const uniqueString = uuidv4();
@@ -228,7 +230,22 @@ class Tournament {
             console.error(error)
         }
     }
- 
+    static fromJson(jsonObject) {
+        const id = jsonObject.id;
+        const name = jsonObject.name;
+        const lanName = jsonObject.lanName;
+        const game = jsonObject.game;
+        let scores = [];
+        let teams = [];
+        jsonObject.teams.forEach(team => {
+            teams.push(Team.fromJson(team));            
+            scores.push(jsonObject.score[team.id]);
+        });
+        let matches = [];
+        jsonObject.matches.forEach(match => matches.push(Match.fromJson(match)));
+        
+        return new Tournament(lanName, name, game, id, teams, matches, scores[0], scores[1]);
+    }
     static getFile() {
         try {
             return JSON.parse(readFileSync(this.#file, "utf-8"));

@@ -2,6 +2,7 @@ const { createCanvas } = require('canvas');
 const { readFileSync, writeFile } = require("fs");
 const crypto = require('crypto');
 const { v4: uuidv4 } = require('uuid');
+const { Team } = require('./Team');
 
 function generateID() {
     const uniqueString = uuidv4();
@@ -14,7 +15,7 @@ function generateID() {
 
 class Match {
     static #file = "./config/tournament.json";
-    constructor(team1, team2, mapName, id = null, mapName = null, score1 = null, score2 = null, playerStats = null, start = null) {
+    constructor(team1, team2, mapName, id = null, score1 = null, score2 = null, playerStats = null, start = null) {
         this.id = id !== null ? id : generateID();
         this.teams = [team1, team2]
         this.mapName = mapName;
@@ -184,7 +185,33 @@ class Match {
             console.error(error)
         }
     }
+    
+    static fromJson(jsonObject) {
+        const id = jsonObject.id;
+        const mapName = jsonObject.mapName;
+        const winner = jsonObject.winner;
+        const playedAt = jsonObject.playedAt;
+        let teams = [];
+        let scores = [];
+        let file = Match.getFile();
         
+        file.forEach(tournament => {
+            tournament.teams.forEach(fileTeam => {
+                jsonObject.teams.forEach(team => {
+                    if (team === fileTeam.id) {
+                        teams.push(Team.fromJson(fileTeam));
+                    }
+                })
+                scores.push(jsonObject.score[fileTeam.id]);  
+            })
+        });
+
+        const score1 = scores[0];
+        const score2 = scores[1];
+        
+        return new Match(teams[0], teams[1], mapName, id, score1, score2, jsonObject.stats, playedAt);
+    }
+
     static getFile() {
         try {
             return JSON.parse(readFileSync(Match.#file, "utf-8"));
