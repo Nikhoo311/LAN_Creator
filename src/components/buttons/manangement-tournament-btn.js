@@ -1,5 +1,17 @@
-const { ActionRowBuilder, ButtonBuilder, ButtonStyle, MessageFlags, StringSelectMenuBuilder, StringSelectMenuOptionBuilder } = require("discord.js");
-const tournament = require("../../commands/lan/tournament");
+const { ActionRowBuilder, ButtonBuilder, ButtonStyle, MessageFlags, StringSelectMenuBuilder, StringSelectMenuOptionBuilder, EmbedBuilder } = require("discord.js");
+const { color } = require('../../../config/config.json');
+const { readFileSync } = require('fs');
+function generateSlug(str) {
+    return str
+      .normalize("NFD")                      // Décompose les accents
+      .replace(/[\u0300-\u036f]/g, "")       // Supprime les diacritiques
+      .replace(/[^a-zA-Z0-9\s_]/g, "")       // Supprime les caractères spéciaux (mais garde underscore)
+      .trim()                                // Enlève les espaces inutiles
+      .replace(/\s+/g, "_")                  // Remplace les espaces par des underscores
+      .replace(/_+/g, "_")                   // Supprime les doubles underscores
+      .toLowerCase();
+}
+
 module.exports = {
     data: {
         name: "manangement-tournament-btn"
@@ -32,18 +44,59 @@ module.exports = {
             return interaction.reply({ content: message, components: [new ActionRowBuilder().addComponents(selectTournament)]})
         } else {
             message += ` pour \`\`${currentTournament.name}\`\`\nCet espace est dédié à la gestion du Tournois !\n# Informations :\n`;
-            const statsBtn = new ButtonBuilder()
-                .setCustomId("stats-tournament-btn")
-                .setStyle(ButtonStyle.Secondary)
-                .setLabel("Statistiques")
-                .setEmoji("📊")
+            const gamePossible = JSON.parse(readFileSync('./config/bd.json', 'utf-8'))["tournamentGames"];
+            const gameChosen = gamePossible.filter(game => generateSlug(currentTournament.game) == generateSlug(game.name))[0];
             
+            if (!gameChosen) {
+                return interaction.reply({ content: "❌ Aucun jeu n'a été trouver... Recommencez"})
+            }
+            
+            const embedStats = new EmbedBuilder()
+                .setColor(color.green)
+                .setDescription(`# Score : ${currentTournament.scoreA} - ${currentTournament.scoreB}`)
+                .addFields(
+                    { name: "**Jeu**", value: `> ${gameChosen.emoji} ${gameChosen.name}`, inline: true },
+                    { name: "**Nombre de match(s)**", value: `> ${currentTournament.matches.length}`, inline: false },
+                )
+            let i = 0;
+            const guild = interaction.guild;
+            currentTournament.teams.forEach(team => {
+                let teamDisplay = "";
+                team.players.forEach(player => {
+                    teamDisplay += `- <@${guild.members.cache.find(m => player.name == m.displayName).user.id}>\n`
+
+                })
+                embedStats.addFields({
+                    name: `${i >= 1 ? "\u200B" : "**Équipes**"}`, value: `> ${team.name}\n${teamDisplay}`, inline: true
+                })
+                i++;
+            })
+
             const matchBtn = new ButtonBuilder()
                 .setCustomId("match-btn")
                 .setStyle(ButtonStyle.Primary)
                 .setLabel("Créer un Match")
-                .setEmoji("🎮")    
-            interaction.reply({ content: message, components: [new ActionRowBuilder().addComponents(matchBtn).addComponents(statsBtn)], flags: [MessageFlags.Ephemeral] });
+                .setEmoji("🎮")
+            
+            const managementMatchBtn = new ButtonBuilder()
+                .setCustomId("management-match-btn")
+                .setStyle(ButtonStyle.Secondary)
+                .setLabel("Gestion des Matchs")
+                .setEmoji("⚙️")
+            
+            const supprMatchBtn = new ButtonBuilder()
+                .setCustomId("suppr-match-btn")
+                .setStyle(ButtonStyle.Danger)
+                .setLabel("Supprimer un Match")
+                .setEmoji('✖️')
+            
+            const createVocalsChannelsBtn = new ButtonBuilder()
+                .setCustomId("create-vocals-channels-btn")
+                .setStyle(ButtonStyle.Success)
+                .setLabel("Créer les salons vocaux d'équipes")
+                .setEmoji('🔊')
+            
+            interaction.reply({ content: message, embeds: [embedStats], components: [new ActionRowBuilder().addComponents(matchBtn).addComponents(managementMatchBtn).addComponents(supprMatchBtn), new ActionRowBuilder().addComponents(createVocalsChannelsBtn)] });
         }
     }
 }
