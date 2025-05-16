@@ -18,8 +18,8 @@ class Team {
      * @param {Player} players Liste de joueurs présent dans la team
      */
     static #file = "./config/tournament.json";
-    constructor(name, players) {
-        this.id = generateSlug(name);
+    constructor(name, players, id = null) {
+        this.id = id !== null ? id : generateSlug(name);
         this.name = name;
         this.players = players ? players : [];
     }

@@ -14,15 +14,15 @@ function generateID() {
 
 class Tournament {
     static #file = "./config/tournament.json";
-    constructor(lanName, name, game, id = null, teams = null) {
+    constructor(lanName, name, game, id = null, teams = null, matches = null, scoreA = null, scoreB = null) {
         this.id = id !== null ? id : generateID();
         this.name = name;
         this.lanName = lanName;
         this.game = game;
         this.teams = teams !== null ? teams : [];
-        this.matches = [];
-        this.scoreA = 0;
-        this.scoreB = 0;
+        this.matches = matches !== null ? matches : [];
+        this.scoreA = scoreA !== null ? scoreA : 0;
+        this.scoreB = scoreB !== null ? scoreB : 0;
     }
 
     updateScore(scoreA, scoreB) {

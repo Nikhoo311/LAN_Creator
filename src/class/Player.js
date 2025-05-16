@@ -10,11 +10,11 @@ function generateSlug(str) {
 }
 
 class Player {
-    constructor(name) {
-        this.id = generateSlug(name);
+    constructor(name, id = null, totalKills = null, totalDeaths = null) {
+        this.id = id !== null ? id : generateSlug(name);
         this.name = name;
-        this.totalKills = 0;
-        this.totalDeaths = 0;
+        this.totalKills = totalKills !== null ? totalKills : 0;
+        this.totalDeaths = totalDeaths !== null ? totalDeaths : 0;
     }
 
     addMatchStats(kills, deaths) {
