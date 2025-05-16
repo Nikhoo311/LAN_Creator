@@ -46,6 +46,7 @@ module.exports = {
 
         try {
             tournament.save();
+            client.tournaments.set(tournament.id, tournament);
             await interaction.update({ content: `# Création de Tournois pour \`\`${lanName}\`\`\nCet espace est dédié à la création de Tournois Multi-jeux !\n# Informations :\n\`\`\`diff\n+ Le tournois ${result.tournamentName} à bien été créer avec succès !\n\`\`\``, embeds: [], components: [] });
         } catch (error) {
             console.error(error);
