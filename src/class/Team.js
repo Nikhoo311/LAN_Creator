@@ -1,4 +1,5 @@
 const { readFileSync, writeFile } = require("fs");
+const { Player } = require("./Player");
 
 function generateSlug(str) {
     return str
@@ -18,8 +19,8 @@ class Team {
      * @param {Player} players Liste de joueurs présent dans la team
      */
     static #file = "./config/tournament.json";
-    constructor(name, players) {
-        this.id = generateSlug(name);
+    constructor(name, players, id = null) {
+        this.id = id !== null ? id : generateSlug(name);
         this.name = name;
         this.players = players ? players : [];
     }
@@ -67,6 +68,19 @@ class Team {
     //    }
     }
 
+    static fromJson(jsonObject) {
+        const id = jsonObject.id;
+        const name = jsonObject.name;
+
+        const players = [];
+        jsonObject.players.forEach(playerJson => {
+            const player = Player.fromJson(playerJson);
+            players.push(player);
+        });
+
+        return new Team(name, players, id);
+    }
+    
     static getFile() {
         try {
             return JSON.parse(readFileSync(this.#file, "utf-8"));

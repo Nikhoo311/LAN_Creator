@@ -1,4 +1,4 @@
-const { ActionRowBuilder, ButtonBuilder, ButtonStyle, MessageFlags, StringSelectMenuBuilder, StringSelectMenuOptionBuilder } = require("discord.js");
+const { ActionRowBuilder, MessageFlags, StringSelectMenuBuilder, StringSelectMenuOptionBuilder } = require("discord.js");
 const { readFileSync }= require("fs");
 
 function generateSlug(str) {
@@ -21,7 +21,7 @@ module.exports = {
         const bd = client.lans
         
         if (bd.size == 0) {
-            return interaction.reply({ content: "❌ Je ne dispose d'aucun Tournois... Pour avoir accès à cette partie, il faut créer un Tournois et toutes les informaitons y seront afficher.", flags: [MessageFlags.Ephemeral] })
+            return interaction.reply({ content: "❌ Je ne dispose d'aucune LAN... Pour avoir accès à cette partie, il faut créer une LAN et toutes les informaitons y seront afficher.", flags: [MessageFlags.Ephemeral] })
         }
 
         // Create Button
@@ -45,7 +45,7 @@ module.exports = {
                     .setValue(lan.id)
                 )
             });
-            return interaction.reply({ content: message, components: [new ActionRowBuilder().addComponents(selectLanForTournament)], flags: MessageFlags.Ephemeral })
+            return interaction.reply({ content: message, components: [new ActionRowBuilder().addComponents(selectLanForTournament)] })
         }
 
         if (interaction.customId == "create-tournament-btn") {         

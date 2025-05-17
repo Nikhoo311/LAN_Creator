@@ -1,17 +1,24 @@
 const logger = require("../../utils/Logger");
-const { Lan, generateID } = require("../class/Lan");
 const { serverID } = require("../../config/config.json");
+const { Lan } = require("../class/Lan");
+const { Tournament } = require("../class/Tournament");
 
 module.exports = {
     name: "ready",
     once: true,
     async execute(client) {     
         try {
-            const file = Lan.getFile();
-            file.forEach(element => {
-                let lan = new Lan(element.name, element.channels, element.config, element.startedAt, element.id, element.endedAt)
+            const lanFile = Lan.getFile();
+            lanFile.forEach(element => {
+                let lan = Lan.fromJson(element)
                 client.lans.set(lan.id, lan)
             });
+
+            const tournamentFile = Tournament.getFile();
+            tournamentFile.forEach(element => {
+                const tournament = Tournament.fromJson(element);
+                client.tournaments.set(element.id, tournament);
+            })
 
             setInterval(() => {
                 const now = Math.floor(Date.now() / 1000); // Timestamp UNIX actuel
