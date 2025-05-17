@@ -1,4 +1,4 @@
-const { ActionRowBuilder, ButtonBuilder, ButtonStyle, MessageFlags, StringSelectMenuBuilder, StringSelectMenuOptionBuilder } = require("discord.js");
+const { ActionRowBuilder, MessageFlags, StringSelectMenuBuilder, StringSelectMenuOptionBuilder } = require("discord.js");
 const { readFileSync }= require("fs");
 
 function generateSlug(str) {
@@ -45,7 +45,7 @@ module.exports = {
                     .setValue(lan.id)
                 )
             });
-            return interaction.reply({ content: message, components: [new ActionRowBuilder().addComponents(selectLanForTournament)], flags: MessageFlags.Ephemeral })
+            return interaction.reply({ content: message, components: [new ActionRowBuilder().addComponents(selectLanForTournament)] })
         }
 
         if (interaction.customId == "create-tournament-btn") {         
