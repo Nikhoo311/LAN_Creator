@@ -1,7 +1,7 @@
 const { ActionRowBuilder, StringSelectMenuOptionBuilder, EmbedBuilder, StringSelectMenuBuilder, ButtonBuilder, ButtonStyle, MessageFlags } = require("discord.js");
 const { readFileSync } = require("fs");
-const { color } = require("../../../config/config.json");
-const { Lan } = require("../../class/Lan");
+const { color } = require("../../../../config/config.json");
+const { Lan } = require("../../../class/Lan");
 
 module.exports = {
     data: {

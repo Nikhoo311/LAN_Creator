@@ -1,6 +1,6 @@
 const { ActionRowBuilder, EmbedBuilder, ButtonBuilder, ButtonStyle, MessageFlags } = require("discord.js");
 const { readFileSync } = require("fs");
-const { color } = require("../../../config/config.json");
+const { color } = require("../../../../config/config.json");
 
 module.exports = {
     data: {

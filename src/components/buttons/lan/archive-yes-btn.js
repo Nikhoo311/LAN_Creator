@@ -1,5 +1,5 @@
 const { EmbedBuilder, MessageFlags } = require("discord.js");
-const { Lan } = require("../../class/Lan");
+const { Lan } = require("../../../class/Lan");
 
 module.exports = {
     data: {

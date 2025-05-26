@@ -1,6 +1,6 @@
 const { readFileSync } = require("fs");
 const { MessageFlags, EmbedBuilder, ButtonBuilder, ButtonStyle, ActionRowBuilder } = require("discord.js");
-const { color } = require("../../../config/config.json");
+const { color } = require("../../../../config/config.json");
 
 function generateSlug(str) {
     return str

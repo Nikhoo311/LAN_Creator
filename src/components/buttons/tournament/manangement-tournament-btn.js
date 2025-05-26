@@ -1,5 +1,5 @@
 const { ActionRowBuilder, ButtonBuilder, ButtonStyle, MessageFlags, StringSelectMenuBuilder, StringSelectMenuOptionBuilder, EmbedBuilder } = require("discord.js");
-const { color } = require('../../../config/config.json');
+const { color } = require('../../../../config/config.json');
 const { readFileSync } = require('fs');
 function generateSlug(str) {
     return str
