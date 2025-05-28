@@ -47,7 +47,26 @@
             }
         ],
         "matches": [
-            
+            {
+                "id": "",
+                "teams": [
+                    "team_a",
+                    "team_b"
+                ],
+                "mapName": "",
+                "winner": "" | null,
+                "score": {
+                    "team_a": 0,
+                    "team_b": 0
+                },
+                "stats": {
+                    "": {
+                        "kills": 0,
+                        "deaths": 0
+                    }
+                },
+                "playedAt": 0
+            }
         ]
     }
 ]
