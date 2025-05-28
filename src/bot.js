@@ -14,8 +14,9 @@ client.lans = new Collection();
 client.tournaments = new Collection();
 client.commandArray = []
 
-const functionFolder = readdirSync(`./src/functions`);
-for (const folder of functionFolder) {
+let functionFolder = readdirSync(`./src/functions`);
+functionFolder = functionFolder.filter(f => f !== "utils");
+for (const folder of functionFolder) {  
     const functionFiles = readdirSync(`./src/functions/${folder}`).filter((file) => file.endsWith('.js'));
 
     for (const file of functionFiles)

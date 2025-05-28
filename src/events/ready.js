@@ -1,4 +1,4 @@
-const logger = require("../../utils/Logger");
+const logger = require("../functions/utils/Logger");
 const { serverID } = require("../../config/config.json");
 const { Lan } = require("../class/Lan");
 const { Tournament } = require("../class/Tournament");

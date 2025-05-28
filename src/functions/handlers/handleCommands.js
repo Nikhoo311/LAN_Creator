@@ -2,7 +2,7 @@ const fs = require("fs");
 const path = require("path");
 const { REST } = require("@discordjs/rest");
 const { Routes } = require("discord-api-types/v9");
-const logger = require("../../../utils/Logger");
+const logger = require("../utils/Logger");
 const { clientID, serverID } = require("../../../config/config.json");
 
 module.exports = (client) => {
