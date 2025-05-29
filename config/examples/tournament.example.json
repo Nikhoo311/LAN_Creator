@@ -1,9 +1,9 @@
 [
     {
-        "id": "T+aa6a19eec7",
-        "name": "CS2 Tournament",
-        "lanName": "1b70c6f1c2a14727973d9f726774b79d25fa58478bc5f0a5880bcc05193e6d5c",
-        "game": "Counter-Strike",
+        "id": "",
+        "name": "",
+        "lanName": "",
+        "game": "",
         "score": {
             "team_a": 0,
             "team_b": 0
@@ -14,32 +14,14 @@
                 "name": "Team A",
                 "players": [
                     {
-                        "id": "nikho311",
-                        "name": "Nikho311",
+                        "id": "",
+                        "name": "",
                         "totalKills": 0,
                         "totalDeaths": 0
                     },
                     {
-                        "id": "remoustache",
-                        "name": "Remoustache",
-                        "totalKills": 0,
-                        "totalDeaths": 0
-                    },
-                    {
-                        "id": "dermath",
-                        "name": "Dermath",
-                        "totalKills": 0,
-                        "totalDeaths": 0
-                    },
-                    {
-                        "id": "coucou",
-                        "name": "Coucou",
-                        "totalKills": 0,
-                        "totalDeaths": 0
-                    },
-                    {
-                        "id": "coucou2",
-                        "name": "Coucou2",
+                        "id": "",
+                        "name": "",
                         "totalKills": 0,
                         "totalDeaths": 0
                     }
@@ -50,38 +32,41 @@
                 "name": "Team B",
                 "players": [
                     {
-                        "id": "joueur_b",
-                        "name": "Joueur B",
+                        "id": "",
+                        "name": "",
                         "totalKills": 0,
                         "totalDeaths": 0
                     },
                     {
-                        "id": "joueur_b2",
-                        "name": "Joueur B2",
-                        "totalKills": 0,
-                        "totalDeaths": 0
-                    },
-                    {
-                        "id": "joueur_b3",
-                        "name": "Joueur B3",
-                        "totalKills": 0,
-                        "totalDeaths": 0
-                    },
-                    {
-                        "id": "coucou3",
-                        "name": "Coucou3",
-                        "totalKills": 0,
-                        "totalDeaths": 0
-                    },
-                    {
-                        "id": "player_name",
-                        "name": "Player Name",
+                        "id": "",
+                        "name": "",
                         "totalKills": 0,
                         "totalDeaths": 0
                     }
                 ]
             }
         ],
-        "matches": []
+        "matches": [
+            {
+                "id": "",
+                "teams": [
+                    "team_a",
+                    "team_b"
+                ],
+                "mapName": "",
+                "winner": "" | null,
+                "score": {
+                    "team_a": 0,
+                    "team_b": 0
+                },
+                "stats": {
+                    "": {
+                        "kills": 0,
+                        "deaths": 0
+                    }
+                },
+                "playedAt": 0
+            }
+        ]
     }
 ]

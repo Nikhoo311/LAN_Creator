@@ -1,8 +1,8 @@
 const { PermissionFlagsBits, EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle, ChannelType, MessageFlags } = require("discord.js");
-const { color } = require('../../../config/config.json');
+const { color } = require('../../../../config/config.json');
 const { readFileSync } = require("fs");
-const { getGoogleMapsLink } = require("../../../utils/getLinkAdress.js");
-const { Lan } = require("../../class/Lan.js")
+const { getGoogleMapsLink } = require("../../../functions/utils/getLinkAdress.js");
+const { Lan } = require("../../../class/Lan.js")
 module.exports = {
     data: {
         name: "lan_create"

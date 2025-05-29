@@ -1,6 +1,6 @@
 const { readFileSync } = require("fs");
 const { TextInputBuilder, TextInputStyle, ModalBuilder, ActionRowBuilder } = require("discord.js");
-const { color } = require("../../../config/config.json");
+const { color } = require("../../../../config/config.json");
 
 module.exports = {
     data: {

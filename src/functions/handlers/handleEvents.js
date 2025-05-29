@@ -1,5 +1,5 @@
 const { readdirSync } = require("fs");
-const logger = require("../../../utils/Logger");
+const logger = require("../utils/Logger");
 const path = require("path");
 
 module.exports = (client) => {

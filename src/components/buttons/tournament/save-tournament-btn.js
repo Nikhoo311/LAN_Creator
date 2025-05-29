@@ -1,6 +1,6 @@
-const { Player } = require("../../class/Player");
-const { Team } = require("../../class/Team");
-const { Tournament } = require("../../class/Tournament");
+const { Player } = require("../../../class/Player");
+const { Team } = require("../../../class/Team");
+const { Tournament } = require("../../../class/Tournament");
 
 module.exports = {
     data: {

@@ -1,6 +1,6 @@
 const { readFileSync, writeFile } = require("fs");
 const { EmbedBuilder, MessageFlags } = require("discord.js");
-const { color } = require("../../../config/config.json");
+const { color } = require("../../../../config/config.json");
 
 module.exports = {
     data: {
