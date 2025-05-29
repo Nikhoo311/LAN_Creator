@@ -49,12 +49,12 @@ function slashCommand(content) {
     write(content, "cyan", "SLASH COMMAND");
 }
 
-function typo(content) {
-    write(content, "blue", "TYPO");
+function log(content) {
+    write(content, "#804aba", "LOG");
 }
 
 function test(content) {
     write(content, "gray", "TEST");
 }
 
-module.exports =  { error, warn, command, event, clientStart, slashCommand, typo, test };
+module.exports =  { error, warn, command, event, clientStart, slashCommand, log, test };
