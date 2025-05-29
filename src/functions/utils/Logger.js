@@ -3,46 +3,58 @@ const dayjs = require("dayjs");
 
 const formats = "{tStamp} {tag} {txt}\n"
 
-function write(content, tagColor, bgTagColor, tag, error=false) {
-    const timestemp = `[${dayjs().format('DD/MM - HH:mm:ss')}]`
-    const logTag = `[${tag}]`
+function write(content, tagColor = 'white', tag = '', error = false) {
+    const timestamp = `[${dayjs().format('DD/MM - HH:mm:ss')}]`;
     const stream = error ? process.stderr : process.stdout;
-    const item = formats
-        .replace('{tStamp}', couleur.gray(timestemp))
-        .replace('{tag}', couleur[bgTagColor][tagColor](logTag))
+    let styledTag;
+
+    if (tagColor.startsWith('#')) {
+        styledTag = couleur.hex(tagColor).bold(tag);
+    } else if (couleur[tagColor]) {
+        styledTag = couleur[tagColor].bold(tag);
+    } else {
+        styledTag = couleur.bold(tag);
+    }
+
+    // Remplacement dans le format
+    const formattedMessage = formats
+        .replace('{tStamp}', couleur.gray(timestamp))
+        .replace('{tag}', styledTag)
         .replace('{txt}', couleur.white(content));
-    stream.write(item)
+
+    stream.write(formattedMessage);
 }
 
 function error(content) {
-    write(content, "black", "bgRed", "ERREUR", true);
+    write(content, "red", "ERREUR", true);
 }
 
 function command(content) {
-    write(content, "black", "bgGreen", "CMD", false);   
+    write(content, "blue", "CMD");
 }
 
 function warn(content) {
-    write(content, 'black', "bgYellow", "WARN", false);
+    write(content, "yellow", "WARN");
 }
 
 function event(content) {
-    write(content, 'black', "bgWhite", 'EVT', false);
+    write(content, "#fc852b", "EVT");
 }
 
 function clientStart(content) {
-    write(content, 'black', "bgCyan", 'CLIENT', false);
+    write(content, "green", "CLIENT");
 }
 
 function slashCommand(content) {
-    write(content, 'black', "bgMagenta", 'SLASH COMMAND', false);
+    write(content, "cyan", "SLASH COMMAND");
 }
 
 function typo(content) {
-    write(content, "black", "bgBlue", "TYPO", false)
+    write(content, "blue", "TYPO");
 }
 
 function test(content) {
-    write(content, "white", "bgBlack", "TEST", false)
+    write(content, "gray", "TEST");
 }
+
 module.exports =  { error, warn, command, event, clientStart, slashCommand, typo, test };
