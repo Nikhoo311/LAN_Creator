@@ -222,9 +222,9 @@ class Tournament {
     delete() {
         try {
             let tournamentSaveFile = Tournament.getFile()
-            tournamentSaveFile = tournamentSaveFile.filter(item => item.name !== this.name)
+            tournamentSaveFile = tournamentSaveFile.filter(item => item.id !== this.id)
             writeFile(Tournament.#file, JSON.stringify(tournamentSaveFile, null, 4), err => {
-                if (err) throw new Error("/!\\ Error: Something wrong when we write in the 'lans.json'")
+                if (err) throw new Error("/!\\ Error: Something wrong when we write in the 'tournament.json'")
             })  
         } catch (error) {
             console.error(error)

@@ -1,6 +1,7 @@
 const { EmbedBuilder, ButtonBuilder, ButtonStyle, ActionRowBuilder, MessageFlags, StringSelectMenuBuilder, StringSelectMenuOptionBuilder } = require("discord.js");
 const { color } = require("../../../../config/config.json");
-
+const { readFileSync } = require("fs");
+const { generateSlug } = require("../../../functions/utils/generateSlug");
 module.exports = {
     data: {
         name: "suppr-tournament-btn"
@@ -32,7 +33,8 @@ module.exports = {
             });
             return interaction.reply({ content: message, components: [new ActionRowBuilder().addComponents(selectTournament)], flags: [MessageFlags.Ephemeral] })
         } else {
-            message += ` pour \`\`${currentTournament.name}\`\`\nCet espace est dédié à la gestion du Tournois !\n# Informations :\n`;
+            message += `suppression du tournois \`\`${currentTournament.name}\`\`\n-# ID: \`\`${currentTournament.id}\`\`\n## Informations :\n*Pour supprimer ce Tounois il suffit de cliquer sur le bouton \`\`Oui\`\`.\n\n\`\`\`\n\n Es-tu sûr de bien vouloir supprimer ${currentTournament.name} ?\n\`\`\``;
+
             const gamePossible = JSON.parse(readFileSync('./config/bd.json', 'utf-8'))["tournamentGames"];
             const gameChosen = gamePossible.filter(game => generateSlug(currentTournament.game) == generateSlug(game.name))[0];
             
@@ -53,7 +55,6 @@ module.exports = {
                 let teamDisplay = "";
                 team.players.forEach(player => {
                     teamDisplay += `- <@${guild.members.cache.find(m => player.name == m.displayName).user.id}>\n`
-
                 })
                 embedStats.addFields({
                     name: `${i >= 1 ? "\u200B" : "**Équipes**"}`, value: `> ${team.name}\n${teamDisplay}`, inline: true
@@ -61,31 +62,19 @@ module.exports = {
                 i++;
             })
 
-            const matchBtn = new ButtonBuilder()
-                .setCustomId("match-btn")
-                .setStyle(ButtonStyle.Primary)
-                .setLabel("Créer un Match")
-                .setEmoji("🎮")
-            
-            const managementMatchBtn = new ButtonBuilder()
-                .setCustomId("management-match-btn")
-                .setStyle(ButtonStyle.Secondary)
-                .setLabel("Gestion des Matchs")
-                .setEmoji("⚙️")
-            
-            const supprMatchBtn = new ButtonBuilder()
-                .setCustomId("suppr-match-btn")
-                .setStyle(ButtonStyle.Danger)
-                .setLabel("Supprimer un Match")
-                .setEmoji('✖️')
-            
-            const createVocalsChannelsBtn = new ButtonBuilder()
-                .setCustomId("create-vocals-channels-btn")
+            const supprYesTournament = new ButtonBuilder()
+                .setCustomId("suppr-tournament-yes-btn")
+                .setEmoji('✅')
+                .setLabel("Oui")
                 .setStyle(ButtonStyle.Success)
-                .setLabel("Créer les salons vocaux d'équipes")
-                .setEmoji('🔊')
             
-            interaction.reply({ content: message, embeds: [embedStats], components: [new ActionRowBuilder().addComponents(matchBtn).addComponents(managementMatchBtn).addComponents(supprMatchBtn), new ActionRowBuilder().addComponents(createVocalsChannelsBtn)] });
+            const supprNoTournament = new ButtonBuilder()
+                .setCustomId("suppr-tournament-no-btn")
+                .setEmoji('✖️')
+                .setLabel("Non")
+                .setStyle(ButtonStyle.Danger)
+                
+            interaction.reply({ content: message, embeds:[embedStats], components: [new ActionRowBuilder().addComponents([supprYesTournament, supprNoTournament])], flags: [MessageFlags.Ephemeral] });
         }
     }
 }
