@@ -27,7 +27,7 @@ module.exports = {
         const supprTournamentBtn = new ButtonBuilder()
             .setCustomId("suppr-tournament-btn")
             .setLabel("Supprimer un Tournois")
-            .setEmoji('✖️')
+            .setEmoji('<:trash:1378419101751447582>')
             .setStyle(ButtonStyle.Danger)
 
         await interaction.channel.send({content: message, components: [new ActionRowBuilder().addComponents(createTournamentBtn).addComponents(managementTournamentBtn).addComponents(supprTournamentBtn)]})
