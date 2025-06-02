@@ -10,10 +10,11 @@ class Team {
      * @param {Player} players Liste de joueurs présent dans la team
      */
     static #file = "./config/tournament.json";
-    constructor(name, players, id = null) {
+    constructor(name, players, id = null, voiceChannel = null) {
         this.id = id !== null ? id : generateSlug(name);
         this.name = name;
         this.players = players ? players : [];
+        this.voiceChannel = voiceChannel !== null ? voiceChannel : ""
     }
 
     addPlayer(player) {
@@ -59,9 +60,45 @@ class Team {
     //    }
     }
 
+    /**
+    * Save Team voice channel in a file
+    */
+    registerVoiceChannel(tournament, voiceChannelId) {
+        try {
+            let obj = {
+                id: this.id,
+                name: this.name,
+                voiceChannel: voiceChannelId,
+                players: this.players
+            }
+            let tournamentSaveFile = Team.getFile();
+
+            const index = tournamentSaveFile.findIndex(tourn => tourn.id === tournament.id);
+
+            if (index === -1) {
+                throw new Error(`Tournoi '${tournament.name}' introuvable dans le fichier.`);
+            }
+
+            tournamentSaveFile[index].teams = tournamentSaveFile[index].teams.filter(item => item.id !== this.id);
+            
+            tournamentSaveFile[index].teams.push(obj);
+           
+            writeFile(Team.#file, JSON.stringify(tournamentSaveFile, null, 4), err => {
+                if (err) throw new Error("/!\\ Error: Something wrong when we write in the 'lans.json'")
+            })  
+       } catch (error) {
+            console.error(error)
+       }
+    }
+
+    setVoiceChannel(voiceChannelId) {
+        this.voiceChannel = voiceChannelId;
+    }
+    
     static fromJson(jsonObject) {
         const id = jsonObject.id;
         const name = jsonObject.name;
+        const voiceChannel = jsonObject.voiceChannel
 
         const players = [];
         jsonObject.players.forEach(playerJson => {
@@ -69,7 +106,7 @@ class Team {
             players.push(player);
         });
 
-        return new Team(name, players, id);
+        return new Team(name, players, id, voiceChannel);
     }
     
     static getFile() {
