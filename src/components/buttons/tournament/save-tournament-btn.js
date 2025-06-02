@@ -1,6 +1,7 @@
 const { Player } = require("../../../class/Player");
 const { Team } = require("../../../class/Team");
 const { Tournament } = require("../../../class/Tournament");
+const { Lan } = require("../../../class/Lan");
 
 module.exports = {
     data: {
@@ -41,7 +42,8 @@ module.exports = {
                 result.teams.push(team);
             }
         });
-        const tournament = new Tournament(lanName, result.tournamentName, result.game)
+        const lan = Lan.getLanByName(lanName);
+        const tournament = new Tournament(lan, result.tournamentName, result.game)
         result.teams.forEach(team => tournament.addTeam(team));
 
         try {

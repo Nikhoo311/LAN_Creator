@@ -4,6 +4,7 @@ const crypto = require('crypto');
 const { v4: uuidv4 } = require('uuid');
 const { Team } = require('./Team');
 const { Match } = require('./Match');
+const { Lan } = require("./Lan");
 
 function generateID() {
     const uniqueString = uuidv4();
@@ -16,10 +17,10 @@ function generateID() {
 
 class Tournament {
     static #file = "./config/tournament.json";
-    constructor(lanName, name, game, id = null, teams = null, matches = null, scoreA = null, scoreB = null) {
+    constructor(lan, name, game, id = null, teams = null, matches = null, scoreA = null, scoreB = null) {
         this.id = id !== null ? id : generateID();
         this.name = name;
-        this.lanName = lanName;
+        this.lan = lan;
         this.game = game;
         this.teams = teams !== null ? teams : [];
         this.matches = matches !== null ? matches : [];
@@ -198,7 +199,7 @@ class Tournament {
             let obj = {
                 id: this.id,
                 name: this.name,
-                lanName: this.lanName,
+                lanName: this.lan.name,
                 game: this.game,
                 score: score,
                 teams: this.teams,
@@ -233,7 +234,7 @@ class Tournament {
     static fromJson(jsonObject) {
         const id = jsonObject.id;
         const name = jsonObject.name;
-        const lanName = jsonObject.lanName;
+        const lan = Lan.getLanByName(jsonObject.lanName);
         const game = jsonObject.game;
         let scores = [];
         let teams = [];
@@ -244,7 +245,7 @@ class Tournament {
         let matches = [];
         jsonObject.matches.forEach(match => matches.push(Match.fromJson(match)));
         
-        return new Tournament(lanName, name, game, id, teams, matches, scores[0], scores[1]);
+        return new Tournament(lan, name, game, id, teams, matches, scores[0], scores[1]);
     }
     static getFile() {
         try {
