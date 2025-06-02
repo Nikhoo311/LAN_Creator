@@ -49,6 +49,7 @@ module.exports = {
                     { name: "**Jeu**", value: `> ${gameChosen.emoji} ${gameChosen.name}`, inline: true },
                     { name: "**Nombre de match(s)**", value: `> ${currentTournament.matches.length}`, inline: false },
                 )
+                .setFooter({ text: `ID : ${currentTournament.id}` })
             let i = 0;
             const guild = interaction.guild;
             currentTournament.teams.forEach(team => {
@@ -82,7 +83,7 @@ module.exports = {
                 .setEmoji('✖️')
             
             const createVocalsChannelsBtn = new ButtonBuilder()
-                .setCustomId("create-vocals-channels-btn")
+                .setCustomId("create-voices-channels-btn")
                 .setStyle(ButtonStyle.Success)
                 .setLabel("Créer les salons vocaux d'équipes")
                 .setEmoji('🔊')

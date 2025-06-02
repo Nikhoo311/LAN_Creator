@@ -9,9 +9,9 @@ module.exports = {
         let selectTeams = infoPannelMessage.components.length == 2 ? infoPannelMessage.components : infoPannelMessage.components.slice(0,2);
         
         infoPannelMessage.edit({ components: selectTeams })
-        await interaction.reply({ content: "Saisir le nom de la permière équipe...\n⚠️ **Temps maximum 1min**", flags: [MessageFlags.Ephemeral] })
+        await interaction.reply({ content: "Saisir le nom de la permière équipe...\n⚠️ **Temps maximum 1min**\n-# *(Max 90 caractères)*", flags: [MessageFlags.Ephemeral] })
         const teamOneCollector = interaction.channel.createMessageCollector({
-            filter: (msg) => (!msg.author.bot && msg.author.id === interaction.user.id) && msg.content.length <= 130,
+            filter: (msg) => (!msg.author.bot && msg.author.id === interaction.user.id) && msg.content.length <= 90,
             time: 60_000,
             max: 1
         })
@@ -26,9 +26,9 @@ module.exports = {
             
             message.delete();
 
-            await interaction.editReply({ content: "Saisir le nom de la deuxième équipe...\n⚠️ **Temps maximum 1min**", flags: [MessageFlags.Ephemeral] })
+            await interaction.editReply({ content: "Saisir le nom de la deuxième équipe...\n⚠️ **Temps maximum 1min**\n-# *(Max 90 caractères)*", flags: [MessageFlags.Ephemeral] })
             const teamTwoCollector = interaction.channel.createMessageCollector({
-                filter: (msg) => (!msg.author.bot && msg.author.id === interaction.user.id) && msg.content.length <= 130,
+                filter: (msg) => (!msg.author.bot && msg.author.id === interaction.user.id) && msg.content.length <= 90,
                 time: 60_000,
                 max: 1
             })
