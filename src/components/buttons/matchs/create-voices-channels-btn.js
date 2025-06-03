@@ -71,7 +71,7 @@ module.exports = {
         const supprTeamsVoiceChannels = new ButtonBuilder()
             .setCustomId("suppr-teams-voice-channels")
             .setLabel("Supprimer les salons vocaux d'équipes")
-            .setEmoji("✖️")
+            .setEmoji("<:voice_remove:1379573487655587921>")
             .setStyle(ButtonStyle.Danger)
         
         interaction.update({ components: [interaction.message.components[0], new ActionRowBuilder().addComponents(supprTeamsVoiceChannels)] });

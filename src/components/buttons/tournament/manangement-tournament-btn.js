@@ -52,6 +52,7 @@ module.exports = {
                 .setFooter({ text: `ID : ${currentTournament.id}` })
             let i = 0;
             const guild = interaction.guild;
+            let alreadyTeamsChannels = false;
             currentTournament.teams.forEach(team => {
                 let teamDisplay = "";
                 team.players.forEach(player => {
@@ -62,6 +63,7 @@ module.exports = {
                     name: `${i >= 1 ? "\u200B" : "**Équipes**"}`, value: `> ${team.name}\n${teamDisplay}`, inline: true
                 })
                 i++;
+                alreadyTeamsChannels = team.voiceChannel ? true : false;
             })
 
             const matchBtn = new ButtonBuilder()
@@ -80,15 +82,21 @@ module.exports = {
                 .setCustomId("suppr-match-btn")
                 .setStyle(ButtonStyle.Danger)
                 .setLabel("Supprimer un Match")
-                .setEmoji('✖️')
+                .setEmoji('<:trash:1378419101751447582>')
             
             const createVocalsChannelsBtn = new ButtonBuilder()
                 .setCustomId("create-voices-channels-btn")
-                .setStyle(ButtonStyle.Success)
+                .setStyle(ButtonStyle.Secondary)
                 .setLabel("Créer les salons vocaux d'équipes")
-                .setEmoji('🔊')
+                .setEmoji('<:voice_add:1379566685681618975>')
             
-            interaction.reply({ content: message, embeds: [embedStats], components: [new ActionRowBuilder().addComponents(matchBtn).addComponents(managementMatchBtn).addComponents(supprMatchBtn), new ActionRowBuilder().addComponents(createVocalsChannelsBtn)] });
+            const supprTeamsVoiceChannels = new ButtonBuilder()
+                .setCustomId("suppr-teams-voice-channels")
+                .setLabel("Supprimer les salons vocaux d'équipes")
+                .setEmoji("<:voice_remove:1379573487655587921>")
+                .setStyle(ButtonStyle.Danger)
+            const teamChannelsBtn = alreadyTeamsChannels ? supprTeamsVoiceChannels : createVocalsChannelsBtn;
+            interaction.reply({ content: message, embeds: [embedStats], components: [new ActionRowBuilder().addComponents(matchBtn).addComponents(managementMatchBtn).addComponents(supprMatchBtn), new ActionRowBuilder().addComponents(teamChannelsBtn)] });
         }
     }
 }
