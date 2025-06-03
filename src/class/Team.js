@@ -2,7 +2,7 @@ const { readFileSync, writeFile } = require("fs");
 const { Player } = require("./Player");
 
 const { generateSlug } = require('../functions/utils/generateSlug');
-
+const { promises } = require("fs");
 class Team {
     /**
      * Représente une team de joueurs
@@ -63,7 +63,7 @@ class Team {
     /**
     * Save Team voice channel in a file
     */
-    registerVoiceChannel(tournament, voiceChannelId) {
+    async registerVoiceChannel(tournament, voiceChannelId) {
         try {
             let obj = {
                 id: this.id,
@@ -74,24 +74,25 @@ class Team {
             let tournamentSaveFile = Team.getFile();
 
             const index = tournamentSaveFile.findIndex(tourn => tourn.id === tournament.id);
-
+            
             if (index === -1) {
                 throw new Error(`Tournoi '${tournament.name}' introuvable dans le fichier.`);
             }
 
-            tournamentSaveFile[index].teams = tournamentSaveFile[index].teams.filter(item => item.id !== this.id);
-            
-            tournamentSaveFile[index].teams.push(obj);
-           
-            writeFile(Team.#file, JSON.stringify(tournamentSaveFile, null, 4), err => {
-                if (err) throw new Error("/!\\ Error: Something wrong when we write in the 'lans.json'")
-            })  
+            const teamIndex = tournamentSaveFile[index].teams.findIndex(team => team.id === this.id);
+
+            if (teamIndex !== -1) {
+                tournamentSaveFile[index].teams[teamIndex] = obj;
+            } else {
+                tournamentSaveFile[index].teams.push(obj);
+            }
+            await promises.writeFile(Team.#file, JSON.stringify(tournamentSaveFile, null, 4));
        } catch (error) {
             console.error(error)
        }
     }
 
-    setVoiceChannel(voiceChannelId) {
+    setVoiceChannel(voiceChannelId = "") {
         this.voiceChannel = voiceChannelId;
     }
     
