@@ -7,6 +7,7 @@ module.exports = {
         name: "create-voices-channels-btn"
     },
     async execute(interaction, client) {
+        await interaction.deferUpdate();
         const { tournaments } = client;
         const tournamentId = interaction.message.embeds[0].footer.text.split("ID : ")[1];
 
@@ -74,7 +75,7 @@ module.exports = {
             .setEmoji("<:voice_remove:1379573487655587921>")
             .setStyle(ButtonStyle.Danger)
         
-        interaction.update({ components: [interaction.message.components[0], new ActionRowBuilder().addComponents(supprTeamsVoiceChannels)] });
+        interaction.editReply({ components: [interaction.message.components[0], new ActionRowBuilder().addComponents(supprTeamsVoiceChannels)] });
     }
 
 }
