@@ -34,7 +34,7 @@ module.exports = {
             });
             return interaction.reply({ content: message, components: [new ActionRowBuilder().addComponents(selectTournament)]})
         } else {
-            message += ` pour \`\`${currentTournament.name}\`\`\nCet espace est dédié à la gestion du Tournois !\n# Informations :\n`;
+            message += ` pour \`\`${currentTournament.name}\`\`\nCet espace est dédié à la gestion du Tournois !\n# Informations :\n* Pour **créer** un match et l'ajouter au tournois *${currentTournament.name}*, il suffit de cliquer sur le bouton \`Créer un Match\` et suivre les instructions.\n* Pour **gérer** un match parmis la liste des matches du tournois, il faut cliquer le bouton \`Gestions des Matchs\`.\n* Pour **supprimer** un match du tournois *${currentTournament.name}*, il suffit de cliquer le bouton \`Supprimer un Match\`. Le processus est **irréverssible**.\n* Pour créer des salons vocaux dédiés à chaque équipe, accessibles uniquement par les membres de leur équipe respective, il faut cliquer sur le bouton \`Créer les salons vocaux d'équipes\`.\n* Pour **supprimer** les salons vocaux d'équipes, le bouton \`Supprimer les salons vocaux d'équipes\` est disponible, cette action est **irréverssible**.`;
             const gamePossible = JSON.parse(readFileSync('./config/bd.json', 'utf-8'))["tournamentGames"];
             const gameChosen = gamePossible.filter(game => generateSlug(currentTournament.game) == generateSlug(game.name))[0];
             
