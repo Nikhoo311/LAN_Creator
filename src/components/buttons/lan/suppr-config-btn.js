@@ -7,7 +7,7 @@ module.exports = {
         name: "suppr-config-btn"
     },
     async execute (interaction, client) {
-        const message = `# Suppression de configuration\nIci tu peux supprimer une configuration qui est présente sur la base de données\n\n## Informations\nPour supprimer une ou plusieurs configuration(s) de la base de données, il faut sélectionner le(s) nom(s) de configuration(s) à supprimer`
+        const message = `# Suppression de configuration\nIci tu peux supprimer une configuration qui est présente sur la base de données\n\n# Informations\nPour supprimer une ou plusieurs configuration(s) de la base de données, il faut sélectionner le(s) nom(s) de configuration(s) à supprimer`
         const bd = JSON.parse(readFileSync("./config/bd.json", "utf-8"))["bd"];
 
         let sConfig = bd.length > 1 ? "(s)" : "";

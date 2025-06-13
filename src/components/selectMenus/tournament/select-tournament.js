@@ -48,7 +48,7 @@ module.exports = {
 
         let message = "# Espace de ";
         if (interaction.customId == "select-suppr-tournament") {
-            message += `suppression du tournois \`\`${tournament.name}\`\`\n-# ID: \`\`${tournament.id}\`\`\n## Informations :\n* Pour supprimer ce Tounois il suffit de cliquer sur le bouton \`\`Oui\`\`.\n* Pour annuler la demande de supression de ce Tounois il suffit de cliquer sur le bouton \`\`Non\`\`.\n\n\`\`\`\n\n Es-tu sûr de bien vouloir supprimer ${tournament.name} ?\n\`\`\``;
+            message += `suppression du tournois \`\`${tournament.name}\`\`\n-# ID: \`\`${tournament.id}\`\`\n# Informations\n* Pour supprimer ce Tounois il suffit de cliquer sur le bouton \`\`Oui\`\`.\n* Pour annuler la demande de supression de ce Tounois il suffit de cliquer sur le bouton \`\`Non\`\`.\n\n\`\`\`\n\n Es-tu sûr de bien vouloir supprimer ${tournament.name} ?\n\`\`\``;
             const supprYesTournament = new ButtonBuilder()
                 .setCustomId("suppr-tournament-yes-btn")
                 .setEmoji('✅')

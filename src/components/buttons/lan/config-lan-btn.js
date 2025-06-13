@@ -7,7 +7,7 @@ module.exports = {
         name: "config-lan-btn"
     },
     async execute (interaction, client) {
-        const message = `# Configuration de LAN\nIci c'est l'espace où tu peux créer / modifier et supprimer des configurations pour les LANs. \n## Informations\n * Pour créer il faut cliquer sur le bouton \`Créer\` et ensuite rentrer toutes les informations nécessaires.\n * Pour modifier il faut cliquer sur le bouton \`Modifier\` et sélectionner une configuration à modifier et ensuite remplir les informations qu'il faut modifier.\n * Pour supprimer une configuration il faut cliquer sur le bouton \`Supprimer\` puis sélectionner la configuration qu'il faut supprimer via le menu de sélection et c'est fini !\n* Enfin, pour choisir une configuration pour les LANs, il faut cliquer sur le bouton \`Choisir\` et sélectionner la configuration qu'il faut.`
+        const message = `# Configuration de LAN\nIci c'est l'espace où tu peux créer / modifier et supprimer des configurations pour les LANs. \n# Informations\n * Pour créer il faut cliquer sur le bouton \`Créer\` et ensuite rentrer toutes les informations nécessaires.\n * Pour modifier il faut cliquer sur le bouton \`Modifier\` et sélectionner une configuration à modifier et ensuite remplir les informations qu'il faut modifier.\n * Pour supprimer une configuration il faut cliquer sur le bouton \`Supprimer\` puis sélectionner la configuration qu'il faut supprimer via le menu de sélection et c'est fini !\n* Enfin, pour choisir une configuration pour les LANs, il faut cliquer sur le bouton \`Choisir\` et sélectionner la configuration qu'il faut.`
         const bd = JSON.parse(readFileSync("./config/bd.json", "utf-8"))["bd"];
         let sConfig = bd.length > 1 ? "(s)" : "";
         let namesInBD = "";

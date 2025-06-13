@@ -11,7 +11,7 @@ module.exports = {
         const map = info[0]
         const tournament = tournaments.get(info[1]);
 
-        const message = `# Création de Match\nCet espace est dédié à la création de match pour le tournois ${tournament.name}.\n\n## Informations :\n\`\`\`diff\n+ Le Match à bien été archiver avec succès !\`\`\``;
+        const message = `# Création de Match\nCet espace est dédié à la création de match pour le tournois ${tournament.name}.\n\n# Informations\n\`\`\`diff\n+ Le Match à bien été archiver avec succès !\`\`\``;
         
         const messageId = interaction.message.content.split("-# Message ID : ")[1];
         const messageNeedToBeEdited = await client.channels.cache.get(interaction.channelId).messages.fetch(messageId);

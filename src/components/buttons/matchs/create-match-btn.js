@@ -50,7 +50,7 @@ module.exports = {
             match.save(tournament);
 
             const messageNeedToBeEdited = interaction.message;
-            message += `\n\n## Informations :\n\`\`\`diff\n+ Le Match à bien été archiver avec succès !\`\`\``;
+            message += `\n\n# Informations\n\`\`\`diff\n+ Le Match à bien été archiver avec succès !\`\`\``;
 
             embedStats.data.fields = embedStats.data.fields.map(field => {
                 if (field.name === '**Nombre de match(s)**') {
