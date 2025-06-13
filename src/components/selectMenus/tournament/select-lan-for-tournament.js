@@ -1,16 +1,7 @@
 const { StringSelectMenuOptionBuilder, StringSelectMenuBuilder, ActionRowBuilder } = require("discord.js");
 const { readFileSync } = require("fs");
 
-function generateSlug(str) {
-    return str
-      .normalize("NFD")
-      .replace(/[\u0300-\u036f]/g, "")
-      .replace(/[^a-zA-Z0-9\s_]/g, "")
-      .trim()
-      .replace(/\s+/g, "_")
-      .replace(/_+/g, "_")
-      .toLowerCase();
-}
+const { generateSlug } = require('../../../functions/utils/generateSlug');
 
 module.exports = {
     data: {
