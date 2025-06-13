@@ -67,7 +67,7 @@ module.exports = {
             })
 
             const matchBtn = new ButtonBuilder()
-                .setCustomId("match-btn")
+                .setCustomId("create-match-btn")
                 .setStyle(ButtonStyle.Primary)
                 .setLabel("Créer un Match")
                 .setEmoji("🎮")

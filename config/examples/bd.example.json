@@ -3,7 +3,8 @@
     "tournamentGames": [
         {
             "emoji": "",
-            "name": ""
+            "name": "",
+            "maps": []
         }
     ]
 }
