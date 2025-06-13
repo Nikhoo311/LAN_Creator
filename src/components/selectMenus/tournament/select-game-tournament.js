@@ -19,7 +19,7 @@ module.exports = {
         }
 
         const lanName = interaction.message.content.split(`\`\``)[1];
-        let message = `# Création de Tournois pour \`\`${lanName}\`\`\nCet espace est dédié à la création de Tournois Multi-jeux !\n# Informations :\n* Tu as juste a remplir tous les informations nécessaires pour le tournois. Les informations sont **modifiable a tout moment**\n* Pour **sauvegarder** un tournois et le créer, tu peux cliquer sur le bouton \`Sauvegarder\`.`;
+        let message = `# Création de Tournois pour \`\`${lanName}\`\`\nCet espace est dédié à la création de Tournois Multi-jeux !\n# Informations\n* Tu as juste a remplir tous les informations nécessaires pour le tournois. Les informations sont **modifiable a tout moment**\n* Pour **sauvegarder** un tournois et le créer, tu peux cliquer sur le bouton \`Sauvegarder\`.`;
         let isDisabled = true;
         if (!interaction.message.embeds[0]) {
             infoCreateEmbed = new EmbedBuilder()

@@ -43,7 +43,7 @@ module.exports = {
             lanID = lan.id
         })
         const lan = bd.get(lanID)
-        message += `\n\n## Informations sur \`${lan.name}\``
+        message += `\n\n# Informations sur \`${lan.name}\``
         const channelVoiceState = lan.channels.voice.length > 1 ? "Les salons vocaux" : "Le salon vocal"
 
         let vcString = ""

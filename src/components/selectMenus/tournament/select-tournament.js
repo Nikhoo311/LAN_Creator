@@ -48,7 +48,7 @@ module.exports = {
 
         let message = "# Espace de ";
         if (interaction.customId == "select-suppr-tournament") {
-            message += `suppression du tournois \`\`${tournament.name}\`\`\n-# ID: \`\`${tournament.id}\`\`\n## Informations :\n* Pour supprimer ce Tounois il suffit de cliquer sur le bouton \`\`Oui\`\`.\n* Pour annuler la demande de supression de ce Tounois il suffit de cliquer sur le bouton \`\`Non\`\`.\n\n\`\`\`\n\n Es-tu sûr de bien vouloir supprimer ${tournament.name} ?\n\`\`\``;
+            message += `suppression du tournois \`\`${tournament.name}\`\`\n-# ID: \`\`${tournament.id}\`\`\n# Informations\n* Pour supprimer ce Tounois il suffit de cliquer sur le bouton \`\`Oui\`\`.\n* Pour annuler la demande de supression de ce Tounois il suffit de cliquer sur le bouton \`\`Non\`\`.\n\n\`\`\`\n\n Es-tu sûr de bien vouloir supprimer ${tournament.name} ?\n\`\`\``;
             const supprYesTournament = new ButtonBuilder()
                 .setCustomId("suppr-tournament-yes-btn")
                 .setEmoji('✅')
@@ -64,10 +64,10 @@ module.exports = {
             interaction.update({ content: message, embeds:[embedStats], components: [new ActionRowBuilder().addComponents([supprYesTournament, supprNoTournament])] });
 
         } else {
-            message += `gestion de Tournois pour \`\`${tournament.name}\`\`\nCet espace est dédié à la gestion du Tournois !\n## Informations :\n* Pour **créer** un match et l'ajouter au tournois *${currentTournament.name}*, il suffit de cliquer sur le bouton \`Créer un Match\` et suivre les instructions.\n* Pour **gérer** un match parmis la liste des matches du tournois, il faut cliquer le bouton \`Gestions des Matchs\`.\n* Pour **supprimer** un match du tournois *${currentTournament.name}*, il suffit de cliquer le bouton \`Supprimer un Match\`. Le processus est **irréverssible**.\n* Pour créer des salons vocaux dédiés à chaque équipe, accessibles uniquement par les membres de leur équipe respective, il faut cliquer sur le bouton \`Créer les salons vocaux d'équipes\`.\n* Pour **supprimer** les salons vocaux d'équipes, le bouton \`Supprimer les salons vocaux d'équipes\` est disponible, cette action est **irréverssible**.`;
+            message += `gestion de Tournois pour \`\`${tournament.name}\`\`\nCet espace est dédié à la gestion du Tournois !\n## Informations :\n* Pour **créer** un match et l'ajouter au tournois *${tournament.name}*, il suffit de cliquer sur le bouton \`Créer un Match\` et suivre les instructions.\n* Pour **gérer** un match parmis la liste des matches du tournois, il faut cliquer le bouton \`Gestions des Matchs\`.\n* Pour **supprimer** un match du tournois *${tournament.name}*, il suffit de cliquer le bouton \`Supprimer un Match\`. Le processus est **irréverssible**.\n* Pour créer des salons vocaux dédiés à chaque équipe, accessibles uniquement par les membres de leur équipe respective, il faut cliquer sur le bouton \`Créer les salons vocaux d'équipes\`.\n* Pour **supprimer** les salons vocaux d'équipes, le bouton \`Supprimer les salons vocaux d'équipes\` est disponible, cette action est **irréverssible**.`;
     
             const matchBtn = new ButtonBuilder()
-                .setCustomId("match-btn")
+                .setCustomId("create-match-btn")
                 .setStyle(ButtonStyle.Primary)
                 .setLabel("Créer un Match")
                 .setEmoji("🎮")

@@ -50,7 +50,7 @@ module.exports = {
 
         if (interaction.customId == "create-tournament-btn") {         
             
-            message += ` pour \`\`${currentLan.name}\`\`\nCet espace est dédié à la création de Tournois Multi-jeux !\n# Informations :\nIl vous suffit de choisir le jeu sur lequel le tournoi sera organisé !\n`
+            message += ` pour \`\`${currentLan.name}\`\`\nCet espace est dédié à la création de Tournois Multi-jeux !\n# Informations\nIl vous suffit de choisir le jeu sur lequel le tournoi sera organisé !\n`
             let selectGame = new StringSelectMenuBuilder()
                 .setCustomId("select-game-tournament")
                 .setMinValues(1)
