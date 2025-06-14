@@ -33,7 +33,7 @@ module.exports = {
             });
             return interaction.reply({ content: message, components: [new ActionRowBuilder().addComponents(selectTournament)], flags: [MessageFlags.Ephemeral] })
         } else {
-            message += `suppression du tournois \`\`${currentTournament.name}\`\`\n-# ID: \`\`${currentTournament.id}\`\`\n# Informations\n* Pour supprimer ce Tounois il suffit de cliquer sur le bouton \`\`Oui\`\`.\n* Pour annuler la demande de supression de ce Tounois il suffit de cliquer sur le bouton \`\`Non\`\`.\n\n\`\`\`\n\n Es-tu sûr de bien vouloir supprimer ${currentTournament.name} ?\n\`\`\``;
+            message += ` pour \`\`${currentTournament.name}\`\`\n-# ID: \`\`${currentTournament.id}\`\`\n# Informations\n* Pour supprimer ce Tounois il suffit de cliquer sur le bouton \`\`Oui\`\`.\n* Pour annuler la demande de supression de ce Tounois il suffit de cliquer sur le bouton \`\`Non\`\`.\n\n\`\`\`\n\n Es-tu sûr de bien vouloir supprimer ${currentTournament.name} ?\n\`\`\``;
 
             const gamePossible = JSON.parse(readFileSync('./config/bd.json', 'utf-8'))["tournamentGames"];
             const gameChosen = gamePossible.filter(game => generateSlug(currentTournament.game) == generateSlug(game.name))[0];
