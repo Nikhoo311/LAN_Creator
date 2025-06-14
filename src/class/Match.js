@@ -3,6 +3,7 @@ const { readFileSync, writeFile } = require("fs");
 const crypto = require('crypto');
 const { v4: uuidv4 } = require('uuid');
 const { Team } = require('./Team');
+const logger = require('../functions/utils/Logger');
 
 function generateID() {
     const uniqueString = uuidv4();
@@ -183,6 +184,28 @@ class Match {
             })  
         } catch (error) {
             console.error(error)
+        }
+    }
+
+    delete(tournament) {
+        try {
+            const tournamentSaveFile = Match.getFile();
+
+            const targetTournament = tournamentSaveFile.find(t => t.id === tournament.id);
+            if (!targetTournament) throw new Error('Tournoi introuvable');
+
+            const originalLength = targetTournament.matches.length;
+            targetTournament.matches = targetTournament.matches.filter(match => match.id !== this.id);
+
+            if (originalLength === targetTournament.matches.length) {
+                logger.warn(`Aucun match avec l'ID ${this.id} trouvé dans ce tournoi.`);
+            }
+
+            writeFile(Match.#file, JSON.stringify(tournamentSaveFile, null, 4), err => {
+                if (err) throw new Error("/!\\ Erreur : Impossible d'écrire dans le fichier tournament.json");
+            });
+        } catch (error) {
+            console.error("Erreur dans Match.delete :", error.message);
         }
     }
     
