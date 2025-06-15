@@ -26,7 +26,5 @@ module.exports = {
         await interaction.editReply({
             content: `> ${getSignalEmoji(apiPing)} **API Ping** : \`${apiPing}ms\`\n> ${wsPing === -1 ? "❌" : getSignalEmoji(wsPing)} **WebSocket Ping** : \`${wsPingDisplay}\``
         });
-        console.log(wsPing);
-        
     }
 }
