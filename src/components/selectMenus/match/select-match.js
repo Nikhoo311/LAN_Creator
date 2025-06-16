@@ -48,7 +48,6 @@ module.exports = {
             await interaction.update({ content: messageContent, components: [] });
         }
         else {
-            console.log("faire 2 select menu (1/équipe) avec les joueurs -> modal (saisir leur score sauvegarder dans l'embed) + un bouton pour saisir le score du match + bouton sauvegarde pour mettre ça en json");
             const embedMatch = new EmbedBuilder()
                 .setColor(color.green)
                 .setDescription(`# Score : ${match.score1} - ${match.score2}`)
