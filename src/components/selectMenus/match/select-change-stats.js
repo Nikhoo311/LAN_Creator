@@ -10,7 +10,7 @@ module.exports = {
         const [playerName, teamId] = info;
         
         const modal = new ModalBuilder()
-            .setCustomId("change-stats-match")
+            .setCustomId("change-player-stats-match")
             .setTitle(`Statistiques : [${teamId}] ${playerName}`)
         
         const textKills = new TextInputBuilder()

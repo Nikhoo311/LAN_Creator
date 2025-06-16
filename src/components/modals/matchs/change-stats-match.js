@@ -20,7 +20,7 @@ function resetCompontent(components) {
 }
 module.exports = {
     data: {
-        name: "change-stats-match"
+        name: "change-player-stats-match"
     },
     async execute(interaction, client) {
         const { placeholder } = client;
