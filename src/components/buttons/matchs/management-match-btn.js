@@ -6,7 +6,7 @@ module.exports = {
         name: "management-match-btn"
     },
     async execute(interaction, client) {
-        await interaction.deferReply({ flags: [MessageFlags.Ephemeral] })
+        await interaction.deferReply()
         const { tournaments } = client;
 
         const embedStats = interaction.message.embeds[0].data;
