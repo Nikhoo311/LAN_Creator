@@ -7,7 +7,7 @@ module.exports = {
     },
     async execute(interaction, client) {
         const info = interaction.values[0].split(";");
-        const [playerName, teamId, matchId] = info;
+        const [playerName, teamId] = info;
         
         const modal = new ModalBuilder()
             .setCustomId("change-stats-match")
@@ -27,14 +27,8 @@ module.exports = {
             .setStyle(TextInputStyle.Short)
             .setPlaceholder("4")
         
-        const textMatchId = new TextInputBuilder()
-            .setCustomId("match_id")
-            .setLabel("ID Match")
-            .setPlaceholder(matchId)
-            .setStyle(TextInputStyle.Short)
-            .setRequired(false)
-
-        modal.addComponents([new ActionRowBuilder().addComponents(textKills), new ActionRowBuilder().addComponents(textDeaths), new ActionRowBuilder().addComponents(textMatchId)])
+        client.placeholder.set(interaction.applicationId, playerName);
+        modal.addComponents([new ActionRowBuilder().addComponents(textKills), new ActionRowBuilder().addComponents(textDeaths)])
         await interaction.showModal(modal)
     }
 }
