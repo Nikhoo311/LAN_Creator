@@ -93,7 +93,7 @@ module.exports = {
                 team.players.forEach(p => {
                     selectMenu.addOptions(new StringSelectMenuOptionBuilder({
                         label: p.name,
-                        value: `${p.name};${team.name}`
+                        value: `${p.name};${team.name};${match.id}`
                     }))
                 })
                 teamsSelectmenus.push(new ActionRowBuilder().addComponents(selectMenu));
