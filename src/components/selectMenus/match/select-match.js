@@ -34,9 +34,13 @@ module.exports = {
                 team.players.forEach(player => {
                     player.removeMatchStats(match.playerStats[player.id].kills, match.playerStats[player.id].deaths)
                 })
+                // team.reload(tournament);
             })
-            match.delete(tournament);
-            
+            // match.delete(tournament);
+            tournament.delete();
+            setTimeout(() => {
+                tournament.save();
+            }, 2000);          
             embedStats.fields = embedStats.fields.map(field => {
                 if (field.name === '**Nombre de match(s)**') {
                   return {

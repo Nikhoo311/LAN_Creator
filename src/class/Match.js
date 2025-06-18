@@ -180,7 +180,7 @@ class Match {
                 mapName: this.mapName,
                 winner: this.winner,
                 score: this.score,
-                stats: playersStatsObj,
+                playerStats: playersStatsObj,
                 playedAt: this.playedAt
             }
 
@@ -242,7 +242,7 @@ class Match {
         const score1 = scores[0];
         const score2 = scores[1];
         
-        return new Match(teams[0], teams[1], mapName, id, score1, score2, jsonObject.stats, winner, playedAt);
+        return new Match(teams[0], teams[1], mapName, id, score1, score2, jsonObject.playerStats, winner, playedAt);
     }
 
     static getFile() {

@@ -55,7 +55,12 @@ module.exports = {
                 }
             }
         });
-        // tournament.delete();
-        // tournament.save();
+        tournament.delete();
+        const temp = match.teams;
+        match.teams = [match.teams[0].id, match.teams[1].id];
+        setTimeout(() => {
+            tournament.save();
+            match.teams = temp;
+        }, 2000);
     }
 }
