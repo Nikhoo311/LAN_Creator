@@ -59,7 +59,7 @@
                     "team_a": 0,
                     "team_b": 0
                 },
-                "stats": {
+                "playerStats": {
                     "": {
                         "kills": 0,
                         "deaths": 0

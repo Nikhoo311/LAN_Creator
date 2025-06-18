@@ -34,7 +34,7 @@ module.exports = {
                     .setValue(`${map};${tournament.id}`)
                 )
             });
-            message += `Merci de choisir la map sur laquelle se déroulera le match\n\n-# Message ID : ${interaction.message.id}`
+            message += ` Merci de choisir la map sur laquelle se déroulera le match\n\n-# Message ID : ${interaction.message.id}`
             await interaction.editReply({ content: message, components: [new ActionRowBuilder().addComponents(selectMapForMatch)] });
         } 
         else {
