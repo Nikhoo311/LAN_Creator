@@ -30,8 +30,13 @@ module.exports = {
 
         if(isNaN(Number(numKills)) || isNaN(Number(numDeaths))) {
             const message = await interaction.channel.messages.fetch(interaction.message.id);
-            await message.edit({ components: resetCompontent(message.components)})
+            await message.edit({ components: resetCompontent(message.components)});
             return await interaction.reply({ content: "❌ Erreur de saisie... Merci de saisir uniquement des nombres.", flags: [MessageFlags.Ephemeral] });
+        }
+        if(Number(numKills) < 0 || Number(numDeaths) < 0) {
+            const message = await interaction.channel.messages.fetch(interaction.message.id);
+            await message.edit({ components: resetCompontent(message.components)});
+            return await interaction.reply({ content: "❌ Erreur de saisie... Merci de saisir des nombres strictement positifs.", flags: [MessageFlags.Ephemeral] })
         }
 
         const playerName = placeholder.get(interaction.applicationId);
