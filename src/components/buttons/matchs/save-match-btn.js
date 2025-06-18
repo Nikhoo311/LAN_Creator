@@ -62,5 +62,8 @@ module.exports = {
             tournament.save();
             match.teams = temp;
         }, 2000);
+
+        const message = `# Espace de modification des statistiques des Matchs du tournois \`${tournament.name}\`\n-# Message ID : ${interaction.message.id}\nCet espace est dédié a la modification des statitiques des joueurs durant les Matchs d'un Tournois. Les statistiques seront modifier en temps réel et consultable par tous les joueurs soit par commande, soit dans les salons vocaux de leur équipe.\n\n# Informations\n\`\`\`diff\n+ Le Match a bien été sauvegarder avec succès.\n\`\`\``
+        await interaction.update({ content: message, components: [] })
     }
 }
