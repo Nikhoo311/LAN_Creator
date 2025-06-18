@@ -48,8 +48,7 @@ module.exports = {
                     const player = teamMatch.getPlayerById(generateSlug(displayName));
 
                     const p = teamTournament.getPlayerById(generateSlug(displayName));
-                    
-                    
+
                     match.addPlayerStats(player, Number(kills), Number(deaths));
                     p.addMatchStats(Number(kills), Number(deaths));
                     

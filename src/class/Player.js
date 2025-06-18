@@ -12,6 +12,10 @@ class Player {
         this.totalKills += kills;
         this.totalDeaths += deaths;
     }
+    removeMatchStats(kills, deaths) {
+        this.totalKills -= kills;
+        this.totalDeaths -= deaths;
+    }
 
     getTotalStats() {
         return {

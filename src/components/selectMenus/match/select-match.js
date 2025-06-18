@@ -30,6 +30,11 @@ module.exports = {
         
         if (interaction.customId == "select-suppr-match") {
             tournament.matches = tournament.matches.filter(match => match.id != info);
+            tournament.teams.forEach(team => {
+                team.players.forEach(player => {
+                    player.removeMatchStats(match.playerStats[player.id].kills, match.playerStats[player.id].deaths)
+                })
+            })
             match.delete(tournament);
             
             embedStats.fields = embedStats.fields.map(field => {
