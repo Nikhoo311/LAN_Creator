@@ -16,28 +16,43 @@ function generateID() {
 
 class Match {
     static #file = "./config/tournament.json";
-    constructor(team1, team2, mapName, id = null, score1 = null, score2 = null, playerStats = null, start = null) {
-        this.id = id !== null ? id : generateID();
-        this.teams = [team1, team2]
+    constructor(team1, team2, mapName, id = null, score1 = null, score2 = null, playerStats = null, winner = null, start = null) {
+        this.id = id ?? generateID();
+        this.teams = [team1, team2];
         this.mapName = mapName;
-        this.score1 = score1 !== null ? score1 : 0;
-        this.score2 = score2 !== null ? score2 : 0;
-        this.playerStats = playerStats !== null ? playerStats : {};
-        this.playedAt = start !== null ? start : Math.floor(Date.now() / 1000);
-        this.winner = null;
-        
+
+        if (score1 !== null && score2 !== null) {
+            this.score = {
+                [this.teams[0].id]: score1,
+                [this.teams[1].id]: score2
+            };
+        } else {
+            this.score = {};
+        }
+
+        this.playerStats = playerStats ?? {};
+        this.playedAt = start ?? Math.floor(Date.now() / 1000);
+        this.winner = winner ?? null;
     }
 
     updateScore(score1, score2) {
-        this.score1 = score1;
-        this.score2 = score2;
+        this.score[this.teams[0].id] = score1;
+        this.score[this.teams[1].id] = score2;
+        
     }
 
     addPlayerStats(player, kills, deaths) {
-        this.playerStats[player.id] = { name: player.name, kills, deaths };
+        this.playerStats[player.id] = { kills, deaths };
         player.addMatchStats(kills, deaths);
     }
     
+    getTeamById(teamId) {
+        return this.teams.find(team => team.id == teamId);
+    }
+
+    setWinner(team) {
+        this.winner = team;
+    }
     // getMatchStats() {
     //     return {
     //         map: this.mapName,
@@ -64,7 +79,7 @@ class Match {
 
         // Score
         ctx.font = 'bold 26px Arial';
-        ctx.fillText(`${this.teams[0].name}   ${this.score1} - ${this.score2}   ${this.teams[1].name}`, width / 2, 80);
+        ctx.fillText(`${this.teams[0].name}   ${this.score[this.teams[0].id]} - ${this.score[this.teams[1].id]}   ${this.teams[1].name}`, width / 2, 80);
 
         // Titre des stats
         ctx.font = 'bold 20px Arial';
@@ -154,10 +169,6 @@ class Match {
             this.teams.forEach(team => {
                 teamsID.push(team.id);
             });
-            
-            let scoreTeam = {};
-            if (this.teams[0]) scoreTeam[this.teams[0].id] = this.score1;
-            if (this.teams[1]) scoreTeam[this.teams[1].id] = this.score2;
 
             let playersStatsObj = {};
             for (const playerName in this.playerStats) {
@@ -168,8 +179,8 @@ class Match {
                 id: this.id,
                 teams: teamsID,
                 mapName: this.mapName,
-                winner: null, // Modifier pour mettre le winner => faire methode
-                score: scoreTeam,
+                winner: this.winner,
+                score: this.score,
                 stats: playersStatsObj,
                 playedAt: this.playedAt
             }
@@ -232,7 +243,7 @@ class Match {
         const score1 = scores[0];
         const score2 = scores[1];
         
-        return new Match(teams[0], teams[1], mapName, id, score1, score2, jsonObject.stats, playedAt);
+        return new Match(teams[0], teams[1], mapName, id, score1, score2, jsonObject.stats, winner, playedAt);
     }
 
     static getFile() {

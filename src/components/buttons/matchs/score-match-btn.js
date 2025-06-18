@@ -7,7 +7,8 @@ module.exports = {
     async execute(interaction, client) {
         const embedStats = interaction.message.embeds[0];
         let teamsName = [];
-        embedStats.data.fields.slice(1).forEach(field => {
+        embedStats.data.fields.forEach(field => {
+            if (field.name == "**Map**") return;
             const lines = field.value.split('\n');
             const firstLine = lines[0].replace(/^>\s?/, '');
             teamsName.push(firstLine);

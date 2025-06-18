@@ -17,6 +17,10 @@ class Team {
         this.voiceChannel = voiceChannel !== null ? voiceChannel : ""
     }
 
+    getPlayerById(playerId) {
+        return this.players.find(p => p.id == playerId);
+    }
+
     addPlayer(player) {
         this.players.push(player);
     }

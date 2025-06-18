@@ -50,8 +50,8 @@ module.exports = {
         else {
             const embedMatch = new EmbedBuilder()
                 .setColor(color.green)
-                .setDescription(`# Score : ${match.score1} - ${match.score2}`)
-                .setFooter({ text: `ID : ${match.id} `})
+                .setDescription(`# Score : ${match.score[match.teams[0].id]} - ${match.score[match.teams[1].id]}`)
+                .setFooter({ text: `ID : ${match.id} | ${tournament.id}`})
             
             match.mapName ? embedMatch.addFields({ name: "**Map**", value: `> 🗺️ ${match.mapName}`, inline: false }) : null;
 
@@ -75,7 +75,7 @@ module.exports = {
                 .setStyle(ButtonStyle.Secondary)
 
             const saveMatchScoreBtn = new ButtonBuilder()
-                .setCustomId("save-match-score-btn")
+                .setCustomId("save-match-btn")
                 .setLabel("Sauvegarder")
                 .setEmoji("💾")
                 .setStyle(ButtonStyle.Success)
