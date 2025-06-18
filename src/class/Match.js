@@ -38,7 +38,6 @@ class Match {
     updateScore(score1, score2) {
         this.score[this.teams[0].id] = score1;
         this.score[this.teams[1].id] = score2;
-        
     }
 
     addPlayerStats(player, kills, deaths) {

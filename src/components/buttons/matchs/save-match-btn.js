@@ -56,11 +56,6 @@ module.exports = {
                 }
             }
         });
-        console.log(match);
-        
-        console.log("----------------");
-        console.log(tournament.teams[0]);
-        console.log("----------------qsdkqlsdjlkqdlqkjsdklj");
         // tournament.delete();
         // tournament.save();
     }
