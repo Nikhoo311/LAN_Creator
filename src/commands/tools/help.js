@@ -4,6 +4,7 @@ const { color } = require('../../../config/config.json');
 module.exports = {
     name: "help",
     categorie: "Utilitaires",
+    active: true,
     data: new SlashCommandBuilder()
         .setName("help")
         .setDescription('Permet d\'afficher les commandes disponibles !'),

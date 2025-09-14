@@ -5,6 +5,7 @@ const os = require('os');
 module.exports = {
     name: "tournament",
     categorie: "LAN",
+    active: false,
     data: new SlashCommandBuilder()
         .setName("tournament")
         .setDescription('Permet gérer les tounois'),

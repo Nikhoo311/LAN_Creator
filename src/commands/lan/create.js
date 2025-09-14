@@ -3,6 +3,7 @@ const { SlashCommandBuilder, ButtonBuilder, ButtonStyle, ActionRowBuilder, Messa
 module.exports = {
     name: "create",
     categorie: "LAN",
+    active: true,
     data: new SlashCommandBuilder()
         .setName("create")
         .setDescription('Permet de créer une LAN'),

@@ -20,10 +20,9 @@ module.exports = (client) => {
             for (const file of commandFiles) {
                 const filePath = path.join(folderPath, file);
                 const command = require(filePath);
-
+                if (!command.active) { continue; }
                 commands.set(command.data.name, command);
                 commandArray.push(command.data.toJSON());
-
                 logger.command(`[${folder}] ${command.data.name} est chargée avec succès !`);
             }
         }

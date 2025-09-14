@@ -3,6 +3,7 @@ const { MessageFlags, SlashCommandBuilder } = require("discord.js");
 module.exports = {
     name: "ping",
     categorie: "Utilitaires",
+    active: true,
     data: new SlashCommandBuilder()
         .setName("ping")
         .setDescription('Permet d\'afficher le ping du bot !'),

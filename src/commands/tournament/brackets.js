@@ -7,6 +7,7 @@ const { Match } = require("../../class/Match");
 module.exports = {
     name: "brackets",
     categorie: "Utilitaires",
+    active: false,
     data: new SlashCommandBuilder()
         .setName("brackets")
         .setDescription('Permet d\'afficher les brackets d\'un tournois'),
