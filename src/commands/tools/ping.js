@@ -17,9 +17,9 @@ module.exports = {
         const wsPingDisplay = wsPing === -1 ? 'Non disponible' : `${wsPing}ms`;
 
         const getSignalEmoji = (ping) => {
-            if (ping <= 20) return '<:signalbar_green:1379563339868405960>';
-            if (ping <= 70) return '<:signalbar_yellow:1379563467261874256>';
-            if (ping <= 170) return '<:signalbar_orange:1379563394105081958>';
+            if (ping <= 150) return '<:signalbar_green:1379563339868405960>';
+            if (ping <= 250) return '<:signalbar_yellow:1379563467261874256>';
+            if (ping <= 400) return '<:signalbar_orange:1379563394105081958>';
             return '<:signalbar_red:1379563519195742228>';
         };
 
