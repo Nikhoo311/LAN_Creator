@@ -18,7 +18,7 @@ module.exports = {
         const textGoogleSheet = new TextInputBuilder()
             .setCustomId("lan_google_sheet")
             .setLabel("Quel est le Google Sheet de la LAN ?")
-            .setRequired(true)
+            .setRequired(false)
             .setStyle(TextInputStyle.Short);
 
         const textNbVoc = new TextInputBuilder()
