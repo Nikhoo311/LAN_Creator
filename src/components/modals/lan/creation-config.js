@@ -1,5 +1,6 @@
 const { readFileSync, writeFile } = require("fs");
 const { MessageFlags } = require('discord.js');
+const Config = require('../../../schemas/config');
 
 module.exports = {
     data: {
@@ -9,7 +10,7 @@ module.exports = {
         const configName = interaction.fields.getTextInputValue("config_name");
         const configAdress = interaction.fields.getTextInputValue('config_adress');
         const configHours = interaction.fields.getTextInputValue("config_hours");
-        const configMaterials = interaction.fields.getTextInputValue("config_material") || "Aucun";
+        const configMaterials = interaction.fields.getTextInputValue("config_material") || null;
         
         const file = JSON.parse(readFileSync("./config/bd.json", "utf-8"));
         
@@ -32,8 +33,11 @@ module.exports = {
         })
         // Write in the data base
         try {
-            writeFile('./config/bd.json', JSON.stringify(file, null, 4), err => {
-                if (err) throw new Error("/!\\ Error: Something wrong when we write in the 'bd.json'")
+            await Config.create({
+                name: configName,
+                adress: configAdress,
+                hours: configHours,
+                materials: configMaterials ?? "Aucun",      
             })
             interaction.reply({ content: `✅ La configuration \`${configName}\` à bien été créer avec succès !`, flags: [MessageFlags.Ephemeral]})
             
