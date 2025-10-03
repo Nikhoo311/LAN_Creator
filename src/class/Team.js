@@ -17,6 +17,10 @@ class Team {
         this.voiceChannel = voiceChannel !== null ? voiceChannel : ""
     }
 
+    getPlayerById(playerId) {
+        return this.players.find(p => p.id == playerId);
+    }
+
     addPlayer(player) {
         this.players.push(player);
     }
@@ -32,32 +36,27 @@ class Team {
     /**
     * Save a Team in a file
     */
-    save(tournament) {
-    //     try {
-    //         let playersID = []
-    //         this.players.forEach(player => {
-    //             playersID.push(player.id);
-    //         });
-    //         let obj = {
-    //             id: this.id,
-    //             name: this.name,
-    //             players: playersID
-    //         }
-    //         console.log(Team.#file);
-            
-    //         const tournamentSaveFile = Team.getFile()
-    //         tournamentSaveFile.forEach(tourn => {
-    //             if (tourn.lanId == tournament.lanId) {
-    //                 tourn.teams.push(obj);
-    //             }
-    //         })
-           
-    //         writeFile(Team.#file, JSON.stringify(tournamentSaveFile, null, 4), err => {
-    //             if (err) throw new Error("/!\\ Error: Something wrong when we write in the 'lans.json'")
-    //         })  
-    //    } catch (error) {
-    //         console.error(error)
-    //    }
+    reload(tournament) {
+        try {
+            const tournamentSaveFile = Team.getFile();
+
+            const targetTournament = tournamentSaveFile.find(t => t.id === tournament.id);
+            if (!targetTournament) throw new Error('Tournoi introuvable');
+
+            const originalLength = targetTournament.teams.length;
+            targetTournament.teams = targetTournament.teams.filter(team => team.id !== this.id);
+
+            if (originalLength === targetTournament.teams.length) {
+                logger.warn(`Aucune team avec l'ID ${this.id} trouvé dans ce tournoi.`);
+            }
+            targetTournament.teams.push(this);
+
+            writeFile(Team.#file, JSON.stringify(tournamentSaveFile, null, 4), err => {
+                if (err) throw new Error("/!\\ Erreur : Impossible d'écrire dans le fichier tournament.json");
+            });
+        } catch (error) {
+            console.error("Erreur dans Team.delete :", error.message);
+        }
     }
 
     /**

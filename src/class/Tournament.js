@@ -39,6 +39,10 @@ class Tournament {
         }
         this.teams.push(team);
     }
+    
+    getTeamById(teamId) {
+        return this.teams.find(team => team.id == teamId);
+    }
 
     addMatch(match) {
         this.matches.push(match);
@@ -253,6 +257,10 @@ class Tournament {
         } catch (error) {
             console.error(error)
         }
+    }
+
+    getMatchById(matchId) {
+        return this.matches.find(match => match.id == matchId);
     }
 }
 
