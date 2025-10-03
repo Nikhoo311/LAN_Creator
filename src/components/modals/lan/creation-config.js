@@ -1,6 +1,7 @@
 const { readFileSync, writeFile } = require("fs");
 const { MessageFlags } = require('discord.js');
 const Config = require('../../../schemas/config');
+const { encrypt } = require("../../../functions/utils/crypt");
 
 module.exports = {
     data: {
@@ -23,7 +24,7 @@ module.exports = {
             }
             await Config.create({
                 name: configName,
-                adress: configAdress,
+                adress: encrypt(configAdress, process.env.TOKEN),
                 hours: configHours,
                 materials: configMaterials ?? "Aucun",      
             });

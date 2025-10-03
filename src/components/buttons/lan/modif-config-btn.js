@@ -7,10 +7,13 @@ module.exports = {
         name: "modif-config-btn"
     },
     async execute (interaction, client) {
+        const configs = await Config.find();
+        if (configs.length === 0) {
+            return interaction.reply({ content: `❌ Vous ne pouvez pas modifier une configuration s'il n'y existe aucune dans la base de données... `, flags: [MessageFlags.Ephemeral] })
+        }
         
         const message = `# Modification de configuration\nSi tu veux, modifier une configuration de LAN, il suffit juste de sélection le nom de la configuration de laquelle tu veux effectuer les modifications !\nFait ton choix ! 😉`
 
-        const configs = await Config.find();
         let sConfig = configs.length > 1 ? "(s)" : "";
         const namesInBD = configs.map(lan => `* **${lan.name}**`).join("\n")
 

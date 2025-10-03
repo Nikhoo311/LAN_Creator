@@ -1,6 +1,7 @@
 const { TextInputBuilder, TextInputStyle, ModalBuilder, ActionRowBuilder } = require("discord.js");
 const { color } = require("../../../../config/config.json");
 const Config = require('../../../schemas/config');
+const { decrypt } = require("../../../functions/utils/crypt");
 
 module.exports = {
     data: {
@@ -29,7 +30,7 @@ module.exports = {
             .setRequired(true)
             .setStyle(TextInputStyle.Short)
             .setPlaceholder("999 rue des champignons braisé - 05125 La Forêt")
-            .setValue(config.adress)
+            .setValue(decrypt(config.adress, process.env.TOKEN))
 
         const textHours = new TextInputBuilder()
             .setCustomId("config_hours")
