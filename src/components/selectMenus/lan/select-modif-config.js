@@ -1,6 +1,6 @@
-const { readFileSync } = require("fs");
 const { TextInputBuilder, TextInputStyle, ModalBuilder, ActionRowBuilder } = require("discord.js");
 const { color } = require("../../../../config/config.json");
+const Config = require('../../../schemas/config');
 
 module.exports = {
     data: {
@@ -8,20 +8,8 @@ module.exports = {
     },
     async execute(interaction, client) {
         const info = interaction.values[0]
-        // Get the data base
-        const file = JSON.parse(readFileSync("./config/bd.json", "utf-8"))["bd"];
 
-        function getInfoConfig(name) {
-            let result;
-            file.forEach(element => {
-                if (element.name == name) {
-                    result = element
-                }
-            });
-            return result;
-        }
-
-        const config = getInfoConfig(info)
+        const config = await Config.findOne({name: info});
         
         const modal = new ModalBuilder()
             .setCustomId("modif-config")
