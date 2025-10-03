@@ -1,7 +1,7 @@
 require('dotenv').config();
-const { TOKEN } = process.env;
+const { TOKEN, DB_URL } = process.env;
 const { Client, Collection } = require('discord.js');
-
+const { connect } = require("mongoose")
 const { readdirSync } = require("fs");
 
 const client = new Client({ intents: 3276799 });
@@ -26,3 +26,6 @@ client.handleEvents();
 client.handleCommands();
 client.handleComponents();
 client.login(TOKEN);
+(async () => {
+    await connect(DB_URL, { maxPoolSize: 5 }).catch(console.error)
+})()
