@@ -19,11 +19,11 @@ function deriveKey(password) {
   return crypto.scryptSync(password, salt, KEY_LENGTH);
 }
 
-function encrypt(address, password) {
+function encrypt(str, password) {
   const key = deriveKey(password);
   const iv = crypto.randomBytes(IV_LENGTH);
   const cipher = crypto.createCipheriv('aes-128-gcm', key, iv, { authTagLength: TAG_LENGTH });
-  const ciphertext = Buffer.concat([cipher.update(address, 'utf8'), cipher.final()]);
+  const ciphertext = Buffer.concat([cipher.update(str, 'utf8'), cipher.final()]);
   const tag = cipher.getAuthTag();
   return base64urlEncode(Buffer.concat([iv, tag, ciphertext]));
 }
