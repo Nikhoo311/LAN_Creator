@@ -1,8 +1,12 @@
 const { PermissionFlagsBits, EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle, ChannelType, MessageFlags } = require("discord.js");
 const { color } = require('../../../../config/config.json');
 const { readFileSync } = require("fs");
-const { getGoogleMapsLink } = require("../../../functions/utils/getLinkAdress.js");
+const { getGoogleMapsLink } = require("../../../functions/utils/getLinkaddress.js");
 const { Lan } = require("../../../class/Lan.js")
+const Config = require('../../../schemas/config.js');
+const LanModel = require("../../../schemas/lan.js");
+const { decrypt } = require("../../../functions/utils/crypt.js");
+
 module.exports = {
     data: {
         name: "lan_create"
@@ -13,21 +17,9 @@ module.exports = {
         const nbVocaux = Number(interaction.fields.getTextInputValue("lan_nb_voc")) || 1
         const guild = interaction.guild;
         
-        const file = JSON.parse(readFileSync("./config/bd.json", "utf-8"));
         const configFile = JSON.parse(readFileSync("./config/choose-config.json", "utf-8"));
-        
-        function getInfoConfig(name) {
-            let result;
-            file["bd"].forEach(element => {
-                if (element.name == name) {
-                    result = element
-                }
-            });
-            return result;
-        }
+        const config = await Config.findOne({ name: configFile["config_chosen"] })
 
-        const configChosen = getInfoConfig(configFile["config_chosen"])
-        
         if (nbVocaux > 5 || nbVocaux < 1) {
             return interaction.reply({content: "❌ Veuillez saisir un nombre entre 1 et 5", flags: [MessageFlags.Ephemeral] })
         }
@@ -38,7 +30,7 @@ module.exports = {
         
         try {
             await interaction.deferReply({
-                fetchReply: true,
+                withResponse: true,
                 flags: [MessageFlags.Ephemeral]
             });
             const category = await guild.channels.create({
@@ -93,13 +85,13 @@ module.exports = {
                 .setDescription(`🔍 **__Informations :__**\nVoici toutes les infomations principales pour la **${nameLAN}**`)
                 .addFields([
                     {
-                        name: "📌 **__Lieu :__**", value: configChosen.adress, inline: true
+                        name: "📌 **__Lieu :__**", value: decrypt(config.address, process.env.TOKEN), inline: true
                     },
                     {
-                        name: "🧭 **__Horaire :__**", value: configChosen.hours , inline: true
+                        name: "🧭 **__Horaire :__**", value: config.hours , inline: true
                     },
                     {
-                        name: "🎮 **__Matériel :__**", value: configChosen.materials
+                        name: "🎮 **__Matériel :__**", value: config.materials
                     }
                 ])
                 .setTimestamp()
@@ -109,10 +101,10 @@ module.exports = {
                 .setDescription(descriptionEmbed)
                 .setTimestamp()
             
-            const btnAdress = new ButtonBuilder()
-                .setLabel("Adresse Google Maps")
+            const btnaddress = new ButtonBuilder()
+                .setLabel("addresse Google Maps")
                 .setStyle(ButtonStyle.Link)
-                .setURL(getGoogleMapsLink(configChosen.adress))
+                .setURL(getGoogleMapsLink(decrypt(config.address, process.env.TOKEN)))
 
             const btnGoogleSheet = googlesheetLink ? new ButtonBuilder()
                 .setLabel("Google Sheet")
@@ -122,22 +114,28 @@ module.exports = {
             
             // Creation d'un objet LAN
             let channelsObject = {category: category.id, general: general.id, information: informationChannel.id, picture: picture.id, logistique: logistiqueChannel.id, voice: vcChannels}
-            const lan = new Lan(nameLAN, channelsObject, configChosen)
-
+            const obj = await LanModel.create({
+                name: nameLAN,
+                config: config._id,
+                channels: channelsObject,
+                startedAt: new Date(),
+                endedAt: null,
+            })
+            const lan = new Lan(nameLAN, channelsObject, config, Math.floor(obj.startedAt / 1000), null, obj._id)
             const btnGoogleAgenda = new ButtonBuilder()
                 .setLabel("Rappel Google Agenda")
                 .setStyle(ButtonStyle.Link)
                 .setURL(lan.getAgendaLink())
 
-            informationChannel.send({ embeds: [informationEmbed], components: [ new ActionRowBuilder().addComponents(btnAdress).addComponents(btnGoogleAgenda) ] }).then(msg => msg.pin())
+            informationChannel.send({ embeds: [informationEmbed], components: [ new ActionRowBuilder().addComponents(btnaddress).addComponents(btnGoogleAgenda) ] }).then(msg => msg.pin())
             logistiqueChannel.send({ embeds: [logistiqueEmbed], components: googlesheetLink ? [ new ActionRowBuilder().addComponents(btnGoogleSheet) ] : [] }).then(msg => msg.pin())
             
             // Ajout dans une collection (a voir comment faire pour avoir les données persistantes)
             await client.lans.set(lan.id, lan)
             
             interaction.editReply({content: `✅ **${nameLAN}** a bien été créée !`, flags: [MessageFlags.Ephemeral]})
-            lan.save()
         } catch (error) {
+            console.error(error)
             interaction.editReply({ content: "❌ Une erreur est arrivé !\n\n" + error, flags: [MessageFlags.Ephemeral] })
         }
     }
