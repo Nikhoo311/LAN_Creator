@@ -10,7 +10,6 @@ class Lan {
      * @param {object} config
      * @param {number} start
      */
-    static #file = "./config/lans.json";
     constructor(name, channels, config, start = null, end = null, id = null) {
         this.id = id;
         this.name = name;
@@ -45,8 +44,8 @@ class Lan {
             return uri.toString();
         };
 
-        let description = `On se donne rendez-vous pour la ${this.name} !\n\nAdresse : ${decrypt(this.config.adress, process.env.TOKEN)}`
-        return getUrl(this.name, description, decrypt(this.config.adress, process.env.TOKEN), dayjs(this.startedAt * 1000).format('YYYYMMDDTHHmmss'), dayjs(this.endedAt * 1000).format('YYYYMMDDTHHmmss'))
+        let description = `On se donne rendez-vous pour la ${this.name} !\n\naddresse : ${decrypt(this.config.address, process.env.TOKEN)}`
+        return getUrl(this.name, description, decrypt(this.config.address, process.env.TOKEN), dayjs(this.startedAt * 1000).format('YYYYMMDDTHHmmss'), dayjs(this.endedAt * 1000).format('YYYYMMDDTHHmmss'))
     }
 }
 

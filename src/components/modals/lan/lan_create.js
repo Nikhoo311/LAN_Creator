@@ -1,7 +1,7 @@
 const { PermissionFlagsBits, EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle, ChannelType, MessageFlags } = require("discord.js");
 const { color } = require('../../../../config/config.json');
 const { readFileSync } = require("fs");
-const { getGoogleMapsLink } = require("../../../functions/utils/getLinkAdress.js");
+const { getGoogleMapsLink } = require("../../../functions/utils/getLinkaddress.js");
 const { Lan } = require("../../../class/Lan.js")
 const Config = require('../../../schemas/config.js');
 const LanModel = require("../../../schemas/lan.js");
@@ -85,7 +85,7 @@ module.exports = {
                 .setDescription(`🔍 **__Informations :__**\nVoici toutes les infomations principales pour la **${nameLAN}**`)
                 .addFields([
                     {
-                        name: "📌 **__Lieu :__**", value: decrypt(config.adress, process.env.TOKEN), inline: true
+                        name: "📌 **__Lieu :__**", value: decrypt(config.address, process.env.TOKEN), inline: true
                     },
                     {
                         name: "🧭 **__Horaire :__**", value: config.hours , inline: true
@@ -101,10 +101,10 @@ module.exports = {
                 .setDescription(descriptionEmbed)
                 .setTimestamp()
             
-            const btnAdress = new ButtonBuilder()
-                .setLabel("Adresse Google Maps")
+            const btnaddress = new ButtonBuilder()
+                .setLabel("addresse Google Maps")
                 .setStyle(ButtonStyle.Link)
-                .setURL(getGoogleMapsLink(decrypt(config.adress, process.env.TOKEN)))
+                .setURL(getGoogleMapsLink(decrypt(config.address, process.env.TOKEN)))
 
             const btnGoogleSheet = googlesheetLink ? new ButtonBuilder()
                 .setLabel("Google Sheet")
@@ -127,7 +127,7 @@ module.exports = {
                 .setStyle(ButtonStyle.Link)
                 .setURL(lan.getAgendaLink())
 
-            informationChannel.send({ embeds: [informationEmbed], components: [ new ActionRowBuilder().addComponents(btnAdress).addComponents(btnGoogleAgenda) ] }).then(msg => msg.pin())
+            informationChannel.send({ embeds: [informationEmbed], components: [ new ActionRowBuilder().addComponents(btnaddress).addComponents(btnGoogleAgenda) ] }).then(msg => msg.pin())
             logistiqueChannel.send({ embeds: [logistiqueEmbed], components: googlesheetLink ? [ new ActionRowBuilder().addComponents(btnGoogleSheet) ] : [] }).then(msg => msg.pin())
             
             // Ajout dans une collection (a voir comment faire pour avoir les données persistantes)

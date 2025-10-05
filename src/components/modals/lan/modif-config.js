@@ -8,7 +8,7 @@ module.exports = {
     },
     async execute(interaction, client) {
         const configName = interaction.fields.getTextInputValue("config_name");
-        const configAdress = interaction.fields.getTextInputValue("config_adress");
+        const configaddress = interaction.fields.getTextInputValue("config_address");
         const configHours = interaction.fields.getTextInputValue("config_hours");
         const configMaterials = interaction.fields.getTextInputValue("config_material") || "Aucun";
         
@@ -19,7 +19,7 @@ module.exports = {
                 { name: placeholder },
                 {
                     name: configName,
-                    adress: encrypt(configAdress, process.env.TOKEN),
+                    address: encrypt(configaddress, process.env.TOKEN),
                     hours: configHours,
                     materials: configMaterials,
                     updatedAt: new Date()

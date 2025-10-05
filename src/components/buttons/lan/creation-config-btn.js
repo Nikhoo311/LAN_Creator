@@ -15,9 +15,9 @@ module.exports = {
             .setRequired(true)
             .setStyle(TextInputStyle.Short);
         
-        const textAdress = new TextInputBuilder()
-            .setCustomId("config_adress")
-            .setLabel("Quelle est l'adresse de la LAN ?")
+        const textaddress = new TextInputBuilder()
+            .setCustomId("config_address")
+            .setLabel("Quelle est l'addresse de la LAN ?")
             .setRequired(true)
             .setStyle(TextInputStyle.Short)
             .setPlaceholder("999 rue des champignons braisé - 05125 La Forêt")
@@ -37,7 +37,7 @@ module.exports = {
             .setStyle(TextInputStyle.Paragraph)
             .setMaxLength(1500);
 
-        modal.addComponents([new ActionRowBuilder().addComponents(textInput), new ActionRowBuilder().addComponents(textAdress), new ActionRowBuilder().addComponents(textHours), new ActionRowBuilder().addComponents(textMaterial)])
+        modal.addComponents([new ActionRowBuilder().addComponents(textInput), new ActionRowBuilder().addComponents(textaddress), new ActionRowBuilder().addComponents(textHours), new ActionRowBuilder().addComponents(textMaterial)])
         await interaction.showModal(modal)
     }
 }
