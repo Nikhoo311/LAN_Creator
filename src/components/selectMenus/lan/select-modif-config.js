@@ -1,6 +1,4 @@
-const { TextInputBuilder, TextInputStyle, ModalBuilder, ActionRowBuilder } = require("discord.js");
-const { color } = require("../../../../config/config.json");
-const Config = require('../../../schemas/config');
+const { TextInputBuilder, TextInputStyle, ModalBuilder, LabelBuilder } = require("discord.js");
 const { decrypt } = require("../../../functions/utils/crypt");
 
 module.exports = {
@@ -18,39 +16,52 @@ module.exports = {
 
         const textInput = new TextInputBuilder()
             .setCustomId("config_name")
-            .setLabel("Quel est le nom de la configuration de LAN ?")
             .setRequired(true)
             .setStyle(TextInputStyle.Short)
             .setValue(config.name)
             .setPlaceholder(config.name)
-        
-        const textaddress = new TextInputBuilder()
+
+        const textInputLabel = new LabelBuilder()
+            .setTextInputComponent(textInput)
+            .setLabel("Quel est le nom de la configuration de LAN ?")
+
+        const textAddress = new TextInputBuilder()
             .setCustomId("config_address")
-            .setLabel("Quelle est l'addresse de la LAN ?")
             .setRequired(true)
             .setStyle(TextInputStyle.Short)
             .setPlaceholder("999 rue des champignons braisé - 05125 La Forêt")
             .setValue(decrypt(config.address, process.env.TOKEN))
 
+        const textAddressLabel = new LabelBuilder()
+            .setTextInputComponent(textAddress)
+            .setLabel("Quelle est l'addresse de la LAN ?")
+
         const textHours = new TextInputBuilder()
             .setCustomId("config_hours")
-            .setLabel("Quelle est l'heure d'arrivé de la LAN ?")
             .setRequired(true)
             .setStyle(TextInputStyle.Short)
             .setPlaceholder("19h00")
             .setValue(config.hours)
 
+        const textHoursLabel = new LabelBuilder()
+            .setTextInputComponent(textHours)
+            .setLabel("Quelle est l'heure d'arrivé de la LAN ?")
+
         const textMaterial = new TextInputBuilder()
             .setCustomId("config_material")
-            .setLabel("Quel est le matériel disponible pour la LAN ?")
             .setRequired(false)
             .setPlaceholder("Par défaut : Aucun")
             .setStyle(TextInputStyle.Paragraph)
             .setMaxLength(1500)
             .setValue(config.materials !== "Aucun" ? config.materials : "Aucun");
 
-        modal.addComponents([new ActionRowBuilder().addComponents(textInput), new ActionRowBuilder().addComponents(textaddress), new ActionRowBuilder().addComponents(textHours), new ActionRowBuilder().addComponents(textMaterial)])
-        await interaction.showModal(modal)
+        const textMaterialLabel = new LabelBuilder()
+            .setTextInputComponent(textMaterial)
+            .setLabel("Quel est le matériel disponible pour la LAN ?")
+
+        modal.addLabelComponents(textInputLabel, textAddressLabel, textHoursLabel, textMaterialLabel)
+        
         client.placeholder.set(interaction.applicationId, textInput.data.placeholder)
+        return await interaction.showModal(modal)
     }
 }
