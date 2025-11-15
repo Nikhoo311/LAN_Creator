@@ -18,7 +18,7 @@ module.exports = {
         const guild = interaction.guild;
         
         const configFile = JSON.parse(readFileSync("./config/choose-config.json", "utf-8"));
-        const config = await Config.findOne({ name: configFile["config_chosen"] })
+        const config = client.configs.get(configFile["config_chosen"]);
 
         if (nbVocaux > 5 || nbVocaux < 1) {
             return interaction.reply({content: "❌ Veuillez saisir un nombre entre 1 et 5", flags: [MessageFlags.Ephemeral] })

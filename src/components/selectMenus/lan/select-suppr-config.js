@@ -6,7 +6,7 @@ module.exports = {
     data: {
         name: "select-suppr-config"
     },
-    async execute(interaction) {
+    async execute(interaction, client) {
         const selectedNames = interaction.values;
         try {
             // Suppression de toutes les configs dont le name est dans selectedNames
@@ -21,6 +21,9 @@ module.exports = {
                 });
             }
 
+            selectedNames.forEach(conf => {
+                client.configs.delete(conf)
+            });
             const names = selectedNames.map(name => `* **${name}**`).join('\n');
 
             const embedSuppr = new EmbedBuilder()

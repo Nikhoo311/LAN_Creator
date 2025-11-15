@@ -10,7 +10,7 @@ module.exports = {
     async execute(interaction, client) {
         const info = interaction.values[0]
 
-        const config = await Config.findOne({name: info});
+        const config = client.configs.get(info);
         
         const modal = new ModalBuilder()
             .setCustomId("modif-config")
