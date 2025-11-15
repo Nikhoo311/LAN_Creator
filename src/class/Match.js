@@ -1,7 +1,6 @@
 const { createCanvas } = require('canvas');
 const { readFileSync, writeFile } = require("fs");
 const crypto = require('crypto');
-const { v4: uuidv4 } = require('uuid');
 const { Team } = require('./Team');
 const logger = require('../functions/utils/Logger');
 
