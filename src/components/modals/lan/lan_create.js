@@ -1,9 +1,7 @@
 const { PermissionFlagsBits, EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle, ChannelType, MessageFlags } = require("discord.js");
 const { color } = require('../../../../config/config.json');
-const { readFileSync } = require("fs");
 const { getGoogleMapsLink } = require("../../../functions/utils/getLinkaddress.js");
 const { Lan } = require("../../../class/Lan.js")
-const Config = require('../../../schemas/config.js');
 const LanModel = require("../../../schemas/lan.js");
 const { decrypt } = require("../../../functions/utils/crypt.js");
 
@@ -12,13 +10,11 @@ module.exports = {
         name: "lan_create"
     },
     async execute(interaction, client) {
-        const nameLAN = interaction.fields.getTextInputValue("lan_name")
+        const nameLAN = interaction.fields.getTextInputValue("lan_name");
+        const config = client.configs.get(interaction.fields.getStringSelectValues("lan_config_name")[0]);
         const googlesheetLink = interaction.fields.getTextInputValue('lan_google_sheet') || null;
         const nbVocaux = Number(interaction.fields.getTextInputValue("lan_nb_voc")) || 1
         const guild = interaction.guild;
-        
-        const configFile = JSON.parse(readFileSync("./config/choose-config.json", "utf-8"));
-        const config = client.configs.get(configFile["config_chosen"]);
 
         if (nbVocaux > 5 || nbVocaux < 1) {
             return interaction.reply({content: "❌ Veuillez saisir un nombre entre 1 et 5", flags: [MessageFlags.Ephemeral] })

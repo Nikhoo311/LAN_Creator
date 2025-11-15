@@ -1,4 +1,7 @@
-const { ModalBuilder, TextInputBuilder, TextInputStyle, LabelBuilder } = require("discord.js");
+const { ModalBuilder, TextInputBuilder, TextInputStyle, LabelBuilder, StringSelectMenuBuilder, StringSelectMenuOptionBuilder } = require("discord.js");
+const { decrypt } = require("../../../functions/utils/crypt");
+const { readFileSync } = require('fs');
+
 module.exports = {
     data: {
         name: "create-lan-btn"
@@ -16,6 +19,29 @@ module.exports = {
         const textInputLabel = new LabelBuilder()
             .setTextInputComponent(textInput)
             .setLabel("Quel est le nom de LAN ?")
+
+        
+        const chosenConfig = JSON.parse(readFileSync("./config/choose-config.json", "utf-8")).config_chosen;
+        const configName = new StringSelectMenuBuilder()    
+            .setCustomId("lan_config_name")
+            .setMinValues(1)
+            .setMaxValues(1)
+            .setPlaceholder("Choisir une configuration disponible...")
+            .setRequired(!client.configs.get(chosenConfig))
+            .setOptions(
+                client.configs.map(config => {
+                    return new StringSelectMenuOptionBuilder()
+                        .setEmoji({name: '🏠'})
+                        .setLabel(config.name)
+                        .setValue(config.name)
+                        .setDescription(decrypt(config.address, process.env.TOKEN))
+                        .setDefault(config.name == chosenConfig)
+                })
+           )
+        
+        const configNameLabel = new LabelBuilder()
+           .setStringSelectMenuComponent(configName)
+           .setLabel("Configuration de LAN utilisée :")
 
         const textGoogleSheet = new TextInputBuilder()
             .setCustomId("lan_google_sheet")
@@ -36,7 +62,7 @@ module.exports = {
             .setTextInputComponent(textNbVoc)
             .setLabel("Quel est le nombre de salons vocaux ?")
 
-        modal.addLabelComponents(textInputLabel, textGoogleSheetLabel, textNbVocLabel)
+        modal.addLabelComponents(textInputLabel, configNameLabel, textGoogleSheetLabel, textNbVocLabel)
         return await interaction.showModal(modal)
     }
 }

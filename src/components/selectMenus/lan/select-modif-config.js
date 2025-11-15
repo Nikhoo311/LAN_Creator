@@ -1,6 +1,4 @@
-const { TextInputBuilder, TextInputStyle, ModalBuilder, ActionRowBuilder, LabelBuilder } = require("discord.js");
-const { color } = require("../../../../config/config.json");
-const Config = require('../../../schemas/config');
+const { TextInputBuilder, TextInputStyle, ModalBuilder, LabelBuilder } = require("discord.js");
 const { decrypt } = require("../../../functions/utils/crypt");
 
 module.exports = {
