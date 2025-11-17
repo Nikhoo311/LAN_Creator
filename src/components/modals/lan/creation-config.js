@@ -25,13 +25,13 @@ module.exports = {
                 name: configName,
                 address: encrypt(configaddress, process.env.TOKEN),
                 hours: configHours,
-                materials: configMaterials ?? "Aucun",      
+                materials: configMaterials ?? "Aucun",
             });
 
             client.configs.set(createdConfig.name, createdConfig);
 
             interaction.reply({ 
-                content: `✅ La configuration \`${configName}\` a bien été créée avec succès !`, 
+                content: `✅ La configuration \`${configName}\` a bien été créée avec succès !\n# Informations\n* Pour modifier les salons créer lors de la création d'une LAN, cliquez sur le bouton \`Modifier\`.\n* Les salons ${createdConfig.channels.map(ch => `**${ch.name}**`).join(", ")} ont été créés par défaut.`, 
                 flags: [MessageFlags.Ephemeral]
             });
             
