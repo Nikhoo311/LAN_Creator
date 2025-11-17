@@ -1,4 +1,4 @@
-const { MessageFlags } = require("discord.js");
+const { EmbedBuilder } = require("discord.js");
 
 module.exports = {
     data: {
@@ -6,41 +6,43 @@ module.exports = {
         multi: "select-modif-status-channel-desactive"
     },
     async execute(interaction, client) {
-        const channelsNames = interaction.values
+        const channelsNames = interaction.values;
+
+        const placeholder = client.placeholder.get(interaction.applicationId);
+        let currentConfig = client.configs.get(placeholder);
+
+        currentConfig.channels = currentConfig.channels.map(ch => {
+            if (!channelsNames.includes(ch.name)) return ch;
+
+            return {
+                ...ch,
+                active: interaction.customId === "select-modif-status-channel-active"
+            };
+        });
+        client.configs.set(currentConfig.name, currentConfig);
         
-        try {
-            const updatedConfig = await Config.findOneAndUpdate(
-                { name: placeholder },
-                {
-                    name: configName,
-                    address: encrypt(configaddress, process.env.TOKEN),
-                    hours: configHours,
-                    materials: configMaterials,
-                    updatedAt: new Date()
-                },
-                { new: true }
-            );
+        let rawConfigChannels = interaction.message.embeds[1].description.split("\n");
+        channelsNames.forEach(chName => {
+            // Trouver la ligne correspondant à ce channel
+            const index = rawConfigChannels.findIndex(line => line.includes(chName));
+        
+            if (index === -1) return;
+        
+            let newLine = "";
+        
+            // Déterminer le nouvel emoji
+            const newEmoji = interaction.customId === "select-modif-status-channel-active"
+                ? "<:switch_enabled:1379563207760548022>"
+                : "<:switch_disabled:1379563278681772144>";
+        
+            newLine = `### ${newEmoji} ${chName}`;
+        
+            rawConfigChannels[index] = newLine;
 
-            if (!updatedConfig) {
-                return interaction.update({ 
-                    content: `❌ Impossible de trouver une configuration nommée \`${placeholder}\`.`, 
-                    embeds: [], 
-                    components: [], 
-                    flags: [MessageFlags.Ephemeral] 
-                });
-            }
-            client.configs.delete(placeholder);
-            client.configs.set(updatedConfig.name, updatedConfig);
+        });
+        const updateEmbed = new EmbedBuilder(interaction.message.embeds[1].data)
+            .setDescription(rawConfigChannels.join('\n'));
 
-            interaction.update({ content: `✅ La configuration \`${placeholder}\` a bien été modifiée en \`${configName}\` avec succès !`, embeds: [configUpdateEmbed, configChannelsUpdateEmbed], components: [], flags: [MessageFlags.Ephemeral] });
-
-        } catch (error) {
-            console.error(error);
-            interaction.reply({ 
-                content: "❌ Une erreur est survenue lors de la mise à jour de la configuration !", 
-                flags: [MessageFlags.Ephemeral] 
-            });
-        }
-        client.placeholder.delete(interaction.applicationId);
+        return interaction.update({ embeds: [interaction.message.embeds[0], updateEmbed] })
     }
 }
