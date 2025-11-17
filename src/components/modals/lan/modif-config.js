@@ -57,7 +57,13 @@ module.exports = {
             )
             .setFooter({text: `${currentConfig.channels.length} salon${currentConfig.channels.length > 1 ? "s" : ""}`});
 
-        let components = [];
+        const createChannel = new ButtonBuilder()
+            .setCustomId("create-config-channel")
+            .setLabel("Créer un salon")
+            .setEmoji("<:channel:1440082251366010983>")
+            .setStyle(ButtonStyle.Secondary);
+
+        let components = [new ActionRowBuilder().addComponents(createChannel)];
 
         if (currentConfig.channels.length > currentConfig.channels.filter(ch => ch.alwaysActive).length) {
             const modifiableChannels = currentConfig.channels.filter(ch => !ch.alwaysActive);
@@ -80,11 +86,11 @@ module.exports = {
                 .setEmoji("💾")
                 .setStyle(ButtonStyle.Success)
 
-            components = [
+            components[0].addComponents(saveBtn)
+            components.push(
                 new ActionRowBuilder().addComponents(selectStatusChannelEnable),
                 new ActionRowBuilder().addComponents(selectStatusChannelDisable),
-                new ActionRowBuilder().addComponents(saveBtn)
-            ];
+            );
         }
 
         await interaction.update({ content: `✅ La configuration \`${placeholder}\` a bien été modifiée en \`${configName}\` avec succès !`, embeds: [configUpdateEmbed, configChannelsUpdateEmbed], components, flags: [MessageFlags.Ephemeral] })
