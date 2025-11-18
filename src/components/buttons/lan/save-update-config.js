@@ -1,6 +1,6 @@
 const { MessageFlags } = require("discord.js");
 const Config = require("../../../schemas/config");
-const { encrypt } = require("../../../functions/utils/crypt");
+const { encrypt, decrypt } = require("../../../functions/utils/crypt");
 
 module.exports = {
     data: {
@@ -9,14 +9,16 @@ module.exports = {
     async execute (interaction, client) {
         const placeholder = client.placeholder.get(interaction.applicationId);
         const currentConfig = client.configs.get(placeholder);
+        const fields = interaction.message.embeds[0].fields.filter(field => field.value != '\u200b');
+
         try {
             const updatedConfig = await Config.findOneAndUpdate(
                 { name: placeholder },
                 {
-                    name: currentConfig.name,
-                    address: encrypt(currentConfig.address, process.env.TOKEN),
-                    hours: currentConfig.hours,
-                    materials: currentConfig.materials,
+                    name: fields[0].value,
+                    address: encrypt(fields[2].value, process.env.TOKEN),
+                    hours: fields[1].value,
+                    materials: fields[3].value,
                     channels: currentConfig.channels,
                     updatedAt: new Date()
                 },
