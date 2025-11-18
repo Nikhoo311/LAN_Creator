@@ -1,22 +1,7 @@
-const { EmbedBuilder, ButtonBuilder, ActionRowBuilder, StringSelectMenuBuilder, StringSelectMenuOptionBuilder, ButtonStyle } = require('discord.js');
+const { EmbedBuilder, ButtonBuilder, ActionRowBuilder, ButtonStyle } = require('discord.js');
 const { color } = require("../../../../config/config.json");
 const Config = require("../../../schemas/config");
-
-function createChannelSelectMenu({ customId, placeholder, channels }) {
-    return new StringSelectMenuBuilder()
-      .setCustomId(customId)
-      .setMinValues(1)
-      .setMaxValues(channels.length)
-      .setPlaceholder(placeholder)
-      .setOptions(
-        channels.map(ch => 
-          new StringSelectMenuOptionBuilder()
-            .setLabel(ch.name)
-            .setValue(ch.name)
-            .setEmoji("<:channel:1440082251366010983>")
-        )
-      );
-}
+const { createChannelSelectMenu } = require("../../../functions/utils/createChannelSelectMenu");
 
 module.exports = {
     data: {

@@ -1,6 +1,6 @@
 const { MessageFlags } = require("discord.js");
 const Config = require("../../../schemas/config");
-const { encrypt, decrypt } = require("../../../functions/utils/crypt");
+const { encrypt } = require("../../../functions/utils/crypt");
 
 module.exports = {
     data: {

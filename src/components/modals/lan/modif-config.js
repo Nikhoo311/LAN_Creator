@@ -1,21 +1,6 @@
-const { MessageFlags, EmbedBuilder, StringSelectMenuBuilder, StringSelectMenuOptionBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle } = require('discord.js');
+const { MessageFlags, EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle } = require('discord.js');
 const { color } = require("../../../../config/config.json")
-
-function createChannelSelectMenu({ customId, placeholder, channels }) {
-    return new StringSelectMenuBuilder()
-      .setCustomId(customId)
-      .setMinValues(1)
-      .setMaxValues(channels.length)
-      .setPlaceholder(placeholder)
-      .setOptions(
-        channels.map(ch => 
-          new StringSelectMenuOptionBuilder()
-            .setLabel(ch.name)
-            .setValue(ch.name)
-            .setEmoji("<:channel:1440082251366010983>")
-        )
-      );
-}
+const { createChannelSelectMenu } = require("../../../functions/utils/createChannelSelectMenu");
 
 module.exports = {
     data: {
