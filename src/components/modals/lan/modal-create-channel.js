@@ -1,5 +1,6 @@
-const { MessageFlags, EmbedBuilder, StringSelectMenuBuilder, StringSelectMenuOptionBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle } = require('discord.js');
-const { color } = require("../../../../config/config.json")
+const { EmbedBuilder, ButtonBuilder, ActionRowBuilder, StringSelectMenuBuilder, StringSelectMenuOptionBuilder, ButtonStyle } = require('discord.js');
+const { color } = require("../../../../config/config.json");
+const Config = require("../../../schemas/config");
 
 function createChannelSelectMenu({ customId, placeholder, channels }) {
     return new StringSelectMenuBuilder()
@@ -19,28 +20,26 @@ function createChannelSelectMenu({ customId, placeholder, channels }) {
 
 module.exports = {
     data: {
-        name: "modif-config"
+        name: "modal-create-channel"
     },
     async execute(interaction, client) {
-        const configName = interaction.fields.getTextInputValue("config_name");
-        const configaddress = interaction.fields.getTextInputValue("config_address");
-        const configHours = interaction.fields.getTextInputValue("config_hours");
-        const configMaterials = interaction.fields.getTextInputValue("config_material") || "Aucun";
+        const newChannelName = interaction.fields.getTextInputValue("new-channel-name");
         
-        const placeholder = client.placeholder.get(interaction.applicationId);
-        const currentConfig = client.configs.get(placeholder);
+        const newChannel = {
+            name: newChannelName,
+            active: false,
+            alwaysActive: false
+        };
 
-        const configUpdateEmbed = new EmbedBuilder()
-            .setColor(color.green)
-            .setTitle(`Configuration \`${configName}\``)
-            .setFields(
-                { name: `🏠 __Nom :__`, value: configName, inline: true },
-                { name: "\u200b", value: "\u200b", inline: true },
-                { name: `🕑 __Horaire :__`, value: configHours, inline: true },
-                { name: `📍 __Adresse :__`, value: configaddress, inline: true },
-                { name: "\u200b", value: "\u200b", inline: true },
-                { name: `🕹️ __Matériel disponible :__`, value: configMaterials, inline: false },
-            )
+        const dbConfig = await Config.findOne({ name: interaction.message.embeds[0].fields[0].value });
+        let currentConfig = client.configs.get(interaction.message.embeds[0].fields[0].value);
+
+        dbConfig.channels.push(newChannel);
+        await dbConfig.save();
+
+        currentConfig.channels.push(newChannel);
+        client.configs.set(currentConfig.name, currentConfig);
+
         const configChannelsUpdateEmbed = new EmbedBuilder()
             .setColor(color.orange)
             .setTitle("Les salons actifs")
@@ -57,12 +56,13 @@ module.exports = {
             )
             .setFooter({text: `${currentConfig.channels.length} salon${currentConfig.channels.length > 1 ? "s" : ""}`});
 
+        
         const createChannel = new ButtonBuilder()
             .setCustomId("create-config-channel")
             .setLabel("Créer un salon")
             .setEmoji("<:channel:1440082251366010983>")
             .setStyle(ButtonStyle.Secondary);
-
+        
         let components = [new ActionRowBuilder().addComponents(createChannel)];
 
         if (currentConfig.channels.length > currentConfig.channels.filter(ch => ch.alwaysActive).length) {
@@ -92,7 +92,6 @@ module.exports = {
                 new ActionRowBuilder().addComponents(selectStatusChannelDisable),
             );
         }
-
-        await interaction.update({ content: `✅ La configuration \`${placeholder}\` a bien été modifiée en \`${configName}\` avec succès !`, embeds: [configUpdateEmbed, configChannelsUpdateEmbed], components, flags: [MessageFlags.Ephemeral] })
+        return await interaction.update({ embeds: [interaction.message.embeds[0], configChannelsUpdateEmbed], components });
     }
 }
