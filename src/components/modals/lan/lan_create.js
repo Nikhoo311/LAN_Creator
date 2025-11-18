@@ -78,7 +78,7 @@ module.exports = {
     
             const informationEmbed = new EmbedBuilder()
                 .setColor(color.red)
-                .setDescription(`🔍 **__Informations :__**\nVoici toutes les infomations principales pour la **${nameLAN}**`)
+                .setDescription(`🔍 **__Informations :__**\nVoici toutes les infomations principales pour **${nameLAN}**`)
                 .addFields([
                     {
                         name: "📌 **__Lieu :__**", value: decrypt(config.address, process.env.TOKEN), inline: true
@@ -98,7 +98,7 @@ module.exports = {
                 .setTimestamp()
             
             const btnaddress = new ButtonBuilder()
-                .setLabel("addresse Google Maps")
+                .setLabel("Adresse Google Maps")
                 .setStyle(ButtonStyle.Link)
                 .setURL(getGoogleMapsLink(decrypt(config.address, process.env.TOKEN)))
 
@@ -123,8 +123,8 @@ module.exports = {
                 .setStyle(ButtonStyle.Link)
                 .setURL(lan.getAgendaLink())
 
-            informationChannel.send({ embeds: [informationEmbed], components: [ new ActionRowBuilder().addComponents(btnaddress).addComponents(btnGoogleAgenda) ] }).then(msg => msg.pin())
-            logistiqueChannel.send({ embeds: [logistiqueEmbed], components: googlesheetLink ? [ new ActionRowBuilder().addComponents(btnGoogleSheet) ] : [] }).then(msg => msg.pin())
+            informationChannel.send({ embeds: [informationEmbed], components: [ new ActionRowBuilder().addComponents(btnaddress).addComponents(btnGoogleAgenda) ] })
+            informationChannel.send({ embeds: [logistiqueEmbed], components: googlesheetLink ? [ new ActionRowBuilder().addComponents(btnGoogleSheet) ] : [] })
             
             // Ajout dans une collection (a voir comment faire pour avoir les données persistantes)
             await client.lans.set(lan.id, lan)
