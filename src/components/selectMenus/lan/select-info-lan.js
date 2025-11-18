@@ -1,21 +1,27 @@
 const { EmbedBuilder, ButtonBuilder, ButtonStyle, ActionRowBuilder, MessageFlags } = require("discord.js");
 const { color } = require("../../../../config/config.json");
+const { Types } = require("mongoose");
 
 module.exports = {
     data: {
         name: "select-info-lan"
     },
     async execute(interaction, client) {
-        const info = interaction.values[0]
-        const lan = client.lans.get(info)
+        const info = interaction.values[0];
+        let lan = undefined;
 
+        for (const [lanObjectId, lanData] of client.lans.entries()) {
+            if (lanObjectId.toString() === info) {
+                lan = lanData;
+                break; 
+            }
+        }
+        
         const message = `# Espace d'informations des LANs actives\nCeci est un espace qui permet d'avoir accès à toutes les informations relative à une LAN en cours. Il est **important** de savoir que s'il y a qu'une seule LAN en cours, ses informations et les actions possible dessus s'afficherons automatiquement. Dans le cas contraire, il suffira de sélectionner une LAN.\n\n# Informations sur \`${lan.name}\``
 
         try {
-            const channelVoiceState = lan.channels.voice.length > 1 ? "Les salons vocaux" : "Le salon vocal"
-
-            let vcString = ""
-            lan.channels.voice.forEach(ch => vcString += `<#${ch}>\n`)
+            const channelVoiceState = lan.channels.filter(ch => ch.name.includes("Vocal")).length > 1 ? "Les salons vocaux" : "Le salon vocal"
+            const vcString = lan.channels.filter(ch => ch.name.includes("Vocal")).map(ch => `<#${ch.channelId}>`).join("\n");
 
             let endedState = lan.endedAt ? `<t:${lan.endedAt}>` : "⌛ toujours en cours...";
             
@@ -23,7 +29,7 @@ module.exports = {
                 .setColor(color.blue)
                 .addFields(
                 {
-                    name: `**Les salons textuels :**`, value: `<#${lan.channels.general}>\n<#${lan.channels.information}>\n<#${lan.channels.picture}>\n<#${lan.channels.logistique}>`, inline: true
+                    name: `**Les salons textuels :**`, value: `${lan.channels.filter(ch => !ch.name.includes("Vocal")).map(ch => `<#${ch.channelId}>`).join("\n")}`, inline: true
                 }, {
                     name: `**${channelVoiceState} :**`, value: `${vcString}`, inline: true
                 },
@@ -42,6 +48,7 @@ module.exports = {
             interaction.update({ content: `${message}`, embeds: [infoEmbed], components: [new ActionRowBuilder().addComponents(archivageBtn)], flags: [MessageFlags.Ephemeral]})
             
         } catch (error) {
+            console.error(error)
             interaction.reply({ content: "❌ Un erreur est survenu lors de l'écriture dans le fichier de configuration !\n" + error, flags: [MessageFlags.Ephemeral] })
         }
     }

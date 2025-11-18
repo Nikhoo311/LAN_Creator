@@ -1,5 +1,4 @@
 const { EmbedBuilder, MessageFlags } = require("discord.js");
-const { Lan } = require("../../../class/Lan");
 const LanModel = require("../../../schemas/lan");
 
 module.exports = {
@@ -23,14 +22,14 @@ module.exports = {
         })
         const embedData = interaction.message.embeds[0].data;
         
-        const channelVoiceState = lan.channels.voice.length > 1 ? "Les salons vocaux" : "Le salon vocal"
-        const vcString = lan.channels.voice.map(ch => `<#${ch}>\n`).join('\n')
+        const channelVoiceState = lan.channels.filter(ch => ch.name.includes("Vocal")).length > 1 ? "Les salons vocaux" : "Le salon vocal"
+        const vcString = lan.channels.filter(ch => ch.name.includes("Vocal")).map(ch => `<#${ch.channelId}>`).join("\n");
         
         const embed = new EmbedBuilder(embedData)
             .setColor(embedData.color)
             .setFields(
                 {
-                    name: `**Les salons textuels :**`, value: `<#${lan.channels.general}>\n<#${lan.channels.information}>\n<#${lan.channels.picture}>\n<#${lan.channels.logistique}>`, inline: true
+                    name: `**Les salons textuels :**`, value: `${lan.channels.filter(ch => !ch.name.includes("Vocal")).map(ch => `<#${ch.channelId}>`).join("\n")}`, inline: true
                 }, {
                     name: `**${channelVoiceState} :**`, value: `${vcString}`, inline: true
                 },
