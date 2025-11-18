@@ -23,33 +23,33 @@ module.exports = {
                 client.tournaments.set(element.id, tournament);
             })
             
-            setInterval(() => {
-                const now = Math.floor(Date.now() / 1000);
+            // setInterval(() => {
+            //     const now = Math.floor(Date.now() / 1000);
                 
-                client.lans.forEach(async (lan) => {
-                    if (lan.endedAt !== null && now >= lan.endedAt) {
-                        // Delete voices channels
-                        for (let i = 0; i < lan.channels.voice.length; i++) {
-                            const element = lan.channels.voice[i];
-                            client.channels.cache.get(element).delete()
-                        }
+            //     client.lans.forEach(async (lan) => {
+            //         if (lan.endedAt !== null && now >= lan.endedAt) {
+            //             // Delete voices channels
+            //             for (let i = 0; i < lan.channels.voice.length; i++) {
+            //                 const element = lan.channels.voice[i];
+            //                 client.channels.cache.get(element).delete()
+            //             }
                         
-                        // general channel
-                        client.channels.cache.get(lan.channels.general).delete()
-                        // information channel
-                        client.channels.cache.get(lan.channels.information).delete()
-                        // picture channel
-                        client.channels.cache.get(lan.channels.picture).permissionOverwrites.edit(client.guilds.cache.get(serverID).roles.everyone, { SendMessages: false })
-                        // logistique channel
-                        client.channels.cache.get(lan.channels.logistique).delete()
+            //             // general channel
+            //             client.channels.cache.get(lan.channels.general).delete()
+            //             // information channel
+            //             client.channels.cache.get(lan.channels.information).delete()
+            //             // picture channel
+            //             client.channels.cache.get(lan.channels.picture).permissionOverwrites.edit(client.guilds.cache.get(serverID).roles.everyone, { SendMessages: false })
+            //             // logistique channel
+            //             client.channels.cache.get(lan.channels.logistique).delete()
                         
-                        client.lans.delete(lan.id)
-                        await LanModel.findByIdAndDelete(lan.id);
+            //             client.lans.delete(lan.id)
+            //             await LanModel.findByIdAndDelete(lan.id);
         
-                    }
-                });
+            //         }
+            //     });
                 
-            }, 60 * 100);
+            // }, 60 * 100);
         } catch (error) {
             logger.error(error)
         }

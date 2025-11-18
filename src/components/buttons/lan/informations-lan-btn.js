@@ -44,10 +44,9 @@ module.exports = {
         })
         const lan = bd.get(lanID)
         message += `\n\n# Informations sur \`${lan.name}\``
-        const channelVoiceState = lan.channels.voice.length > 1 ? "Les salons vocaux" : "Le salon vocal"
+        const channelVoiceState = lan.channels.filter(ch => ch.name.includes("Vocal")).length > 1 ? "Les salons vocaux" : "Le salon vocal"
 
-        let vcString = ""
-        lan.channels.voice.forEach(ch => vcString += `<#${ch}>\n`)
+        let vcString = lan.channels.filter(ch => ch.name.includes("Vocal")).map(ch => `<#${ch.channelId}>`).join("\n");
 
         let endedState = lan.endedAt ? `<t:${lan.endedAt}>` : "⌛ toujours en cours...";
 
@@ -55,7 +54,7 @@ module.exports = {
             .setColor(color.blue)
             .addFields(
             {
-                name: `**Les salons textuels :**`, value: `<#${lan.channels.general}>\n<#${lan.channels.information}>\n<#${lan.channels.picture}>\n<#${lan.channels.logistique}>`, inline: true
+                name: `**Les salons textuels :**`, value: `${lan.channels.filter(ch => !ch.name.includes("Vocal")).map(ch => `<#${ch.channelId}>`).join("\n")}`, inline: true
             }, {
                 name: `**${channelVoiceState} :**`, value: `${vcString}`, inline: true
             },
