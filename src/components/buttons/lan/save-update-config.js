@@ -33,6 +33,7 @@ module.exports = {
                     flags: [MessageFlags.Ephemeral] 
                 });
             }
+            client.configs.delete(placeholder);
             client.configs.set(updatedConfig.name, updatedConfig);
 
             interaction.update({ content: `✅ La configuration \`${currentConfig.name}\` a bien été modifiée !`, embeds: [], components: [], flags: [MessageFlags.Ephemeral] });
