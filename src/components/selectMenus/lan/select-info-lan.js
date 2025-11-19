@@ -1,6 +1,5 @@
 const { EmbedBuilder, ButtonBuilder, ButtonStyle, ActionRowBuilder, MessageFlags } = require("discord.js");
 const { color } = require("../../../../config/config.json");
-const { Types } = require("mongoose");
 
 module.exports = {
     data: {
