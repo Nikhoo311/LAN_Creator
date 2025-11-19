@@ -4,6 +4,7 @@ const { Lan } = require("../class/Lan");
 const { Tournament } = require("../class/Tournament");
 const LanModel = require("../schemas/lan");
 const ConfigModel = require("../schemas/config");
+const { ActivityType } = require("discord.js");
 
 module.exports = {
     name: "clientReady",
@@ -16,6 +17,25 @@ module.exports = {
             
             const configs = await ConfigModel.find();
             configs.map(config => client.configs.set(config.name, config))
+
+            function setRandomPresence() {
+                const totalUsers = client.guilds.cache.reduce((acc, guild) => {
+                    return acc + guild.members.cache.filter(m => !m.user.bot).size;
+                }, 0);
+                const presences = [
+                    { name: `🎮 Organise la prochaine LAN...`, type: ActivityType.Custom },
+                    { name: `🎧 écoute les cris de victoire`, type: ActivityType.Custom },
+                    { name: `${client.lans.size} LAN${client.lans.size > 1 ? "s" : ""} en cours...`, type: ActivityType.Custom },
+                    { name: `${totalUsers} joueurs qui font des LANs`, type: ActivityType.Custom },
+                ];
+                
+                const random = presences[Math.floor(Math.random() * presences.length)];
+                client.user.setPresence({
+                    activities: [random],
+                    status: "online" // online, idle, dnd, invisible
+                });
+            };
+            setInterval(setRandomPresence, 10000);
 
             const tournamentFile = Tournament.getFile();
             tournamentFile.forEach(element => {
