@@ -5,26 +5,34 @@ const { createChannelSelectMenu } = require("../../../functions/utils/createChan
 
 module.exports = {
     data: {
-        name: "modal-create-channel"
+        name: "modal-create-channel",
+        multi: "modal-delete-channel"
     },
     async execute(interaction, client) {
-        const newChannelName = interaction.fields.getTextInputValue("new-channel-name");
-        
-        const newChannel = {
-            name: newChannelName,
-            active: false,
-            alwaysActive: false
-        };
-
         const dbConfig = await Config.findOne({ name: interaction.message.embeds[0].fields[0].value });
         let currentConfig = client.configs.get(interaction.message.embeds[0].fields[0].value);
+        
+        if (interaction.customId === "modal-create-channel") {
+            const newChannelName = interaction.fields.getTextInputValue("new-channel-name");
 
-        dbConfig.channels.push(newChannel);
-        await dbConfig.save();
-
-        currentConfig.channels.push(newChannel);
-        client.configs.set(currentConfig.name, currentConfig);
-
+            const newChannel = {
+                name: newChannelName,
+                active: false,
+                alwaysActive: false
+            };
+    
+            dbConfig.channels.push(newChannel);
+            await dbConfig.save();
+    
+            currentConfig.channels.push(newChannel);
+            client.configs.set(currentConfig.name, currentConfig);
+        } 
+        else {
+            const channelsNames = interaction.fields.getStringSelectValues("select-channel-delete");
+            currentConfig.channels = currentConfig.channels.filter(ch => !channelsNames.includes(ch.name));
+            client.configs.set(currentConfig.name, currentConfig);
+            console.log(currentConfig.channels);
+        }
         const configChannelsUpdateEmbed = new EmbedBuilder()
             .setColor(color.orange)
             .setTitle("Les salons actifs")
@@ -47,31 +55,38 @@ module.exports = {
             .setLabel("Créer un salon")
             .setEmoji("<:channel:1440082251366010983>")
             .setStyle(ButtonStyle.Secondary);
-        
-        let components = [new ActionRowBuilder().addComponents(createChannel)];
+
+        const saveBtn = new ButtonBuilder()
+            .setCustomId("save-update-config")
+            .setLabel("Enregistrer")
+            .setEmoji("💾")
+            .setStyle(ButtonStyle.Success)
+
+        let components = [new ActionRowBuilder().addComponents(createChannel, saveBtn)];
 
         if (currentConfig.channels.length > currentConfig.channels.filter(ch => ch.alwaysActive).length) {
             const modifiableChannels = currentConfig.channels.filter(ch => !ch.alwaysActive);
+            
+            const deleteChannel = new ButtonBuilder()
+                .setCustomId("delete-config-channel")
+                .setLabel("Supprimer un salon")
+                .setEmoji("<:trash:1378419101751447582>")
+                .setStyle(ButtonStyle.Danger);
+ 
+            components[0].setComponents(createChannel, deleteChannel, saveBtn);
 
             const selectStatusChannelEnable = createChannelSelectMenu({
                 customId: "select-modif-status-channel-active",
                 placeholder: "✅ Activer des salons",
                 channels: modifiableChannels
-            }).setMaxValues(modifiableChannels.length);
+            })
 
             const selectStatusChannelDisable = createChannelSelectMenu({
                 customId: "select-modif-status-channel-desactive",
                 placeholder: "❌ Désactiver des salons",
                 channels: modifiableChannels
-            }).setMaxValues(modifiableChannels.length);
+            })
 
-            const saveBtn = new ButtonBuilder()
-                .setCustomId("save-update-config")
-                .setLabel("Enregistrer")
-                .setEmoji("💾")
-                .setStyle(ButtonStyle.Success)
-
-            components[0].addComponents(saveBtn)
             components.push(
                 new ActionRowBuilder().addComponents(selectStatusChannelEnable),
                 new ActionRowBuilder().addComponents(selectStatusChannelDisable),

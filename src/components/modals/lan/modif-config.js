@@ -48,7 +48,13 @@ module.exports = {
             .setEmoji("<:channel:1440082251366010983>")
             .setStyle(ButtonStyle.Secondary);
 
-        let components = [new ActionRowBuilder().addComponents(createChannel)];
+        const saveBtn = new ButtonBuilder()
+            .setCustomId("save-update-config")
+            .setLabel("Enregistrer")
+            .setEmoji("💾")
+            .setStyle(ButtonStyle.Success)
+
+        let components = [new ActionRowBuilder().addComponents(createChannel, saveBtn)];
 
         if (currentConfig.channels.length > currentConfig.channels.filter(ch => ch.alwaysActive).length) {
             const modifiableChannels = currentConfig.channels.filter(ch => !ch.alwaysActive);
