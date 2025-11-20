@@ -25,7 +25,7 @@ class Lan {
     }
 
     end(addDays = 0) {
-        this.endedAt = Math.floor(Date.now() / 1000) //+ (addDays * 24 * 60 * 60) 
+        this.endedAt = Math.floor(Date.now() / 1000) + (addDays * 24 * 60 * 60) 
     }
 
     static getLanByName() { return }
