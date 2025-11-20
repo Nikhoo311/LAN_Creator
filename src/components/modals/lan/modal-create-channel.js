@@ -2,6 +2,7 @@ const { EmbedBuilder, ButtonBuilder, ActionRowBuilder, ButtonStyle } = require('
 const { color } = require("../../../../config/config.json");
 const Config = require("../../../schemas/config");
 const { createChannelSelectMenu } = require("../../../functions/utils/createChannelSelectMenu");
+const { Types } = require('mongoose');
 
 module.exports = {
     data: {
@@ -16,14 +17,12 @@ module.exports = {
             const newChannelName = interaction.fields.getTextInputValue("new-channel-name");
 
             const newChannel = {
+                _id: new Types.ObjectId(),
                 name: newChannelName,
                 active: false,
                 alwaysActive: false
             };
-    
-            dbConfig.channels.push(newChannel);
-            await dbConfig.save();
-    
+
             currentConfig.channels.push(newChannel);
             client.configs.set(currentConfig.name, currentConfig);
         } 
@@ -31,7 +30,6 @@ module.exports = {
             const channelsNames = interaction.fields.getStringSelectValues("select-channel-delete");
             currentConfig.channels = currentConfig.channels.filter(ch => !channelsNames.includes(ch.name));
             client.configs.set(currentConfig.name, currentConfig);
-            console.log(currentConfig.channels);
         }
         const configChannelsUpdateEmbed = new EmbedBuilder()
             .setColor(color.orange)

@@ -71,19 +71,19 @@ module.exports = {
                 channels: modifiableChannels
             }).setMaxValues(modifiableChannels.length);
 
-            const saveBtn = new ButtonBuilder()
-                .setCustomId("save-update-config")
-                .setLabel("Enregistrer")
-                .setEmoji("💾")
-                .setStyle(ButtonStyle.Success)
-
-            components[0].addComponents(saveBtn)
+            const deleteChannel = new ButtonBuilder()
+                .setCustomId("delete-config-channel")
+                .setLabel("Supprimer un salon")
+                .setEmoji("<:trash:1378419101751447582>")
+                .setStyle(ButtonStyle.Danger);
+ 
+            components[0].setComponents(createChannel, deleteChannel, saveBtn);
             components.push(
                 new ActionRowBuilder().addComponents(selectStatusChannelEnable),
                 new ActionRowBuilder().addComponents(selectStatusChannelDisable),
             );
         }
 
-        await interaction.update({ content: `✅ La configuration \`${placeholder}\` a bien été modifiée en \`${configName}\` avec succès !`, embeds: [configUpdateEmbed, configChannelsUpdateEmbed], components, flags: [MessageFlags.Ephemeral] })
+        return await interaction.update({ content: `✅ La configuration \`${placeholder}\` a bien été modifiée en \`${configName}\` avec succès !`, embeds: [configUpdateEmbed, configChannelsUpdateEmbed], components, flags: [MessageFlags.Ephemeral] })
     }
 }
