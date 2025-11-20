@@ -39,31 +39,25 @@ module.exports = {
                     }
                 ]
             })
+            const textChannels = config.channels.filter(ch => ch.active)
+                .map(ch => {
+                    return (async () => {
+                        const discordChannel = await guild.channels.create({
+                            name: ch.name,
+                            type: ChannelType.GuildText,
+                            parent: category.id
+                        });
+                        return {
+                            name: ch.name,
+                            channelId: discordChannel.id
+                        };
+                    })();
+                });
 
-            const general = await guild.channels.create({
-                name: `général`,
-                type: ChannelType.GuildText,
-                parent: category.id
-            })
+            const channels = await Promise.all(textChannels);
             
-            const picture = await guild.channels.create({
-                name: `photos`,
-                type: ChannelType.GuildText,
-                parent: category.id
-            })
-    
-            const informationChannel = await guild.channels.create({
-                name: `informations`,
-                type: ChannelType.GuildText,
-                parent: category.id
-            })
+            const informationChannel = guild.channels.cache.get(channels.find(ch => ch.name == "informations").channelId);
 
-            const logistiqueChannel = await guild.channels.create({
-                name: `logistique`,
-                type: ChannelType.GuildText,
-                parent: category.id
-            })
-            
             let vcChannels = []
 
             for (let index = 0; index < nbVocaux; index++) {
@@ -73,12 +67,15 @@ module.exports = {
                     parent: category.id
                 })
 
-                vcChannels.push(vcChannel.id);
+                vcChannels.push({
+                    name: `🔊 Vocal ${index + 1}`,
+                    channelId: vcChannel.id
+                });
             }
     
             const informationEmbed = new EmbedBuilder()
                 .setColor(color.red)
-                .setDescription(`🔍 **__Informations :__**\nVoici toutes les infomations principales pour la **${nameLAN}**`)
+                .setDescription(`🔍 **__Informations :__**\nVoici toutes les infomations principales pour **${nameLAN}**`)
                 .addFields([
                     {
                         name: "📌 **__Lieu :__**", value: decrypt(config.address, process.env.TOKEN), inline: true
@@ -98,7 +95,7 @@ module.exports = {
                 .setTimestamp()
             
             const btnaddress = new ButtonBuilder()
-                .setLabel("addresse Google Maps")
+                .setLabel("Adresse Google Maps")
                 .setStyle(ButtonStyle.Link)
                 .setURL(getGoogleMapsLink(decrypt(config.address, process.env.TOKEN)))
 
@@ -109,22 +106,23 @@ module.exports = {
                 : null;
             
             // Creation d'un objet LAN
-            let channelsObject = {category: category.id, general: general.id, information: informationChannel.id, picture: picture.id, logistique: logistiqueChannel.id, voice: vcChannels}
+            const channelsArray = [...channels, ...vcChannels];
+
             const obj = await LanModel.create({
                 name: nameLAN,
                 config: config._id,
-                channels: channelsObject,
+                channels: channelsArray,
                 startedAt: new Date(),
                 endedAt: null,
             })
-            const lan = new Lan(nameLAN, channelsObject, config, Math.floor(obj.startedAt / 1000), null, obj._id)
+            const lan = new Lan(nameLAN, channelsArray, config, Math.floor(obj.startedAt / 1000), null, obj._id)
             const btnGoogleAgenda = new ButtonBuilder()
                 .setLabel("Rappel Google Agenda")
                 .setStyle(ButtonStyle.Link)
                 .setURL(lan.getAgendaLink())
 
-            informationChannel.send({ embeds: [informationEmbed], components: [ new ActionRowBuilder().addComponents(btnaddress).addComponents(btnGoogleAgenda) ] }).then(msg => msg.pin())
-            logistiqueChannel.send({ embeds: [logistiqueEmbed], components: googlesheetLink ? [ new ActionRowBuilder().addComponents(btnGoogleSheet) ] : [] }).then(msg => msg.pin())
+            informationChannel.send({ embeds: [informationEmbed], components: [ new ActionRowBuilder().addComponents(btnaddress).addComponents(btnGoogleAgenda) ] })
+            informationChannel.send({ embeds: [logistiqueEmbed], components: googlesheetLink ? [ new ActionRowBuilder().addComponents(btnGoogleSheet) ] : [] })
             
             // Ajout dans une collection (a voir comment faire pour avoir les données persistantes)
             await client.lans.set(lan.id, lan)

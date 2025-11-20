@@ -1,4 +1,4 @@
-const { ModalBuilder, TextInputBuilder, TextInputStyle, LabelBuilder, StringSelectMenuBuilder, StringSelectMenuOptionBuilder } = require("discord.js");
+const { ModalBuilder, TextInputBuilder, TextInputStyle, LabelBuilder, StringSelectMenuBuilder, StringSelectMenuOptionBuilder, MessageFlags } = require("discord.js");
 const { decrypt } = require("../../../functions/utils/crypt");
 const { readFileSync } = require('fs');
 
@@ -6,7 +6,8 @@ module.exports = {
     data: {
         name: "create-lan-btn"
     },
-    async execute (interaction, client) {        
+    async execute (interaction, client) {
+        if (client.configs.size === 0) return interaction.reply({ content: "❌ Impossible de créer une LAN si aucune configuration est créée... Clique sur le bouton `Configurer`.", flags: [MessageFlags.Ephemeral] })    
         const modal = new ModalBuilder()
             .setCustomId("lan_create")
             .setTitle("Création LAN")

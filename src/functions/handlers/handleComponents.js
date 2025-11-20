@@ -40,6 +40,9 @@ module.exports = (client) => {
                             const filePath = path.join(subFolderPath, file);
                             const modal = require(filePath);
                             modals.set(modal.data.name, modal);
+                            if (modal.data.multi) {
+                                modals.set(modal.data.multi, modal);
+                            }
                         }
                     }
                     break;

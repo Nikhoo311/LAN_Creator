@@ -6,7 +6,7 @@ class Lan {
     /**
      * A LAN object representation
      * @param {String} name
-     * @param {object} channels 
+     * @param {Array<object>} channels 
      * @param {object} config
      * @param {number} start
      */
