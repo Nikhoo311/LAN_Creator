@@ -32,7 +32,7 @@ module.exports = {
             .setCustomId("suppr-config-btn")
             .setLabel("Supprimer")
             .setStyle(ButtonStyle.Danger)
-            .setEmoji("✖️")
+            .setEmoji("<:trash:1378419101751447582>")
         
         const chooseConfigBtn = new ButtonBuilder()
             .setCustomId("choose-config-btn")

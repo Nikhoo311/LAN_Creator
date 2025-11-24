@@ -22,30 +22,29 @@ module.exports = {
                 const tournament = Tournament.fromJson(element);
                 client.tournaments.set(element.id, tournament);
             })
-            
+
             setInterval(() => {
                 const now = Math.floor(Date.now() / 1000);
                 
                 client.lans.forEach(async (lan) => {
                     if (lan.endedAt !== null && now >= lan.endedAt) {
+                        const channels = lan.channels;
+                        const vocalChannels = channels.filter(ch => ch.name.toLowerCase().includes("vocal"))
+                        const textChannels = channels.filter(ch => ch.name.toLowerCase() !== "photos" && !vocalChannels.includes(ch));
+                        
                         // Delete voices channels
-                        for (let i = 0; i < lan.channels.voice.length; i++) {
-                            const element = lan.channels.voice[i];
-                            client.channels.cache.get(element).delete()
+                        for (let i = 0; i < vocalChannels.length; i++) {
+                            const element = vocalChannels[i];
+                            client.channels.cache.get(element.channelId).delete()
                         }
-                        
-                        // general channel
-                        client.channels.cache.get(lan.channels.general).delete()
-                        // information channel
-                        client.channels.cache.get(lan.channels.information).delete()
-                        // picture channel
-                        client.channels.cache.get(lan.channels.picture).permissionOverwrites.edit(client.guilds.cache.get(serverID).roles.everyone, { SendMessages: false })
-                        // logistique channel
-                        client.channels.cache.get(lan.channels.logistique).delete()
-                        
+
+                        textChannels.forEach(ch => {
+                            client.channels.cache.get(ch.channelId).delete()
+                        })
+                        client.channels.cache.get(channels.find(ch => ch.name.toLowerCase() == "photos").channelId).permissionOverwrites.edit(client.guilds.cache.get(serverID).roles.everyone, { SendMessages: false })
+
                         client.lans.delete(lan.id)
                         await LanModel.findByIdAndDelete(lan.id);
-        
                     }
                 });
                 
