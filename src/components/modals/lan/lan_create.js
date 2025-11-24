@@ -108,7 +108,7 @@ module.exports = {
             // Creation d'un objet LAN
             const channelsArray = [...channels, ...vcChannels];
 
-            const obj = await LanModel.create({
+            const obj = await Lan.model.create({
                 name: nameLAN,
                 config: config._id,
                 channels: channelsArray,

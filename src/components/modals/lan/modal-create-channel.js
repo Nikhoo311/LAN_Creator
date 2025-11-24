@@ -10,7 +10,6 @@ module.exports = {
         multi: "modal-delete-channel"
     },
     async execute(interaction, client) {
-        const dbConfig = await Config.findOne({ name: interaction.message.embeds[0].fields[0].value });
         let currentConfig = client.configs.get(interaction.message.embeds[0].fields[0].value);
         
         if (interaction.customId === "modal-create-channel") {
