@@ -1,6 +1,7 @@
 const dayjs = require("dayjs");
 const { URL, URLSearchParams } = require("url");
 const { decrypt } = require("../functions/utils/crypt");
+const lanModel = require("../schemas/lan");
 
 class Lan {
     /**
@@ -10,6 +11,7 @@ class Lan {
      * @param {object} config
      * @param {number} start
      */
+    static model = lanModel;
     constructor(name, channels, config, start = null, end = null, id = null) {
         this.id = id;
         this.name = name;
