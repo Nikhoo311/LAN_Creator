@@ -1,6 +1,7 @@
 const { MessageFlags } = require('discord.js');
 const Config = require('../../../schemas/config');
 const { encrypt } = require("../../../functions/utils/crypt");
+const isValidHourFormat = require('../../../functions/utils/isValidHourFormat');
 
 module.exports = {
     data: {
@@ -12,6 +13,10 @@ module.exports = {
         const configHours = interaction.fields.getTextInputValue("config_hours");
         const configMaterials = interaction.fields.getTextInputValue("config_material") || null;
         
+        if (!isValidHourFormat(configHours)) {
+            return await interaction.reply({ content: "❌ Format d'heure invalide (ex: 14h30)", flags: [MessageFlags.Ephemeral] });
+        }
+
         try {
             const alreadyExist = client.configs.has(configName);
 

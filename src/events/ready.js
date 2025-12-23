@@ -12,7 +12,7 @@ module.exports = {
         try {
             const lans = await LanModel.find();
 
-            lans.map(lan => client.lans.set(lan._id, new Lan(lan.name, lan.channels, lan.config, Math.floor(lan.startedAt / 1000), Math.floor(lan.endedAt / 1000), lan._id)))
+            lans.map(lan => client.lans.set(lan._id, new Lan(lan.name, lan.channels, lan.config, lan._id, Math.floor(lan.startedAt / 1000), Math.floor(lan.endedAt / 1000))))
             
             const configs = await ConfigModel.find();
             configs.map(config => client.configs.set(config.name, config))
