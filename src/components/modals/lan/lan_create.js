@@ -1,4 +1,4 @@
-const { PermissionFlagsBits, EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle, ChannelType, MessageFlags } = require("discord.js");
+const { PermissionFlagsBits, EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle, ChannelType, MessageFlags, AttachmentBuilder } = require("discord.js");
 const { color } = require('../../../../config/config.json');
 const { getGoogleMapsLink } = require("../../../functions/utils/getLinkaddress.js");
 const { Lan } = require("../../../class/Lan.js")
@@ -13,8 +13,13 @@ module.exports = {
         const nameLAN = interaction.fields.getTextInputValue("lan_name");
         const config = client.configs.get(interaction.fields.getStringSelectValues("lan_config_name")[0]);
         const googlesheetLink = interaction.fields.getTextInputValue('lan_google_sheet') || null;
-        const nbVocaux = Number(interaction.fields.getTextInputValue("lan_nb_voc")) || 1
+        const nbVocaux = Number(interaction.fields.getTextInputValue("lan_nb_voc")) || 1;
+        const fileImage = interaction.fields.getUploadedFiles("file_flyer_image", false)?.first() || null;
         const guild = interaction.guild;
+
+        if (fileImage?.contentType && !["image/png", "image/jpg", "image/jpeg", "image/gif"].includes(fileImage.contentType)) {
+            return await interaction.reply({ content: `❌ Le type de fichier \`${fileImage.name.split(".").pop()}\` n'est pas prit en compte`, flags: [MessageFlags.Ephemeral] });
+        }
 
         if (nbVocaux > 5 || nbVocaux < 1) {
             return interaction.reply({content: "❌ Veuillez saisir un nombre entre 1 et 5", flags: [MessageFlags.Ephemeral] })
@@ -55,7 +60,11 @@ module.exports = {
                 });
 
             const channels = await Promise.all(textChannels);
-            
+            if (fileImage) {
+                const generalChannel = guild.channels.cache.get(channels.find(ch => ch.name == "général").channelId);
+                generalChannel.send({ files: [fileImage] });
+            }
+
             const informationChannel = guild.channels.cache.get(channels.find(ch => ch.name == "informations").channelId);
 
             let vcChannels = []

@@ -27,7 +27,7 @@ module.exports = {
                 const now = Math.floor(Date.now() / 1000);
                 
                 client.lans.forEach(async (lan) => {
-                    if (lan.endedAt !== null && now >= lan.endedAt) {
+                    if (lan.endedAt && now >= lan.endedAt) {
                         const channels = lan.channels;
                         const vocalChannels = channels.filter(ch => ch.name.toLowerCase().includes("vocal"))
                         const textChannels = channels.filter(ch => ch.name.toLowerCase() !== "photos" && !vocalChannels.includes(ch));
