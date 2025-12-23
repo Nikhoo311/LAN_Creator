@@ -1,4 +1,4 @@
-const { ModalBuilder, TextInputBuilder, TextInputStyle, LabelBuilder, StringSelectMenuBuilder, StringSelectMenuOptionBuilder, MessageFlags } = require("discord.js");
+const { ModalBuilder, TextInputBuilder, TextInputStyle, LabelBuilder, StringSelectMenuBuilder, StringSelectMenuOptionBuilder, MessageFlags, FileUploadBuilder } = require("discord.js");
 const { decrypt } = require("../../../functions/utils/crypt");
 const { readFileSync } = require('fs');
 
@@ -62,8 +62,19 @@ module.exports = {
         const textNbVocLabel = new LabelBuilder()   
             .setTextInputComponent(textNbVoc)
             .setLabel("Quel est le nombre de salons vocaux ?")
+        
+        const fileFlyer = new FileUploadBuilder()
+           .setCustomId("file_flyer_image")
+           .setMinValues(1)
+           .setMaxValues(1)
+           .setRequired(false)
 
-        modal.addLabelComponents(textInputLabel, configNameLabel, textGoogleSheetLabel, textNbVocLabel)
+        const fileFlyerLabel = new LabelBuilder()
+           .setFileUploadComponent(fileFlyer)
+           .setLabel("Image de LAN :")
+           .setDescription("Format : png / jpeg / jpg / gif");
+
+        modal.addLabelComponents(textInputLabel, configNameLabel, fileFlyerLabel, textGoogleSheetLabel, textNbVocLabel)
         return await interaction.showModal(modal)
     }
 }
