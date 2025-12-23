@@ -62,7 +62,7 @@ module.exports = {
             const channels = await Promise.all(textChannels);
             if (fileImage) {
                 const generalChannel = guild.channels.cache.get(channels.find(ch => ch.name == "général").channelId);
-                generalChannel.send({ files: [fileImage] });
+                await generalChannel.send({ files: [fileImage] });
             }
 
             const informationChannel = guild.channels.cache.get(channels.find(ch => ch.name == "informations").channelId);
@@ -124,14 +124,14 @@ module.exports = {
                 startedAt: new Date(),
                 endedAt: null,
             })
-            const lan = new Lan(nameLAN, channelsArray, config, Math.floor(obj.startedAt / 1000), null, obj._id)
+            const lan = new Lan(nameLAN, channelsArray, config, obj._id)
             const btnGoogleAgenda = new ButtonBuilder()
                 .setLabel("Rappel Google Agenda")
                 .setStyle(ButtonStyle.Link)
                 .setURL(lan.getAgendaLink())
 
-            informationChannel.send({ embeds: [informationEmbed], components: [ new ActionRowBuilder().addComponents(btnaddress).addComponents(btnGoogleAgenda) ] })
-            informationChannel.send({ embeds: [logistiqueEmbed], components: googlesheetLink ? [ new ActionRowBuilder().addComponents(btnGoogleSheet) ] : [] })
+            await informationChannel.send({ embeds: [informationEmbed], components: [ new ActionRowBuilder().addComponents(btnaddress).addComponents(btnGoogleAgenda) ] })
+            await informationChannel.send({ embeds: [logistiqueEmbed], components: googlesheetLink ? [ new ActionRowBuilder().addComponents(btnGoogleSheet) ] : [] })
             
             // Ajout dans une collection (a voir comment faire pour avoir les données persistantes)
             await client.lans.set(lan.id, lan)

@@ -9,22 +9,28 @@ class Lan {
      * @param {String} name
      * @param {Array<object>} channels 
      * @param {object} config
-     * @param {number} start
+     * @param {Date} start
+     * @param {Date} end
      */
     static model = lanModel;
-    constructor(name, channels, config, start = null, end = null, id = null) {
+    constructor(name, channels, config, id = null, start = null, end = null) {
         this.id = id;
         this.name = name;
         this.channels = channels;
         this.config = config;
         // Get the timestamp in seconds
-        this.startedAt = start !== null ? start : Math.floor(Date.now() / 1000);
+        this.startedAt = start !== null ? start : this.start();
         this.endedAt = end;
     }
 
     start() {
-        this.startedAt = Math.floor(Date.now() / 1000)
-    }
+        const [hour, minute] = this.config.hours.split('h').map(Number);
+    
+        const date = new Date();
+        date.setHours(hour, minute, 0, 0);
+        
+        return Math.floor(date.getTime() / 1000);
+    }    
 
     end(addDays = 0) {
         this.endedAt = Math.floor(Date.now() / 1000) + (addDays * 24 * 60 * 60) 
@@ -46,8 +52,10 @@ class Lan {
             return uri.toString();
         };
 
-        let description = `On se donne rendez-vous pour la ${this.name} !\n\naddresse : ${decrypt(this.config.address, process.env.TOKEN)}`
-        return getUrl(this.name, description, decrypt(this.config.address, process.env.TOKEN), dayjs(this.startedAt * 1000).format('YYYYMMDDTHHmmss'), dayjs(this.endedAt * 1000).format('YYYYMMDDTHHmmss'))
+        let description = `On se donne rendez-vous pour la ${this.name} !\n\nadresse : ${decrypt(this.config.address, process.env.TOKEN)}`;
+        // end = default 3 days
+        const estimatedDate = Math.floor(Date.now() / 1000) + (3 * 24 * 60 * 60);
+        return getUrl(this.name, description, decrypt(this.config.address, process.env.TOKEN), dayjs(this.startedAt * 1000).format('YYYYMMDDTHHmmss'), dayjs(estimatedDate * 1000).format('YYYYMMDDTHHmmss'));
     }
 }
 

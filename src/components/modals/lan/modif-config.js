@@ -1,6 +1,7 @@
 const { MessageFlags, EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle } = require('discord.js');
 const { color } = require("../../../../config/config.json")
 const { createChannelSelectMenu } = require("../../../functions/utils/createChannelSelectMenu");
+const isValidHourFormat = require('../../../functions/utils/isValidHourFormat');
 
 module.exports = {
     data: {
@@ -11,6 +12,10 @@ module.exports = {
         const configaddress = interaction.fields.getTextInputValue("config_address");
         const configHours = interaction.fields.getTextInputValue("config_hours");
         const configMaterials = interaction.fields.getTextInputValue("config_material") || "Aucun";
+        
+        if (!isValidHourFormat(configHours)) {
+            return await interaction.reply({ content: "❌ Format d'heure invalide (ex: 14h30)", flags: [MessageFlags.Ephemeral] });
+        }
         
         const placeholder = client.placeholder.get(interaction.applicationId);
         const currentConfig = client.configs.get(placeholder);
