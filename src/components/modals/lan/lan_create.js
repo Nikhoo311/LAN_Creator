@@ -18,7 +18,7 @@ module.exports = {
         const guild = interaction.guild;
 
         if (fileImage?.contentType && !["image/png", "image/jpg", "image/jpeg", "image/gif"].includes(fileImage.contentType)) {
-            return await interaction.reply({ content: `❌ Le type de fichier \`${fileImage.contentType}\` n'est pas prit en compte`, flags: [MessageFlags.Ephemeral] });
+            return await interaction.reply({ content: `❌ Le type de fichier \`${fileImage.name.split(".").pop()}\` n'est pas prit en compte`, flags: [MessageFlags.Ephemeral] });
         }
 
         if (nbVocaux > 5 || nbVocaux < 1) {
