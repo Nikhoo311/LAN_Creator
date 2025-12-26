@@ -12,7 +12,6 @@ client.modals = new Collection();
 client.placeholder = new Collection();
 client.lans = new Collection();
 client.configs = new Collection();
-client.tournaments = new Collection();
 client.commandArray = []
 
 let functionFolder = readdirSync(`./src/functions`);

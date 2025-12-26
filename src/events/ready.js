@@ -1,7 +1,6 @@
 const logger = require("../functions/utils/Logger");
 const { serverID } = require("../../config/config.json");
 const { Lan } = require("../class/Lan");
-const { Tournament } = require("../class/Tournament");
 const LanModel = require("../schemas/lan");
 const ConfigModel = require("../schemas/config");
 
@@ -16,12 +15,6 @@ module.exports = {
             
             const configs = await ConfigModel.find();
             configs.map(config => client.configs.set(config.name, config))
-
-            const tournamentFile = Tournament.getFile();
-            tournamentFile.forEach(element => {
-                const tournament = Tournament.fromJson(element);
-                client.tournaments.set(element.id, tournament);
-            })
 
             setInterval(() => {
                 const now = Math.floor(Date.now() / 1000);
