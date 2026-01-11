@@ -36,8 +36,6 @@ class Lan {
         this.endedAt = Math.floor(Date.now() / 1000) + (addDays * 24 * 60 * 60) 
     }
 
-    static getLanByName() { return }
-
     getAgendaLink() {
         const getUrl = function(title, desc, locat, start, end) {
             const uri = new URL('https://www.google.com/calendar/render');
