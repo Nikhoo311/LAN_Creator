@@ -2,6 +2,7 @@ const dayjs = require("dayjs");
 const { URL, URLSearchParams } = require("url");
 const { decrypt } = require("../functions/utils/crypt");
 const lanModel = require("../schemas/lan");
+const lanStatisticModel = require("../schemas/LanStatsSchema");
 
 class Lan {
     /**
@@ -13,6 +14,7 @@ class Lan {
      * @param {Date} end
      */
     static model = lanModel;
+    static statisticModel = lanStatisticModel;
     constructor(name, channels, config, id = null, start = null, end = null) {
         this.id = id;
         this.name = name;
@@ -21,6 +23,7 @@ class Lan {
         // Get the timestamp in seconds
         this.startedAt = start !== null ? start : this.start();
         this.endedAt = end;
+        this.statistics = null;
     }
 
     start() {
@@ -35,8 +38,6 @@ class Lan {
     end(addDays = 0) {
         this.endedAt = Math.floor(Date.now() / 1000) + (addDays * 24 * 60 * 60) 
     }
-
-    static getLanByName() { return }
 
     getAgendaLink() {
         const getUrl = function(title, desc, locat, start, end) {
@@ -56,6 +57,32 @@ class Lan {
         // end = default 3 days
         const estimatedDate = Math.floor(Date.now() / 1000) + (3 * 24 * 60 * 60);
         return getUrl(this.name, description, decrypt(this.config.address, process.env.TOKEN), dayjs(this.startedAt * 1000).format('YYYYMMDDTHHmmss'), dayjs(estimatedDate * 1000).format('YYYYMMDDTHHmmss'));
+    }
+
+    /**
+     * Get or create LAN statistics
+     * @param {Date|Number} date
+     * @returns {Promise<Object>}
+     */
+    async getOrCreateStats(date = null) {
+        const formattedDate = dayjs(date ?? this.startedAt * 1000).format("YYYY-MM-DD");
+
+        // Try to find existing stats
+        let statistic = await Lan.statisticModel.findOne({
+            lanName: this.name,
+            date: formattedDate,
+        });
+
+        // Create if not found
+        if (!statistic) {
+            statistic = await Lan.statisticModel.create({
+                lanName: this.name,
+                date: formattedDate,
+            });
+        }
+
+        this.statistics = statistic;
+        return statistic;
     }
 }
 
