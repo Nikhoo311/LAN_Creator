@@ -9,9 +9,15 @@ module.exports = {
     once: true,
     async execute(client) {     
         try {
-            const lans = await LanModel.find();
+            const lans = await LanModel.find().populate("config");
 
-            lans.map(lan => client.lans.set(lan._id, new Lan(lan.name, lan.channels, lan.config, lan._id, Math.floor(lan.startedAt / 1000), Math.floor(lan.endedAt / 1000))))
+            // lans.map(lan => client.lans.set(lan._id, new Lan(lan.name, lan.channels, lan.config, lan._id, Math.floor(lan.startedAt / 1000), Math.floor(lan.endedAt / 1000))))
+            for (const lanDoc of lans) {
+                const lan = new Lan(lanDoc.name, lanDoc.channels, lanDoc.config, lanDoc._id.toString(), Math.floor(lanDoc.startedAt / 1000), Math.floor(lanDoc.endedAt / 1000))
+                await lan.getOrCreateStats();
+                client.lans.set(lan.id, lan);
+            }
+            console.log(client.lans);
             
             const configs = await ConfigModel.find();
             configs.map(config => client.configs.set(config.name, config))
