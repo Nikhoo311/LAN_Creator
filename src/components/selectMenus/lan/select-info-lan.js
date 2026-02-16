@@ -7,14 +7,7 @@ module.exports = {
     },
     async execute(interaction, client) {
         const info = interaction.values[0];
-        let lan = undefined;
-
-        for (const [lanObjectId, lanData] of client.lans.entries()) {
-            if (lanObjectId.toString() === info) {
-                lan = lanData;
-                break; 
-            }
-        }
+        let lan = client.lans.get(info);
         
         const message = `# Espace d'informations des LANs actives\nCeci est un espace qui permet d'avoir accès à toutes les informations relative à une LAN en cours. Il est **important** de savoir que s'il y a qu'une seule LAN en cours, ses informations et les actions possible dessus s'afficherons automatiquement. Dans le cas contraire, il suffira de sélectionner une LAN.\n\n# Informations sur \`${lan.name}\``
 
