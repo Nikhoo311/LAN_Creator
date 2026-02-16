@@ -9,15 +9,17 @@ class Lan {
      * @param {String} name
      * @param {Array<object>} channels 
      * @param {object} config
+     * @param {Array<string>}
      * @param {Date} start
      * @param {Date} end
      */
     static model = lanModel;
-    constructor(name, channels, config, id = null, start = null, end = null) {
+    constructor(name, channels, config, participants, id = null, start = null, end = null) {
         this.id = id;
         this.name = name;
         this.channels = channels;
         this.config = config;
+        this.participants = participants;
         // Get the timestamp in seconds
         this.startedAt = start !== null ? start : this.start();
         this.endedAt = end;
