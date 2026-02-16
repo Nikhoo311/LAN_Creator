@@ -59,6 +59,18 @@ class Lan {
         const estimatedDate = Math.floor(Date.now() / 1000) + (3 * 24 * 60 * 60);
         return getUrl(this.name, description, decrypt(this.config.address, process.env.TOKEN), dayjs(this.startedAt * 1000).format('YYYYMMDDTHHmmss'), dayjs(estimatedDate * 1000).format('YYYYMMDDTHHmmss'));
     }
+
+    /**
+     * Add a participant to a LAN
+     * @param {string} discordId The discord ID of the participant of the current lan
+     */
+    async addParticipants(discordId) {
+        this.participants.push(discordId);
+
+        await Lan.model.findByIdAndUpdate(this.id, {
+            participants: this.participants
+        })
+    }
 }
 
 module.exports = { Lan }

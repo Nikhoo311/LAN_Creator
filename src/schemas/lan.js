@@ -13,7 +13,7 @@ const LanSchema = new mongoose.Schema({
 
   startedAt: { type: Date, required: true },
   endedAt: { type: Date, default: null },
-  paricipants: { type: mongoose.Schema.Types.Array, default: [] },
+  participants: { type: mongoose.Schema.Types.Array, default: [] },
 
 }, { timestamps: true });
 
