@@ -9,15 +9,17 @@ class Lan {
      * @param {String} name
      * @param {Array<object>} channels 
      * @param {object} config
+     * @param {Array<string>}
      * @param {Date} start
      * @param {Date} end
      */
     static model = lanModel;
-    constructor(name, channels, config, id = null, start = null, end = null) {
+    constructor(name, channels, config, participants, id = null, start = null, end = null) {
         this.id = id;
         this.name = name;
         this.channels = channels;
         this.config = config;
+        this.participants = participants;
         // Get the timestamp in seconds
         this.startedAt = start !== null ? start : this.start();
         this.endedAt = end;
@@ -56,6 +58,18 @@ class Lan {
         // end = default 3 days
         const estimatedDate = Math.floor(Date.now() / 1000) + (3 * 24 * 60 * 60);
         return getUrl(this.name, description, decrypt(this.config.address, process.env.TOKEN), dayjs(this.startedAt * 1000).format('YYYYMMDDTHHmmss'), dayjs(estimatedDate * 1000).format('YYYYMMDDTHHmmss'));
+    }
+
+    /**
+     * Add a participant to a LAN
+     * @param {string} discordId The discord ID of the participant of the current lan
+     */
+    async addParticipants(discordId) {
+        this.participants.push(discordId);
+
+        await Lan.model.findByIdAndUpdate(this.id, {
+            participants: this.participants
+        })
     }
 }
 

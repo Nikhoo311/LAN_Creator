@@ -12,7 +12,8 @@ const LanSchema = new mongoose.Schema({
   channels: [LanChannelSchema],
 
   startedAt: { type: Date, required: true },
-  endedAt: { type: Date, default: null }
+  endedAt: { type: Date, default: null },
+  participants: { type: mongoose.Schema.Types.Array, default: [] },
 
 }, { timestamps: true });
 

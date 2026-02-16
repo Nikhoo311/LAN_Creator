@@ -60,8 +60,8 @@ module.exports = {
                 });
 
             const channels = await Promise.all(textChannels);
+            const generalChannel = guild.channels.cache.get(channels.find(ch => ch.name == "général").channelId);
             if (fileImage) {
-                const generalChannel = guild.channels.cache.get(channels.find(ch => ch.name == "général").channelId);
                 await generalChannel.send({ files: [fileImage] });
             }
 
@@ -124,11 +124,28 @@ module.exports = {
                 startedAt: new Date(),
                 endedAt: null,
             })
-            const lan = new Lan(nameLAN, channelsArray, config, obj._id)
+            const lan = new Lan(nameLAN, channelsArray, config, [], obj._id)
+
             const btnGoogleAgenda = new ButtonBuilder()
                 .setLabel("Rappel Google Agenda")
                 .setStyle(ButtonStyle.Link)
                 .setURL(lan.getAgendaLink())
+            
+            const message = `## Inscription pour la ${lan.name}\nTu veux participer à la LAN ?\nOn a mis en place un système d'inscription super simple !\n\n> 👉 Clique sur le bouton ci-dessous pour réserver ta place et rejoindre l'aventure !`
+            const participantsEmbed = new EmbedBuilder()
+                .setColor(color.red)
+                .setDescription("Liste des participants :")
+                .setFooter({ text: `Inscription pour la ${lan.name}`})
+                .setTimestamp();
+
+            const participantsButton = new ButtonBuilder()
+                .setCustomId("add-participants-btn")
+                .setLabel("Participer a la LAN")
+                .setStyle(ButtonStyle.Primary)
+                .setEmoji("<:add_participant:1472756154730938388>");
+
+            await generalChannel.setTopic(lan.id.toString());
+            await generalChannel.send({ content: message, embeds: [participantsEmbed], components: [new ActionRowBuilder().addComponents(participantsButton)] });
 
             await informationChannel.send({ embeds: [informationEmbed], components: [ new ActionRowBuilder().addComponents(btnaddress).addComponents(btnGoogleAgenda) ] })
             await informationChannel.send({ embeds: [logistiqueEmbed], components: googlesheetLink ? [ new ActionRowBuilder().addComponents(btnGoogleSheet) ] : [] })
