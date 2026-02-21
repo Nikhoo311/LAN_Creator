@@ -1,6 +1,6 @@
 const { PermissionFlagsBits, EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle, ChannelType, MessageFlags, AttachmentBuilder } = require("discord.js");
 const { color } = require('../../../../config/config.json');
-const { getGoogleMapsLink } = require("../../../functions/utils/getLinkaddress.js");
+const { getGoogleMapsLink } = require("../../../functions/utils/getLinkAddress.js");
 const { Lan } = require("../../../class/Lan.js")
 const LanModel = require("../../../schemas/lan.js");
 const { decrypt } = require("../../../functions/utils/crypt.js");
