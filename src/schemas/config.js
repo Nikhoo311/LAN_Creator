@@ -7,6 +7,7 @@ const ChannelSchema = new mongoose.Schema({
 });
 
 const ConfigSchema = new mongoose.Schema({
+  guildId: { type: String, required: true },
   name: { type: String, required: true },
   address: { type: String, required: true },
   hours: { type: String, required: true },
@@ -21,5 +22,7 @@ const ConfigSchema = new mongoose.Schema({
     ]
   }
 });
+
+ConfigSchema.index({ guildId: 1, name: 1 }, { unique: true });
 
 module.exports = mongoose.model("config", ConfigSchema);

@@ -1,5 +1,6 @@
-const { TextInputBuilder, TextInputStyle, ModalBuilder, LabelBuilder } = require("discord.js");
+const { TextInputBuilder, TextInputStyle, ModalBuilder, LabelBuilder, MessageFlags } = require("discord.js");
 const { decrypt } = require("../../../functions/utils/crypt");
+const { getGuildConfig } = require("../../../functions/utils/guildCache");
 
 module.exports = {
     data: {
@@ -8,7 +9,10 @@ module.exports = {
     async execute(interaction, client) {
         const info = interaction.values[0]
 
-        const config = client.configs.get(info);
+        const config = getGuildConfig(client, info, interaction.guildId);
+        if (!config) {
+            return interaction.reply({ content: "❌ Configuration introuvable sur ce serveur.", flags: [MessageFlags.Ephemeral] });
+        }
         
         const modal = new ModalBuilder()
             .setCustomId("modif-config")
@@ -61,7 +65,7 @@ module.exports = {
 
         modal.addLabelComponents(textInputLabel, textAddressLabel, textHoursLabel, textMaterialLabel)
         
-        client.placeholder.set(interaction.applicationId, textInput.data.placeholder)
+        client.placeholder.set(interaction.applicationId, String(config._id));
         return await interaction.showModal(modal)
     }
 }

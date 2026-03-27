@@ -1,8 +1,8 @@
-const { EmbedBuilder, ButtonBuilder, ActionRowBuilder, ButtonStyle } = require('discord.js');
+const { EmbedBuilder, ButtonBuilder, ActionRowBuilder, ButtonStyle, MessageFlags } = require('discord.js');
 const { color } = require("../../../../config/config.json");
-const Config = require("../../../schemas/config");
 const { createChannelSelectMenu } = require("../../../functions/utils/createChannelSelectMenu");
 const { Types } = require('mongoose');
+const { getGuildConfig, setConfigCache } = require("../../../functions/utils/guildCache");
 
 module.exports = {
     data: {
@@ -10,7 +10,11 @@ module.exports = {
         multi: "modal-delete-channel"
     },
     async execute(interaction, client) {
-        let currentConfig = client.configs.get(interaction.message.embeds[0].fields[0].value);
+        const configIdStr = interaction.message.embeds[0].footer?.text;
+        let currentConfig = getGuildConfig(client, configIdStr, interaction.guildId);
+        if (!currentConfig) {
+            return interaction.reply({ content: "❌ Configuration introuvable.", flags: [MessageFlags.Ephemeral] });
+        }
         
         if (interaction.customId === "modal-create-channel") {
             const newChannelName = interaction.fields.getTextInputValue("new-channel-name");
@@ -23,12 +27,12 @@ module.exports = {
             };
 
             currentConfig.channels.push(newChannel);
-            client.configs.set(currentConfig.name, currentConfig);
+            setConfigCache(client, currentConfig);
         } 
         else {
             const channelsNames = interaction.fields.getStringSelectValues("select-channel-delete");
             currentConfig.channels = currentConfig.channels.filter(ch => !channelsNames.includes(ch.name));
-            client.configs.set(currentConfig.name, currentConfig);
+            setConfigCache(client, currentConfig);
         }
         const configChannelsUpdateEmbed = new EmbedBuilder()
             .setColor(color.orange)

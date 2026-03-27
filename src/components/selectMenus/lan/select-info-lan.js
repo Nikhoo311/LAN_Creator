@@ -1,5 +1,6 @@
 const { EmbedBuilder, ButtonBuilder, ButtonStyle, ActionRowBuilder, MessageFlags } = require("discord.js");
 const { color } = require("../../../../config/config.json");
+const { getLanForGuild } = require("../../../functions/utils/guildCache");
 
 module.exports = {
     data: {
@@ -7,7 +8,10 @@ module.exports = {
     },
     async execute(interaction, client) {
         const info = interaction.values[0];
-        let lan = client.lans.get(info);
+        let lan = getLanForGuild(client, info, interaction.guildId);
+        if (!lan) {
+            return interaction.reply({ content: "❌ LAN introuvable sur ce serveur.", flags: [MessageFlags.Ephemeral] });
+        }
         
         const message = `# Espace d'informations des LANs actives\nCeci est un espace qui permet d'avoir accès à toutes les informations relative à une LAN en cours. Il est **important** de savoir que s'il y a qu'une seule LAN en cours, ses informations et les actions possible dessus s'afficherons automatiquement. Dans le cas contraire, il suffira de sélectionner une LAN.\n\n# Informations sur \`${lan.name}\``
 

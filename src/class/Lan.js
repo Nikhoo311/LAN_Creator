@@ -14,8 +14,9 @@ class Lan {
      * @param {Date} end
      */
     static model = lanModel;
-    constructor(name, channels, config, participants, id = null, start = null, end = null) {
+    constructor(name, channels, config, participants, id = null, start = null, end = null, guildId = null) {
         this.id = id;
+        this.guildId = guildId;
         this.name = name;
         this.channels = channels;
         this.config = config;

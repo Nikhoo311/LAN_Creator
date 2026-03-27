@@ -1,4 +1,5 @@
-const { EmbedBuilder } = require("discord.js");
+const { EmbedBuilder, MessageFlags } = require("discord.js");
+const { getGuildConfig, setConfigCache } = require("../../../functions/utils/guildCache");
 
 module.exports = {
     data: {
@@ -9,7 +10,10 @@ module.exports = {
         const channelsNames = interaction.values;
 
         const placeholder = client.placeholder.get(interaction.applicationId);
-        let currentConfig = client.configs.get(placeholder);
+        let currentConfig = getGuildConfig(client, placeholder, interaction.guildId);
+        if (!currentConfig) {
+            return interaction.reply({ content: "❌ Configuration introuvable.", flags: [MessageFlags.Ephemeral] });
+        }
 
         currentConfig.channels = currentConfig.channels.map(ch => {
             if (!channelsNames.includes(ch.name)) return ch;
@@ -19,7 +23,7 @@ module.exports = {
                 active: interaction.customId === "select-modif-status-channel-active"
             };
         });
-        client.configs.set(currentConfig.name, currentConfig);
+        setConfigCache(client, currentConfig);
         
         let rawConfigChannels = interaction.message.embeds[1].description.split("\n");
         channelsNames.forEach(chName => {

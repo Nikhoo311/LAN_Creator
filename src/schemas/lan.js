@@ -6,6 +6,7 @@ const LanChannelSchema = new mongoose.Schema({
 });
 
 const LanSchema = new mongoose.Schema({
+  guildId: { type: String, required: true },
   name: { type: String, required: true },
   config: { type: mongoose.Schema.Types.ObjectId, ref: "config", required: true },
 

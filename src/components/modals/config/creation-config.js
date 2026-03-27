@@ -2,6 +2,7 @@ const { MessageFlags } = require('discord.js');
 const Config = require('../../../schemas/config');
 const { encrypt } = require("../../../functions/utils/crypt");
 const isValidHourFormat = require('../../../functions/utils/isValidHourFormat');
+const { hasConfigNameForGuild, setConfigCache } = require("../../../functions/utils/guildCache");
 
 module.exports = {
     data: {
@@ -18,22 +19,21 @@ module.exports = {
         }
 
         try {
-            const alreadyExist = client.configs.has(configName);
-
-            if (alreadyExist) {
-                return interaction.reply({ 
+            if (hasConfigNameForGuild(client, interaction.guildId, configName)) {
+                return await interaction.reply({ 
                     content: `❌ Une configuration au nom de \`${configName}\` existe déjà...`, 
                     flags: [MessageFlags.Ephemeral] 
                 });
             }
             const createdConfig = await Config.create({
+                guildId: interaction.guildId,
                 name: configName,
                 address: encrypt(configaddress, process.env.TOKEN),
                 hours: configHours,
                 materials: configMaterials ?? "Aucun",
             });
 
-            client.configs.set(createdConfig.name, createdConfig);
+            setConfigCache(client, createdConfig);
 
             interaction.reply({ 
                 content: `✅ La configuration \`${configName}\` a bien été créée avec succès !\n# Informations\n* Pour modifier les salons créer lors de la création d'une LAN, cliquez sur le bouton \`Modifier\`.\n* Les salons ${createdConfig.channels.map(ch => `**${ch.name}**`).join(", ")} ont été créés par défaut.`, 

@@ -33,10 +33,20 @@ module.exports = (client) => {
             const start = Date.now();
             logger.slashCommand("Refresh de l'application (/) commandes");
 
-            await rest.put(
-                Routes.applicationGuildCommands(clientID, serverID),
-                { body: commandArray },
-            );
+            if (process.env.DEV_MODE === "true") {
+                logger.log("Mode développeur actif !")
+                await rest.put(
+                    Routes.applicationGuildCommands(clientID, serverID),
+                    { body: commandArray },
+                );
+            }
+            else {
+                logger.warn("Mode production : les commandes peuvent se réinitialiser dans les 1h minimum.")
+                await rest.put(
+                    Routes.applicationCommands(clientID),
+                    { body: commandArray },
+                );
+            }
 
             const end = Date.now();
             const duration = end - start;
