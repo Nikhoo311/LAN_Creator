@@ -13,12 +13,7 @@ module.exports = {
         
         if (!currentConfig) {
             client.placeholder.delete(interaction.applicationId);
-            return interaction.update({
-                content: "❌ Configuration introuvable sur ce serveur.",
-                embeds: [],
-                components: [],
-                flags: [MessageFlags.Ephemeral],
-            });
+            return await interaction.update({ content: "❌ Configuration introuvable sur ce serveur.", embeds: [], components: [], flags: [MessageFlags.Ephemeral] })
         }
         const fields = interaction.message.embeds[0].fields.filter(field => field.value != '\u200b');
 
@@ -37,12 +32,7 @@ module.exports = {
             );
 
             if (!updatedConfig) {
-                return interaction.update({ 
-                    content: `❌ Impossible de trouver cette configuration.`, 
-                    embeds: [], 
-                    components: [], 
-                    flags: [MessageFlags.Ephemeral] 
-                });
+                return await interaction.update({ content: `❌ Impossible de trouver cette configuration.`, embeds: [], components: [], flags: [MessageFlags.Ephemeral] });
             }
             setConfigCache(client, updatedConfig);
 
@@ -50,10 +40,7 @@ module.exports = {
 
         } catch (error) {
             console.error(error);
-            interaction.reply({ 
-                content: "❌ Une erreur est survenue lors de la mise à jour de la configuration !", 
-                flags: [MessageFlags.Ephemeral] 
-            });
+            await interaction.reply({ content: "❌ Une erreur est survenue lors de la mise à jour de la configuration !", flags: [MessageFlags.Ephemeral] });
         }
         client.placeholder.delete(interaction.applicationId);
     }
