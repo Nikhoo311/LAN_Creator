@@ -1,5 +1,5 @@
 const { MessageFlags, EmbedBuilder } = require('discord.js');
-const { Types } = require('mongoose');
+const { getLanForGuild } = require("../../../functions/utils/guildCache");
 
 module.exports = {
     data: {
@@ -8,7 +8,10 @@ module.exports = {
     async execute (interaction, client) {
         const user = interaction.user;
         const lanId = interaction.channel.topic
-        const lan = client.lans.get(lanId);
+        const lan = getLanForGuild(client, lanId, interaction.guildId);
+        if (!lan) {
+            return interaction.reply({ content: "❌ LAN introuvable sur ce serveur.", flags: [MessageFlags.Ephemeral] });
+        }
 
         if (lan.participants.includes(user.id)) {
             return await interaction.reply({ content: `❌ Impossible tu participes déjà à la LAN **${lan.name}**`, flags: [MessageFlags.Ephemeral] });

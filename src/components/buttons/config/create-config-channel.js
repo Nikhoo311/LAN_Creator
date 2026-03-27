@@ -1,5 +1,6 @@
-const { ModalBuilder, TextInputBuilder, TextInputStyle, ActionRowBuilder, LabelBuilder } = require("discord.js");
+const { ModalBuilder, TextInputBuilder, TextInputStyle, ActionRowBuilder, LabelBuilder, MessageFlags } = require("discord.js");
 const { createChannelSelectMenu } = require("../../../functions/utils/createChannelSelectMenu");
+const { getGuildConfig } = require("../../../functions/utils/guildCache");
 
 module.exports = {
     data: {
@@ -8,8 +9,11 @@ module.exports = {
     },
 
     async execute(interaction, client) {
-        const configName = interaction.message.embeds[0].fields[0].value;
-        const config = client.configs.get(configName);
+        const configIdStr = interaction.message.embeds[0].footer?.text;
+        const config = getGuildConfig(client, configIdStr, interaction.guildId);
+        if (!config) {
+            return interaction.reply({ content: "❌ Configuration introuvable.", flags: [MessageFlags.Ephemeral] });
+        }
 
         const isDelete = interaction.customId === "delete-config-channel";
 

@@ -1,20 +1,45 @@
 const logger = require("../functions/utils/Logger");
-const { serverID } = require("../../config/config.json");
 const { Lan } = require("../class/Lan");
 const LanModel = require("../schemas/lan");
 const ConfigModel = require("../schemas/config");
+const GuildSettingsModel = require("../schemas/guildSettings");
+const { configId } = require("../functions/utils/guildCache");
 
 module.exports = {
     name: "clientReady",
     once: true,
-    async execute(client) {     
+    async execute(client) {
         try {
-            const lans = await LanModel.find();
+            const lans = await LanModel.find().populate("config");
 
-            lans.map(lan => client.lans.set(lan._id.toString(), new Lan(lan.name, lan.channels, lan.config, lan.participants, lan._id.toString(), Math.floor(lan.startedAt / 1000), Math.floor(lan.endedAt / 1000))))
-            
+            for (const lan of lans) {
+                if (!lan.guildId) continue;
+                const startedSec =
+                    lan.startedAt instanceof Date
+                        ? Math.floor(lan.startedAt.getTime() / 1000)
+                        : Math.floor(Number(lan.startedAt) / 1000);
+                const endedSec =
+                    lan.endedAt != null
+                        ? lan.endedAt instanceof Date
+                            ? Math.floor(lan.endedAt.getTime() / 1000)
+                            : Math.floor(Number(lan.endedAt) / 1000)
+                        : null;
+                client.lans.set(
+                    lan._id.toString(),
+                    new Lan(lan.name, lan.channels, lan.config, lan.participants, lan._id.toString(), startedSec, endedSec, lan.guildId)
+                );
+            }
+
             const configs = await ConfigModel.find();
-            configs.map(config => client.configs.set(config.name, config))
+            for (const config of configs) {
+                if (!config.guildId) continue;
+                client.configs.set(configId(config), config);
+            }
+
+            const guildSettings = await GuildSettingsModel.find();
+            for (const gs of guildSettings) {
+                client.guildChosenConfig.set(gs.guildId, gs.chosenConfigName || "");
+            }
 
             setInterval(() => {
                 const now = Math.floor(Date.now() / 1000);
@@ -22,25 +47,31 @@ module.exports = {
                 client.lans.forEach(async (lan) => {
                     if (lan.endedAt && now >= lan.endedAt) {
                         const channels = lan.channels;
-                        const vocalChannels = channels.filter(ch => ch.name.toLowerCase().includes("vocal"))
-                        const textChannels = channels.filter(ch => ch.name.toLowerCase() !== "photos" && !vocalChannels.includes(ch));
-                        
-                        // Delete voices channels
-                        for (let i = 0; i < vocalChannels.length; i++) {
-                            const element = vocalChannels[i];
-                            client.channels.cache.get(element.channelId).delete()
+                        const vocalChannels = channels.filter((ch) => ch.name.toLowerCase().includes("vocal"));
+                        const textChannels = channels.filter(
+                            (ch) => ch.name.toLowerCase() !== "photos" && !vocalChannels.includes(ch)
+                        );
+
+                        for (const element of vocalChannels) {
+                            const ch = client.channels.cache.get(element.channelId);
+                            await ch?.delete().catch(() => {});
                         }
 
-                        textChannels.forEach(ch => {
-                            client.channels.cache.get(ch.channelId).delete()
-                        })
-                        client.channels.cache.get(channels.find(ch => ch.name.toLowerCase() == "photos").channelId).permissionOverwrites.edit(client.guilds.cache.get(serverID).roles.everyone, { SendMessages: false })
+                        for (const ch of textChannels) {
+                            const discordCh = client.channels.cache.get(ch.channelId);
+                            await discordCh?.delete().catch(() => {});
+                        }
+
+                        const photos = channels.find((ch) => ch.name.toLowerCase() == "photos");
+                        if (photos?.channelId) {
+                            const photosCh = client.channels.cache.get(photos.channelId);
+                            await photosCh.permissionOverwrites.edit(photosCh.guild.roles.everyone, { SendMessages: false }).catch(() => {});
+                        }
 
                         client.lans.delete(lan.id)
                         await LanModel.findByIdAndDelete(lan.id);
                     }
                 });
-                
             }, 60 * 100);
         } catch (error) {
             logger.error(error)

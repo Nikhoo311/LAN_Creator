@@ -1,5 +1,6 @@
 const { EmbedBuilder, MessageFlags } = require("discord.js");
 const LanModel = require("../../../schemas/lan");
+const { lansForGuild } = require("../../../functions/utils/guildCache");
 
 module.exports = {
     data: {
@@ -10,9 +11,12 @@ module.exports = {
 
         const message = `# Espace d'archivage des LANs : \`${lanName}\`\nCeci est un espace qui permet d'archiver une lan facilement en un clic ! La LAN \`${lanName}\` se clotura dans les 48h qui suit la demande d'archivage.\n\n# Informations\n\`\`\`diff\n+ ${lanName} à bien été archiver avec succès !\`\`\``
         
-        const lan = await client.lans.find((lan) => lan.name === lanName);
+        const lan = lansForGuild(client, interaction.guildId).find((l) => l.name === lanName);
+        if (!lan) {
+            return interaction.update({ content: "❌ LAN introuvable sur ce serveur.", embeds: [], components: [], flags: [MessageFlags.Ephemeral] });
+        }
         
-        lan.end(2);
+        lan.end();
         // Update in collection
         client.lans.delete(lan.id);
         client.lans.set(lan.id, lan);

@@ -1,6 +1,7 @@
 const { MessageFlags } = require("discord.js");
 const Config = require("../../../schemas/config");
 const { encrypt } = require("../../../functions/utils/crypt");
+const { getGuildConfig, setConfigCache } = require("../../../functions/utils/guildCache");
 
 module.exports = {
     data: {
@@ -8,12 +9,22 @@ module.exports = {
     },
     async execute (interaction, client) {
         const placeholder = client.placeholder.get(interaction.applicationId);
-        const currentConfig = client.configs.get(placeholder);
+        const currentConfig = getGuildConfig(client, placeholder, interaction.guildId);
+        
+        if (!currentConfig) {
+            client.placeholder.delete(interaction.applicationId);
+            return interaction.update({
+                content: "❌ Configuration introuvable sur ce serveur.",
+                embeds: [],
+                components: [],
+                flags: [MessageFlags.Ephemeral],
+            });
+        }
         const fields = interaction.message.embeds[0].fields.filter(field => field.value != '\u200b');
 
         try {
             const updatedConfig = await Config.findOneAndUpdate(
-                { name: placeholder },
+                { _id: placeholder, guildId: interaction.guildId },
                 {
                     name: fields[0].value,
                     address: encrypt(fields[2].value, process.env.TOKEN),
@@ -27,16 +38,15 @@ module.exports = {
 
             if (!updatedConfig) {
                 return interaction.update({ 
-                    content: `❌ Impossible de trouver une configuration nommée \`${placeholder}\`.`, 
+                    content: `❌ Impossible de trouver cette configuration.`, 
                     embeds: [], 
                     components: [], 
                     flags: [MessageFlags.Ephemeral] 
                 });
             }
-            client.configs.delete(placeholder);
-            client.configs.set(updatedConfig.name, updatedConfig);
+            setConfigCache(client, updatedConfig);
 
-            interaction.update({ content: `✅ La configuration \`${currentConfig.name}\` a bien été modifiée !`, embeds: [], components: [], flags: [MessageFlags.Ephemeral] });
+            return await interaction.update({ content: `✅ La configuration \`${updatedConfig.name}\` a bien été modifiée !`, embeds: [], components: [], flags: [MessageFlags.Ephemeral] });
 
         } catch (error) {
             console.error(error);

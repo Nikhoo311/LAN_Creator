@@ -1,13 +1,17 @@
 const { ModalBuilder, TextInputBuilder, TextInputStyle, LabelBuilder, StringSelectMenuBuilder, StringSelectMenuOptionBuilder, MessageFlags, FileUploadBuilder } = require("discord.js");
 const { decrypt } = require("../../../functions/utils/crypt");
-const { readFileSync } = require('fs');
+const { configsForGuild, getChosenConfigName } = require("../../../functions/utils/guildCache");
 
 module.exports = {
     data: {
         name: "create-lan-btn"
     },
     async execute (interaction, client) {
-        if (client.configs.size === 0) return interaction.reply({ content: "❌ Impossible de créer une LAN si aucune configuration est créée... Clique sur le bouton `Configurer`.", flags: [MessageFlags.Ephemeral] })    
+        if (!interaction.guildId) {
+            return interaction.reply({ content: "❌ Cette action doit être utilisée sur un serveur.", flags: [MessageFlags.Ephemeral] });
+        }
+        const guildConfigs = configsForGuild(client, interaction.guildId);
+        if (guildConfigs.length === 0) return interaction.reply({ content: "❌ Impossible de créer une LAN si aucune configuration est créée... Clique sur le bouton `Configurer`.", flags: [MessageFlags.Ephemeral] })    
         const modal = new ModalBuilder()
             .setCustomId("lan_create")
             .setTitle("Création LAN")
@@ -22,21 +26,21 @@ module.exports = {
             .setLabel("Quel est le nom de LAN ?")
 
         
-        const chosenConfig = JSON.parse(readFileSync("./config/choose-config.json", "utf-8")).config_chosen;
+        const chosenName = getChosenConfigName(client, interaction.guildId);
         const configName = new StringSelectMenuBuilder()    
             .setCustomId("lan_config_name")
             .setMinValues(1)
             .setMaxValues(1)
             .setPlaceholder("Choisir une configuration disponible...")
-            .setRequired(!client.configs.get(chosenConfig))
+            .setRequired(!guildConfigs.some((c) => c.name === chosenName))
             .setOptions(
-                client.configs.map(config => {
+                guildConfigs.map(config => {
                     return new StringSelectMenuOptionBuilder()
                         .setEmoji({name: '🏠'})
                         .setLabel(config.name)
-                        .setValue(config.name)
+                        .setValue(String(config._id))
                         .setDescription(decrypt(config.address, process.env.TOKEN))
-                        .setDefault(config.name == chosenConfig)
+                        .setDefault(config.name === chosenName)
                 })
            )
         

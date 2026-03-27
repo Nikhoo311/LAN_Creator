@@ -4,6 +4,7 @@ const { getGoogleMapsLink } = require("../../../functions/utils/getLinkAddress.j
 const { Lan } = require("../../../class/Lan.js")
 const LanModel = require("../../../schemas/lan.js");
 const { decrypt } = require("../../../functions/utils/crypt.js");
+const { getGuildConfig } = require("../../../functions/utils/guildCache");
 
 module.exports = {
     data: {
@@ -11,7 +12,12 @@ module.exports = {
     },
     async execute(interaction, client) {
         const nameLAN = interaction.fields.getTextInputValue("lan_name");
-        const config = client.configs.get(interaction.fields.getStringSelectValues("lan_config_name")[0]);
+        const configId = interaction.fields.getStringSelectValues("lan_config_name")[0];
+        const config = getGuildConfig(client, configId, interaction.guildId);
+        if (!config) {
+            return await interaction.reply({ content: "❌ Configuration introuvable sur ce serveur.", flags: [MessageFlags.Ephemeral] });
+        }
+
         const googlesheetLink = interaction.fields.getTextInputValue('lan_google_sheet') || null;
         const nbVocaux = Number(interaction.fields.getTextInputValue("lan_nb_voc")) || 1;
         const fileImage = interaction.fields.getUploadedFiles("file_flyer_image", false)?.first() || null;
@@ -118,13 +124,15 @@ module.exports = {
             const channelsArray = [...channels, ...vcChannels];
 
             const obj = await Lan.model.create({
+                guildId: interaction.guildId,
                 name: nameLAN,
                 config: config._id,
                 channels: channelsArray,
                 startedAt: new Date(),
                 endedAt: null,
             })
-            const lan = new Lan(nameLAN, channelsArray, config, [], obj._id)
+            const startedSec = Math.floor(new Date(obj.startedAt).getTime() / 1000);
+            const lan = new Lan(nameLAN, channelsArray, config, [], obj._id.toString(), startedSec, null, interaction.guildId)
 
             const btnGoogleAgenda = new ButtonBuilder()
                 .setLabel("Rappel Google Agenda")

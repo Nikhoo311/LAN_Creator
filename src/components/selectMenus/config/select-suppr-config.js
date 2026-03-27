@@ -1,16 +1,25 @@
 const { EmbedBuilder, MessageFlags } = require("discord.js");
 const { color } = require("../../../../config/config.json");
 const Config = require("../../../schemas/config");
+const { removeConfigCache, getGuildConfig } = require("../../../functions/utils/guildCache");
 
 module.exports = {
     data: {
         name: "select-suppr-config"
     },
     async execute(interaction, client) {
-        const selectedNames = interaction.values;
+        const selectedIds = interaction.values;
         try {
-            // Suppression de toutes les configs dont le name est dans selectedNames
-            const result = await Config.deleteMany({ name: { $in: selectedNames } });
+            const labels = [];
+            for (const id of selectedIds) {
+                const doc = getGuildConfig(client, id, interaction.guildId);
+                if (doc) labels.push(doc.name);
+            }
+
+            const result = await Config.deleteMany({
+                guildId: interaction.guildId,
+                _id: { $in: selectedIds },
+            });
 
             if (result.deletedCount === 0) {
                 return interaction.update({
@@ -21,10 +30,10 @@ module.exports = {
                 });
             }
 
-            selectedNames.forEach(conf => {
-                client.configs.delete(conf)
-            });
-            const names = selectedNames.map(name => `* **${name}**`).join('\n');
+            for (const id of selectedIds) {
+                removeConfigCache(client, id);
+            }
+            const names = labels.map((name) => `* **${name}**`).join('\n');
 
             const embedSuppr = new EmbedBuilder()
                 .setColor(color.red)

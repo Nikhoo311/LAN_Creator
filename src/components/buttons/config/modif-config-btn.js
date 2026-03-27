@@ -1,34 +1,35 @@
 const { ActionRowBuilder, StringSelectMenuOptionBuilder, EmbedBuilder, StringSelectMenuBuilder, MessageFlags } = require("discord.js");
 const { color } = require("../../../../config/config.json");
+const { configsForGuild } = require("../../../functions/utils/guildCache");
 
 module.exports = {
     data: {
         name: "modif-config-btn"
     },
     async execute (interaction, client) {
-        const configs = client.configs;
-        if (configs.size === 0) {
+        const configs = configsForGuild(client, interaction.guildId);
+        if (configs.length === 0) {
             return interaction.reply({ content: `❌ Vous ne pouvez pas modifier une configuration s'il n'y existe aucune dans la base de données... `, flags: [MessageFlags.Ephemeral] })
         }
         
         const message = `# Modification de configuration\nSi tu veux, modifier une configuration de LAN, il suffit juste de sélection le nom de la configuration de laquelle tu veux effectuer les modifications !\nFait ton choix ! 😉`
 
-        let sConfig = configs.size > 1 ? "(s)" : "";
+        let sConfig = configs.length > 1 ? "(s)" : "";
         const namesInBD = configs.map(lan => `* **${lan.name}**`).join("\n")
 
         const embedConfig = new EmbedBuilder()
             .setColor(color.green)
-            .setDescription(`Je dispose de ${configs.size} configuration${sConfig} dans ma base de donnée\n${namesInBD}`)
+            .setDescription(`Je dispose de ${configs.length} configuration${sConfig}\n${namesInBD}`)
         
         const selectInput = new StringSelectMenuBuilder()
             .setCustomId("select-modif-config")
             .setMaxValues(1)
             .setMinValues(1)
         
-        configs.map(k => {
+        configs.forEach((k) => {
             selectInput.addOptions(new StringSelectMenuOptionBuilder({
                 label: k.name,
-                value: k.name 
+                value: String(k._id)
             }).setEmoji('🏠'))
         })
         interaction.reply({ content: message, embeds: [embedConfig], components: [new ActionRowBuilder().addComponents(selectInput)], flags: [MessageFlags.Ephemeral] })

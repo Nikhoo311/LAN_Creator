@@ -2,6 +2,7 @@ const { MessageFlags, EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle
 const { color } = require("../../../../config/config.json")
 const { createChannelSelectMenu } = require("../../../functions/utils/createChannelSelectMenu");
 const isValidHourFormat = require('../../../functions/utils/isValidHourFormat');
+const { getGuildConfig } = require("../../../functions/utils/guildCache");
 
 module.exports = {
     data: {
@@ -18,7 +19,10 @@ module.exports = {
         }
         
         const placeholder = client.placeholder.get(interaction.applicationId);
-        const currentConfig = client.configs.get(placeholder);
+        const currentConfig = getGuildConfig(client, placeholder, interaction.guildId);
+        if (!currentConfig) {
+            return interaction.reply({ content: "❌ Configuration introuvable sur ce serveur.", flags: [MessageFlags.Ephemeral] });
+        }
 
         const configUpdateEmbed = new EmbedBuilder()
             .setColor(color.green)
@@ -31,6 +35,7 @@ module.exports = {
                 { name: "\u200b", value: "\u200b", inline: true },
                 { name: `🕹️ __Matériel disponible :__`, value: configMaterials, inline: false },
             )
+            .setFooter({ text: String(currentConfig._id) })
         const configChannelsUpdateEmbed = new EmbedBuilder()
             .setColor(color.orange)
             .setTitle("Les salons actifs")
@@ -89,6 +94,6 @@ module.exports = {
             );
         }
 
-        return await interaction.update({ content: `✅ La configuration \`${placeholder}\` a bien été modifiée en \`${configName}\` avec succès !`, embeds: [configUpdateEmbed, configChannelsUpdateEmbed], components, flags: [MessageFlags.Ephemeral] })
+        return await interaction.update({ content: `✅ La configuration \`${currentConfig.name}\` a bien été modifiée en \`${configName}\` avec succès !`, embeds: [configUpdateEmbed, configChannelsUpdateEmbed], components, flags: [MessageFlags.Ephemeral] })
     }
 }
