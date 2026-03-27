@@ -2,7 +2,7 @@ const { PermissionFlagsBits, EmbedBuilder, ActionRowBuilder, ButtonBuilder, Butt
 const { color } = require('../../../../config/config.json');
 const { getGoogleMapsLink } = require("../../../functions/utils/getLinkAddress.js");
 const { Lan } = require("../../../class/Lan.js")
-const LanModel = require("../../../schemas/lan.js");
+const logger = require("../../../functions/utils/Logger.js");
 const { decrypt } = require("../../../functions/utils/crypt.js");
 const { getGuildConfig } = require("../../../functions/utils/guildCache");
 
@@ -134,6 +134,10 @@ module.exports = {
             const startedSec = Math.floor(new Date(obj.startedAt).getTime() / 1000);
             const lan = new Lan(nameLAN, channelsArray, config, [], obj._id.toString(), startedSec, null, interaction.guildId)
 
+            console.log("=========");
+            logger.event(`Nouvelle LAN : ${nameLAN} (${lan.id}) /// Serveur : ${interaction.guild.name} (${interaction.guildId})`);
+            console.log("=========");
+            
             const btnGoogleAgenda = new ButtonBuilder()
                 .setLabel("Rappel Google Agenda")
                 .setStyle(ButtonStyle.Link)
