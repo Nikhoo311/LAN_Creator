@@ -3,7 +3,7 @@ const { getLanForGuild } = require("../../../functions/utils/guildCache");
 
 module.exports = {
     data: {
-        name: "add-participants-btn"
+        name: "remove-participants-btn"
     },
     async execute (interaction, client) {
         const user = interaction.user;
@@ -13,11 +13,11 @@ module.exports = {
             return interaction.reply({ content: "❌ LAN introuvable sur ce serveur.", flags: [MessageFlags.Ephemeral] });
         }
 
-        if (lan.participants.includes(user.id)) {
-            return await interaction.reply({ content: `❌ Impossible tu participes déjà à la LAN **${lan.name}**`, flags: [MessageFlags.Ephemeral] });
+        if (!lan.participants.includes(user.id)) {
+            return await interaction.reply({ content: `❌ Impossible tu ne participes pas à cette LAN.`, flags: [MessageFlags.Ephemeral] });
         }
 
-        await lan.addParticipants(user.id);
+        await lan.removeParticipants(user.id);
         const participantsImage = await lan.generateParticipantsImage(interaction.guild, 64);
         const attachment = new AttachmentBuilder().setFile(participantsImage).setName(`${lan.id}_participants.png`);
         const embed = EmbedBuilder.from(interaction.message.embeds[0])

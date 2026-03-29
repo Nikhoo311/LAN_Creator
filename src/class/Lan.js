@@ -2,6 +2,7 @@ const dayjs = require("dayjs");
 const { URL, URLSearchParams } = require("url");
 const { decrypt } = require("../functions/utils/crypt");
 const lanModel = require("../schemas/lan");
+const { createCanvas, loadImage } = require('canvas');
 
 class Lan {
     /**
@@ -69,6 +70,58 @@ class Lan {
         await Lan.model.findByIdAndUpdate(this.id, {
             participants: this.participants
         })
+    }
+
+    async removeParticipants(discordId) {
+        this.participants = this.participants.filter(p => p !== discordId);
+        
+        await Lan.model.findByIdAndUpdate(this.id, {
+            participants: this.participants
+        })
+    }
+
+    /**
+     * Generate participants list in an image
+     * @param {Guild} guild - guild Discord
+     * @param {number} size - width/height avatar (64 recommended)
+     * @returns {Promise<Buffer>}
+     */
+    async generateParticipantsImage(guild, size = 64) {
+        if (!this.participants.length) throw new Error("No participants provided");
+
+        const spacing = 10;
+        const textPadding = 10;
+        const fontSize = 20;
+
+        const width = size + textPadding + 200;
+        const height = this.participants.length * size + (this.participants.length - 1) * spacing;
+
+        const canvas = createCanvas(width, height);
+        const ctx = canvas.getContext('2d');
+
+        ctx.clearRect(0, 0, width, height);
+
+        ctx.font = `${fontSize}px sans-serif`;
+        ctx.fillStyle = '#ffffff';
+        ctx.textBaseline = 'middle';
+
+        for (let i = 0; i < this.participants.length; i++) {
+            const y = i * (size + spacing);
+
+            const member = guild.members.cache.get(this.participants[i]);
+            if (!member) continue;
+
+            const avatarURL = member.user.displayAvatarURL({ extension: 'png', size: 128 });
+            const avatar = await loadImage(avatarURL);
+
+            // Avatar
+            ctx.drawImage(avatar, 0, y, size, size);
+
+            // Pseudo
+            ctx.fillText(member.user.displayName, size + textPadding, y + size / 2);
+        }
+
+        return canvas.toBuffer('image/png');
     }
 }
 

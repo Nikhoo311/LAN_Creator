@@ -143,21 +143,25 @@ module.exports = {
                 .setStyle(ButtonStyle.Link)
                 .setURL(lan.getAgendaLink())
             
-            const message = `## Inscription pour la ${lan.name}\nTu veux participer à la LAN ?\nOn a mis en place un système d'inscription super simple !\n\n> 👉 Clique sur le bouton ci-dessous pour réserver ta place et rejoindre l'aventure !`
+            const message = `## Inscription pour la ${lan.name}\n\n> 👉 Clique sur le bouton ci-dessous pour réserver ta place et rejoindre l'aventure !`
             const participantsEmbed = new EmbedBuilder()
                 .setColor(color.red)
-                .setDescription("Liste des participants :")
-                .setFooter({ text: `Inscription pour la ${lan.name}`})
-                .setTimestamp();
+                .setDescription("## Liste des participants :")
 
             const participantsButton = new ButtonBuilder()
                 .setCustomId("add-participants-btn")
                 .setLabel("Participer a la LAN")
                 .setStyle(ButtonStyle.Primary)
                 .setEmoji("<:add_participant:1472756154730938388>");
+            
+            const removeParticipantsButton = new ButtonBuilder()
+                .setCustomId("remove-participants-btn")
+                .setLabel("Participer a la LAN")
+                .setStyle(ButtonStyle.Danger)
+                .setEmoji("<:remove_participant:1487896551316787220>");
 
             await generalChannel.setTopic(lan.id.toString());
-            await generalChannel.send({ content: message, embeds: [participantsEmbed], components: [new ActionRowBuilder().addComponents(participantsButton)] });
+            await generalChannel.send({ content: message, embeds: [participantsEmbed], components: [new ActionRowBuilder().addComponents(participantsButton, removeParticipantsButton)] });
 
             await informationChannel.send({ embeds: [informationEmbed], components: [ new ActionRowBuilder().addComponents(btnaddress).addComponents(btnGoogleAgenda) ] })
             await informationChannel.send({ embeds: [logistiqueEmbed], components: googlesheetLink ? [ new ActionRowBuilder().addComponents(btnGoogleSheet) ] : [] })
