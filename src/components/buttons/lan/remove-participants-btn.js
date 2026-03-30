@@ -9,20 +9,30 @@ module.exports = {
         const user = interaction.user;
         const lanId = interaction.channel.topic
         const lan = getLanForGuild(client, lanId, interaction.guildId);
+
         if (!lan) {
             return interaction.reply({ content: "❌ LAN introuvable sur ce serveur.", flags: [MessageFlags.Ephemeral] });
         }
 
         if (!lan.participants.includes(user.id)) {
-            return await interaction.reply({ content: `❌ Impossible tu ne participes pas à cette LAN.`, flags: [MessageFlags.Ephemeral] });
+            return interaction.reply({ content: `❌ Impossible tu ne participes pas à cette LAN.`, flags: [MessageFlags.Ephemeral] });
         }
 
-        await lan.removeParticipants(user.id);
-        const participantsImage = await lan.generateParticipantsImage(interaction.guild, 64);
-        const attachment = new AttachmentBuilder().setFile(participantsImage).setName(`${lan.id}_participants.png`);
-        const embed = EmbedBuilder.from(interaction.message.embeds[0])
-            .setImage(`attachment://${attachment.name}`)
+        const embed = EmbedBuilder.from(interaction.message.embeds[0]);
 
-        await interaction.update({ embeds: [embed], files: [attachment] });
+        await lan.removeParticipants(user.id);
+
+        let files = [];
+
+        if (!lan.participants.length) {
+            embed.setImage(null);
+        } else {
+            const participantsImage = await lan.generateParticipantsImage(interaction.guild, 64);
+            const attachment = new AttachmentBuilder(participantsImage, { name: `${lan.id}_participants.png` });
+            embed.setImage(`attachment://${attachment.name}`);
+            files = [attachment];
+        }
+
+        await interaction.update({ embeds: [embed], files });
     }
 }
