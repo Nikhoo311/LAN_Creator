@@ -93,32 +93,43 @@ class Lan {
         const textPadding = 10;
         const fontSize = 20;
 
-        const width = size + textPadding + 200;
-        const height = this.participants.length * size + (this.participants.length - 1) * spacing;
+        const columns = this.participants.length > 6 ? 3 : 2;
+        const rows = Math.ceil(this.participants.length / columns);
+
+        const cellWidth = size + 200;
+
+        const width = columns * cellWidth;
+        const height = rows * (size + spacing);
 
         const canvas = createCanvas(width, height);
         const ctx = canvas.getContext('2d');
 
+        // Fond transparent
         ctx.clearRect(0, 0, width, height);
 
+        // Texte
         ctx.font = `${fontSize}px sans-serif`;
         ctx.fillStyle = '#ffffff';
         ctx.textBaseline = 'middle';
 
         for (let i = 0; i < this.participants.length; i++) {
-            const y = i * (size + spacing);
+            const col = i % columns;
+            const row = Math.floor(i / columns);
 
-            const member = guild.members.cache.get(this.participants[i]);
+            const x = col * cellWidth;
+            const y = row * (size + spacing);
+
+            const member = await guild.members.fetch(this.participants[i]).catch(() => null);
             if (!member) continue;
 
-            const avatarURL = member.user.displayAvatarURL({ extension: 'png', size: 128 });
+            const avatarURL = member.user.displayAvatarURL({ extension: 'png', size: 256 });
             const avatar = await loadImage(avatarURL);
 
             // Avatar
-            ctx.drawImage(avatar, 0, y, size, size);
+            ctx.drawImage(avatar, x, y, size, size);
 
             // Pseudo
-            ctx.fillText(member.user.displayName, size + textPadding, y + size / 2);
+            ctx.fillText(member.displayName, x + size + textPadding, y + size / 2);
         }
 
         return canvas.toBuffer('image/png');
