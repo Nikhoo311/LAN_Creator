@@ -246,11 +246,7 @@ module.exports = {
             await informationChannel.send({ embeds: [informationEmbed], components: [ new ActionRowBuilder().addComponents(btnaddress).addComponents(btnGoogleAgenda) ] })
             await informationChannel.send({ embeds: [logistiqueEmbed], components: googleSheetButton ? [new ActionRowBuilder().addComponents(googleSheetButton)] : [] })
 
-            await client.lans.set(lan.id, lan)
-
-            console.log("=========");
-            console.log(lan)
-            console.log(data)
+            await client.lans.set(lan.id, lan);
 
             
             interaction.editReply({content: `✅ **${lan.name}** a bien été créée !` });

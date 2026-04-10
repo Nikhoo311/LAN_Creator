@@ -12,8 +12,8 @@ class Lan {
      * @param {object} config
      * @param {Array<string>} participants
      * @param {string} id
-     * @param {Date} start
-     * @param {Date} end
+     * @param {Number} start
+     * @param {Number} end
      * @param {string} guildId
      */
     static model = lanModel;
@@ -27,14 +27,13 @@ class Lan {
         this.config = config;
         this.participants = participants;
         // Get the timestamp in seconds
-        this.startedAt = start !== null ? new Date(start).getTime() : this.start();
-        this.endedAt = end !== null ? new Date(end).getTime() : null;
+        this.startedAt = start !== null ? start : this.#dateFormater();
+        this.endedAt = end !== null ? end : null;
     }
 
-    start() {
+    #dateFormater(date = new Date()) {
         const [hour, minute] = this.config.hours.split('h').map(Number);
     
-        const date = new Date();
         date.setHours(hour, minute, 0, 0);
         
         return Math.floor(date.getTime() / 1000);
@@ -59,7 +58,7 @@ class Lan {
         };
 
         let description = `On se donne rendez-vous pour la ${this.name} !\n\nadresse : ${decrypt(this.config.address, process.env.TOKEN)}`;
-        const estimatedDate = this.endedAt ? Math.floor(new Date(this.endedAt).getTime() / 1000) : Math.floor(Date.now() / 1000) + (Lan.DEFAULT_DAYS * 24 * 60 * 60);
+        const estimatedDate = this.endedAt ?? Math.floor(Date.now() / 1000) + (Lan.DEFAULT_DAYS * 24 * 60 * 60);
 
         return getUrl(this.name, description, decrypt(this.config.address, process.env.TOKEN), dayjs(this.startedAt * 1000).format('YYYYMMDDTHHmmss'), dayjs(estimatedDate * 1000).format('YYYYMMDDTHHmmss'));
     }
@@ -76,6 +75,10 @@ class Lan {
         })
     }
 
+    /**
+     * Remove a participant from a LAN
+     * @param {string} discordId The discord ID of the participant of the current lan
+     */
     async removeParticipants(discordId) {
         this.participants = this.participants.filter(p => p !== discordId);
         
