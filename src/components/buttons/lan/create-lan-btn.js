@@ -1,4 +1,4 @@
-const { ModalBuilder, TextInputBuilder, TextInputStyle, LabelBuilder, StringSelectMenuBuilder, StringSelectMenuOptionBuilder, MessageFlags, FileUploadBuilder } = require("discord.js");
+const { ModalBuilder, TextInputBuilder, TextInputStyle, LabelBuilder, StringSelectMenuBuilder, StringSelectMenuOptionBuilder, MessageFlags, FileUploadBuilder, RadioGroupBuilder, RadioGroupOptionBuilder, CheckboxGroupBuilder, CheckboxBuilder } = require("discord.js");
 const { decrypt } = require("../../../functions/utils/crypt");
 const { configsForGuild, getChosenConfigName } = require("../../../functions/utils/guildCache");
 
@@ -48,14 +48,19 @@ module.exports = {
            .setStringSelectMenuComponent(configName)
            .setLabel("Configuration de LAN utilisée :")
 
-        const textGoogleSheet = new TextInputBuilder()
-            .setCustomId("lan_google_sheet")
-            .setRequired(false)
-            .setStyle(TextInputStyle.Short);
+        const lanOptionsInput = new CheckboxGroupBuilder()
+            .setCustomId('lan_options')
+            .setOptions([
+                { label: '🎮 Ajouter une liste de participants prédéfinie', value: 'add_default_participants_list' },
+                { label: '📅 Définir la date de la LAN', value: 'set_lan_date-btn' },
+                { label: '🗒️ Connecter une feuille Google Sheets', value: 'add_google_sheet-btn' },
+            ])
+            .setMaxValues(3)
+            .setRequired(false);
 
-        const textGoogleSheetLabel = new LabelBuilder()
-            .setTextInputComponent(textGoogleSheet)
-            .setLabel("Quel est le Google Sheet de la LAN ?")
+        const lanOptionsInputLabel = new LabelBuilder()
+            .setCheckboxGroupComponent(lanOptionsInput)
+            .setLabel("Options :");
         
         const textNbVoc = new TextInputBuilder()
             .setCustomId("lan_nb_voc")
@@ -78,7 +83,7 @@ module.exports = {
            .setLabel("Image de LAN :")
            .setDescription("Format : png / jpeg / jpg / gif");
 
-        modal.addLabelComponents(textInputLabel, configNameLabel, fileFlyerLabel, textGoogleSheetLabel, textNbVocLabel)
+        modal.addLabelComponents(textInputLabel, configNameLabel, lanOptionsInputLabel, fileFlyerLabel, textNbVocLabel)
         return await interaction.showModal(modal)
     }
 }

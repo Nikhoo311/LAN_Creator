@@ -10,11 +10,15 @@ class Lan {
      * @param {String} name
      * @param {Array<object>} channels 
      * @param {object} config
-     * @param {Array<string>}
+     * @param {Array<string>} participants
+     * @param {string} id
      * @param {Date} start
      * @param {Date} end
+     * @param {string} guildId
      */
     static model = lanModel;
+    static DEFAULT_DAYS = 3;
+
     constructor(name, channels, config, participants, id = null, start = null, end = null, guildId = null) {
         this.id = id;
         this.guildId = guildId;
@@ -23,8 +27,8 @@ class Lan {
         this.config = config;
         this.participants = participants;
         // Get the timestamp in seconds
-        this.startedAt = start !== null ? start : this.start();
-        this.endedAt = end;
+        this.startedAt = start !== null ? new Date(start).getTime() : this.start();
+        this.endedAt = end !== null ? new Date(end).getTime() : null;
     }
 
     start() {
@@ -55,8 +59,8 @@ class Lan {
         };
 
         let description = `On se donne rendez-vous pour la ${this.name} !\n\nadresse : ${decrypt(this.config.address, process.env.TOKEN)}`;
-        // end = default 3 days
-        const estimatedDate = Math.floor(Date.now() / 1000) + (3 * 24 * 60 * 60);
+        const estimatedDate = this.endedAt ? Math.floor(new Date(this.endedAt).getTime() / 1000) : Math.floor(Date.now() / 1000) + (Lan.DEFAULT_DAYS * 24 * 60 * 60);
+
         return getUrl(this.name, description, decrypt(this.config.address, process.env.TOKEN), dayjs(this.startedAt * 1000).format('YYYYMMDDTHHmmss'), dayjs(estimatedDate * 1000).format('YYYYMMDDTHHmmss'));
     }
 
