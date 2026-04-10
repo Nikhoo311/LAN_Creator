@@ -1,4 +1,4 @@
-const { PermissionFlagsBits, EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle, ChannelType, MessageFlags, AttachmentBuilder } = require("discord.js");
+const { PermissionFlagsBits, EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle, ChannelType, MessageFlags,  ContainerBuilder, TextDisplayBuilder, SeparatorBuilder, SeparatorSpacingSize, MediaGalleryBuilder, MediaGalleryItemBuilder } = require("discord.js");
 const { color } = require('../../../../config/config.json');
 const { getGoogleMapsLink } = require("../../../functions/utils/getLinkAddress.js");
 const { Lan } = require("../../../class/Lan.js")
@@ -18,9 +18,9 @@ module.exports = {
             return await interaction.reply({ content: "❌ Configuration introuvable sur ce serveur.", flags: [MessageFlags.Ephemeral] });
         }
 
-        const googlesheetLink = interaction.fields.getTextInputValue('lan_google_sheet') || null;
         const nbVocaux = Number(interaction.fields.getTextInputValue("lan_nb_voc")) || 1;
         const fileImage = interaction.fields.getUploadedFiles("file_flyer_image", false)?.first() || null;
+        const lanOptions = interaction.fields.getCheckboxGroup("lan_options") || [];
         const guild = interaction.guild;
 
         if (fileImage?.contentType && !["image/png", "image/jpg", "image/jpeg", "image/gif"].includes(fileImage.contentType)) {
@@ -31,8 +31,65 @@ module.exports = {
             return interaction.reply({content: "❌ Veuillez saisir un nombre entre 1 et 5", flags: [MessageFlags.Ephemeral] })
         }
         
-        if (googlesheetLink && !(/https:\/\/docs\.google\.com\/spreadsheets\/d\/[a-zA-Z0-9_-]+\/?/.test(googlesheetLink))) {
-            return interaction.reply({content: "❌ Veuillez saisir un lien Google Sheet correct !", flags: [MessageFlags.Ephemeral]})
+        if (lanOptions.length >= 1) {
+            let components = [];
+            const separator = new SeparatorBuilder().setSpacing(SeparatorSpacingSize.Large);
+            const firstText = new TextDisplayBuilder({ 
+                content: `## Récapitulatif :\n**Nom de la LAN :** ${nameLAN}\n\n**Configuration utiliser :** 🏠 ${config.name} (${configId})\n\n**Liste des salons :**\n${config.channels.filter(ch => ch.active).map(c => `* <:channel:1440082251366010983> ${c.name}`).join("\n")}\n + ${nbVocaux} salon${nbVocaux > 1 ? "s" : ""} ${nbVocaux > 1 ? "vocaux" : "vocal"}`
+            })
+            const recapContainer = new ContainerBuilder()
+                .setAccentColor(parseInt(color.white.replace("#", ""), 16))
+                .addTextDisplayComponents(firstText)
+                .addSeparatorComponents(separator)
+            
+            if (fileImage) {
+                const mediaConxtainerImageLan = new MediaGalleryBuilder().addItems(new MediaGalleryItemBuilder().setURL(fileImage.url))
+
+                const imageContainer = new ContainerBuilder()
+                    .setAccentColor(parseInt(color.white.replace('#', ''), 16))
+                    .addMediaGalleryComponents(mediaConxtainerImageLan)
+                components.push(imageContainer)
+            }
+
+            const lanAllOptionsArray = [
+                { label: '🎮 Ajouter une liste de participants prédéfinie', value: 'add_default_participants_list' },
+                { label: '📅 Définir la date de la LAN', value: 'set_lan_date-btn' },
+                { label: '🗒️ Connecter une feuille Google Sheets', value: 'add_google_sheet-btn' },
+            ];
+
+            const secondText = new TextDisplayBuilder({ content: `${lanOptions.map(id => {
+                const data = lanAllOptionsArray.find(opt => opt.value === id)
+                return `* ❌    ${data.label}`
+            }).join('\n')}` })
+
+            const editRecapBtn = new ButtonBuilder()
+                .setCustomId("edit-recap-btn")
+                .setEmoji("📝")
+                .setLabel("Remplir les informations")
+                .setStyle(ButtonStyle.Secondary)
+            
+            const thirdText = new TextDisplayBuilder({ content: `Il faut remplir les informations optionnelles de la LAN en cliquant sur le bouton \`Remplir les informations\` et pour pouvoir la créer. Une fois les informations optionnelles remplies et approuvé avec le bouton \`Créer ${nameLAN}\`, aucune modifications supplémentaire sera possible.\n\nSi vous voulez modifier remodifier ces informations, il faudra recommencer le processus de création de LAN.` });
+
+            const createLanBtn = new ButtonBuilder()
+                .setCustomId("create-lan-with-recap-btn")
+                .setLabel(`Créer ${nameLAN}`)
+                .setEmoji("➕")
+                .setStyle(ButtonStyle.Success)
+
+            recapContainer.addTextDisplayComponents(secondText).addSeparatorComponents(separator).addTextDisplayComponents(thirdText).addActionRowComponents([new ActionRowBuilder().addComponents(editRecapBtn, createLanBtn)])
+            components.push(recapContainer);
+
+            client.placeholder.set(`${interaction.applicationId}-${interaction.guildId}`,
+                {
+                    lanOptions,
+                    haveLanFlyer: !!fileImage,
+                }    
+            );
+
+            return await interaction.reply({
+                components,
+                flags: [MessageFlags.Ephemeral, MessageFlags.IsComponentsV2]
+            });
         }
         
         try {
@@ -103,22 +160,15 @@ module.exports = {
                     }
                 ])
                 .setTimestamp()
-            const descriptionEmbed = googlesheetLink ? `Lien du Google Sheet : [Cliquez ici](${googlesheetLink})` : "> Demander à l'hôte les informations pour la logistique"
             const logistiqueEmbed = new EmbedBuilder()
                 .setColor(color.red)
-                .setDescription(descriptionEmbed)
+                .setDescription("> Demander à l'hôte les informations pour la logistique")
                 .setTimestamp()
             
             const btnaddress = new ButtonBuilder()
                 .setLabel("Adresse Google Maps")
                 .setStyle(ButtonStyle.Link)
                 .setURL(getGoogleMapsLink(decrypt(config.address, process.env.TOKEN)))
-
-            const btnGoogleSheet = googlesheetLink ? new ButtonBuilder()
-                .setLabel("Google Sheet")
-                .setStyle(ButtonStyle.Link)
-                .setURL(`${googlesheetLink}`)
-                : null;
             
             // Creation d'un objet LAN
             const channelsArray = [...channels, ...vcChannels];
@@ -156,7 +206,7 @@ module.exports = {
             
             const removeParticipantsButton = new ButtonBuilder()
                 .setCustomId("remove-participants-btn")
-                .setLabel("Participer a la LAN")
+                .setLabel("Se désinscrire a la LAN")
                 .setStyle(ButtonStyle.Danger)
                 .setEmoji("<:remove_participant:1487896551316787220>");
 
@@ -164,15 +214,15 @@ module.exports = {
             await generalChannel.send({ content: message, embeds: [participantsEmbed], components: [new ActionRowBuilder().addComponents(participantsButton, removeParticipantsButton)] });
 
             await informationChannel.send({ embeds: [informationEmbed], components: [ new ActionRowBuilder().addComponents(btnaddress).addComponents(btnGoogleAgenda) ] })
-            await informationChannel.send({ embeds: [logistiqueEmbed], components: googlesheetLink ? [ new ActionRowBuilder().addComponents(btnGoogleSheet) ] : [] })
+            await informationChannel.send({ embeds: [logistiqueEmbed] })
             
             // Ajout dans une collection (a voir comment faire pour avoir les données persistantes)
             await client.lans.set(lan.id, lan)
             
-            interaction.editReply({content: `✅ **${nameLAN}** a bien été créée !`, flags: [MessageFlags.Ephemeral]})
+            interaction.editReply({content: `✅ **${nameLAN}** a bien été créée !` });
         } catch (error) {
             console.error(error)
-            interaction.editReply({ content: "❌ Une erreur est arrivé !\n\n" + error, flags: [MessageFlags.Ephemeral] })
+            interaction.editReply({ content: "❌ Une erreur est arrivé !\n\n" + error });
         }
     }
 }

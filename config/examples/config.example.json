@@ -14,6 +14,7 @@
         "green": "#43c849",
         "pastel_green":"#9DAB86",
         "pastel_brown":"#876445",
-        "pastel_teal":"#A3DDCB"
+        "pastel_teal":"#A3DDCB",
+        "white": "#F4F4F4"
     }
 }
