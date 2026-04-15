@@ -145,22 +145,7 @@ module.exports = {
                     channelId: vcChannel.id
                 });
             }
-    
-            const informationEmbed = new EmbedBuilder()
-                .setColor(color.red)
-                .setDescription(`🔍 **__Informations :__**\nVoici toutes les infomations principales pour **${lanName}**`)
-                .addFields([
-                    {
-                        name: "📌 **__Lieu :__**", value: decrypt(config.address, process.env.TOKEN), inline: true
-                    },
-                    {
-                        name: "🧭 **__Horaire :__**", value: config.hours , inline: true
-                    },
-                    {
-                        name: "🎮 **__Matériel :__**", value: config.materials
-                    }
-                ])
-                .setTimestamp()
+
             const logistiqueEmbed = new EmbedBuilder()
                 .setColor(color.red)
                 .setDescription(data.googleSheetLink ? `📋 **__Logistique :__**\nToutes les informations logistiques sont disponibles dans ce Google Sheet : [Lien du Google Sheet](${data.googleSheetLink})` : "> Demander à l'hôte les informations pour la logistique")
@@ -195,6 +180,22 @@ module.exports = {
             const startedSec = Math.floor(new Date(obj.startedAt).getTime() / 1000);
             const endedSec = Math.floor(new Date(obj.endedAt).getTime() / 1000);
             const lan = new Lan(lanName, channelsArray, config, data.participants, obj._id.toString(), startedSec, endedSec, interaction.guildId)
+
+            const informationEmbed = new EmbedBuilder()
+                .setColor(color.red)
+                .setDescription(`🔍 **__Informations :__**\nVoici toutes les infomations principales pour **${lanName}**`)
+                .addFields([
+                    {
+                        name: "📌 **__Lieu :__**", value: decrypt(config.address, process.env.TOKEN), inline: true
+                    },
+                    {
+                        name: "🧭 **__Horaire :__**", value: `* Début : <t:${lan.startedAt}:F>\n* Fin : <t:${lan.endedAt}:F>` , inline: true
+                    },
+                    {
+                        name: "🎮 **__Matériel :__**", value: config.materials
+                    }
+                ])
+                .setTimestamp()
 
             console.log("=========");
             logger.event(`Nouvelle LAN : ${lanName} (${lan.id}) /// Serveur : ${interaction.guild.name} (${interaction.guildId})`);

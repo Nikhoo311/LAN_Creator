@@ -144,22 +144,7 @@ module.exports = {
                     channelId: vcChannel.id
                 });
             }
-    
-            const informationEmbed = new EmbedBuilder()
-                .setColor(color.red)
-                .setDescription(`🔍 **__Informations :__**\nVoici toutes les infomations principales pour **${nameLAN}**`)
-                .addFields([
-                    {
-                        name: "📌 **__Lieu :__**", value: decrypt(config.address, process.env.TOKEN), inline: true
-                    },
-                    {
-                        name: "🧭 **__Horaire :__**", value: config.hours , inline: true
-                    },
-                    {
-                        name: "🎮 **__Matériel :__**", value: config.materials
-                    }
-                ])
-                .setTimestamp()
+
             const logistiqueEmbed = new EmbedBuilder()
                 .setColor(color.red)
                 .setDescription("> Demander à l'hôte les informations pour la logistique")
@@ -181,8 +166,7 @@ module.exports = {
                 startedAt: new Date(),
                 endedAt: null,
             })
-            const startedSec = Math.floor(new Date(obj.startedAt).getTime() / 1000);
-            const lan = new Lan(nameLAN, channelsArray, config, [], obj._id.toString(), startedSec, null, interaction.guildId)
+            const lan = new Lan(nameLAN, channelsArray, config, [], obj._id.toString(), null, null, interaction.guildId)
 
             console.log("=========");
             logger.event(`Nouvelle LAN : ${nameLAN} (${lan.id}) /// Serveur : ${interaction.guild.name} (${interaction.guildId})`);
@@ -192,6 +176,22 @@ module.exports = {
                 .setLabel("Rappel Google Agenda")
                 .setStyle(ButtonStyle.Link)
                 .setURL(lan.getAgendaLink())
+            
+            const informationEmbed = new EmbedBuilder()
+                .setColor(color.red)
+                .setDescription(`🔍 **__Informations :__**\nVoici toutes les infomations principales pour **${nameLAN}**`)
+                .addFields([
+                    {
+                        name: "📌 **__Lieu :__**", value: decrypt(config.address, process.env.TOKEN), inline: true
+                    },
+                    {
+                        name: "🧭 **__Horaire :__**", value: `* Début : <t:${lan.startedAt}:F>` , inline: true
+                    },
+                    {
+                        name: "🎮 **__Matériel :__**", value: config.materials
+                    }
+                ])
+                .setTimestamp()
             
             const message = `## Inscription pour la ${lan.name}\n\n> 👉 Clique sur le bouton ci-dessous pour réserver ta place et rejoindre l'aventure !`
             const participantsEmbed = new EmbedBuilder()
