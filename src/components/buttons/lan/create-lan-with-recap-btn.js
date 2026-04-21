@@ -1,6 +1,6 @@
 const { ButtonStyle, MessageFlags, ChannelType, PermissionFlagsBits, AttachmentBuilder, EmbedBuilder, ButtonBuilder, ActionRowBuilder } = require("discord.js");
 const { Lan } = require("../../../class/Lan");
-const { getGoogleMapsLink } = require("../../../functions/utils/getLinkAddress");
+const { getGoogleMapsLink, getWazeLink } = require("../../../functions/utils/getLinkAddress");
 const { color } = require("../../../../config/config.json");
 const { getGuildConfig } = require("../../../functions/utils/guildCache");
 const { decrypt } = require("../../../functions/utils/crypt");
@@ -160,10 +160,17 @@ module.exports = {
                 
             }
             
-            const btnaddress = new ButtonBuilder()
-                .setLabel("Adresse Google Maps")
+            const btnaddressMaps = new ButtonBuilder()
+                .setLabel("Itinéraire Google Maps")
                 .setStyle(ButtonStyle.Link)
+                .setEmoji("📍")
                 .setURL(getGoogleMapsLink(decrypt(config.address, process.env.TOKEN)))
+            
+            const btnaddressWaze = new ButtonBuilder()
+                .setLabel("Itinéraire Waze")
+                .setStyle(ButtonStyle.Link)
+                .setEmoji("📍")
+                .setURL(getWazeLink(decrypt(config.address, process.env.TOKEN)))
             
             // Creation d'un objet LAN
             const channelsArray = [...channels, ...vcChannels];
@@ -244,7 +251,7 @@ module.exports = {
                 files: attachmentParticipants ? [attachmentParticipants] : []
             });
 
-            await informationChannel.send({ embeds: [informationEmbed], components: [ new ActionRowBuilder().addComponents(btnaddress).addComponents(btnGoogleAgenda) ] })
+            await informationChannel.send({ embeds: [informationEmbed], components: [ new ActionRowBuilder().addComponents(btnaddressMaps, btnaddressWaze), new ActionRowBuilder().addComponents(btnGoogleAgenda) ] })
             await informationChannel.send({ embeds: [logistiqueEmbed], components: googleSheetButton ? [new ActionRowBuilder().addComponents(googleSheetButton)] : [] })
 
             await client.lans.set(lan.id, lan);

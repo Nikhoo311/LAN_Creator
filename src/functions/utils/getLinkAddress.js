@@ -11,4 +11,15 @@ function getGoogleMapsLink(address) {
     return baseUrl + encodedAddress;
 }
 
-module.exports = { getGoogleMapsLink }
+/**
+ * Generates a Waze link for a given address.
+ * @param {string} address - The address to generate a Waze link for.
+ * @returns {string} - The Waze link for the address.
+ */
+function getWazeLink(address) {
+    const baseUrl = 'https://waze.com/ul?q=';
+    const encodedAddress = querystring.escape(address);
+    return baseUrl + encodedAddress;
+}
+
+module.exports = { getGoogleMapsLink, getWazeLink }
