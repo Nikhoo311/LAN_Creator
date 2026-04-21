@@ -150,10 +150,17 @@ module.exports = {
                 .setDescription("> Demander à l'hôte les informations pour la logistique")
                 .setTimestamp()
             
-            const btnaddress = new ButtonBuilder()
+            const btnaddressMaps = new ButtonBuilder()
                 .setLabel("Adresse Google Maps")
                 .setStyle(ButtonStyle.Link)
+                .setEmoji("📍")
                 .setURL(getGoogleMapsLink(decrypt(config.address, process.env.TOKEN)))
+            
+            const btnaddressWaze = new ButtonBuilder()
+                .setLabel("Itinéraire Waze")
+                .setStyle(ButtonStyle.Link)
+                .setEmoji("📍")
+                .setURL(getWazeLink(decrypt(config.address, process.env.TOKEN)))
             
             // Creation d'un objet LAN
             const channelsArray = [...channels, ...vcChannels];
@@ -213,7 +220,7 @@ module.exports = {
             await generalChannel.setTopic(lan.id.toString());
             await generalChannel.send({ content: message, embeds: [participantsEmbed], components: [new ActionRowBuilder().addComponents(participantsButton, removeParticipantsButton)] });
 
-            await informationChannel.send({ embeds: [informationEmbed], components: [ new ActionRowBuilder().addComponents(btnaddress).addComponents(btnGoogleAgenda) ] })
+            await informationChannel.send({ embeds: [informationEmbed], components: [ new ActionRowBuilder().addComponents(btnaddressMaps, btnaddressWaze), new ActionRowBuilder().addComponents(btnGoogleAgenda) ] })
             await informationChannel.send({ embeds: [logistiqueEmbed] })
             
             // Ajout dans une collection (a voir comment faire pour avoir les données persistantes)
