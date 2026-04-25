@@ -28,7 +28,7 @@ class Lan {
         this.participants = participants;
         // Get the timestamp in seconds
         this.startedAt = start !== null ? start : this.#dateFormater();
-        this.endedAt = end !== null ? end : null;
+        this.endedAt = end ?? null;
     }
 
     #dateFormater(date = new Date()) {
@@ -61,6 +61,22 @@ class Lan {
         const estimatedDate = this.endedAt ?? Math.floor(Date.now() / 1000) + (Lan.DEFAULT_DAYS * 24 * 60 * 60);
 
         return getUrl(this.name, description, decrypt(this.config.address, process.env.TOKEN), dayjs(this.startedAt * 1000).format('YYYYMMDDTHHmmss'), dayjs(estimatedDate * 1000).format('YYYYMMDDTHHmmss'));
+    }
+
+    /**
+     * Create a LAN in database
+     */
+    async create() {
+        const lanObject = await Lan.model.create({
+            guildId: this.guildId,
+            name: this.name,
+            config: this.config._id,
+            channels: this.channels,
+            startedAt: new Date(this.startedAt * 1000),
+            endedAt: this.endedAt !== null ? new Date(this.endedAt * 1000) : null,
+        })
+
+        this.id = lanObject._id.toString();
     }
 
     /**

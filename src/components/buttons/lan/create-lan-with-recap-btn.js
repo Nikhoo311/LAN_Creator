@@ -157,7 +157,6 @@ module.exports = {
                     .setLabel("Google Sheet")
                     .setStyle(ButtonStyle.Link)
                     .setURL(data.googleSheetLink)
-                
             }
             
             const btnaddressMaps = new ButtonBuilder()
@@ -175,19 +174,12 @@ module.exports = {
             // Creation d'un objet LAN
             const channelsArray = [...channels, ...vcChannels];
 
-            const obj = await Lan.model.create({
-                guildId: interaction.guildId,
-                name: lanName,
-                config: config._id,
-                participants: data.participants,
-                channels: channelsArray,
-                startedAt: data.dates?.startDate ?? new Date(),
-                endedAt: data.dates?.endDate ?? null,
-            })
-            const startedSec = Math.floor(new Date(obj.startedAt).getTime() / 1000);
-            const endedSec = Math.floor(new Date(obj.endedAt).getTime() / 1000);
-            const lan = new Lan(lanName, channelsArray, config, data.participants, obj._id.toString(), startedSec, endedSec, interaction.guildId)
-
+            const startedSec = data.dates?.startDate ? Math.floor(new Date(data.dates.startDate).getTime() / 1000) : null;
+            const endedSec = data.dates?.endDate ? Math.floor(new Date(data.dates.endDate).getTime() / 1000) : null;
+            
+            const lan = new Lan(lanName, channelsArray, config, data.participants, null, startedSec, endedSec, interaction.guildId);
+            await lan.create();
+            
             const informationEmbed = new EmbedBuilder()
                 .setColor(color.red)
                 .setDescription(`🔍 **__Informations :__**\nVoici toutes les infomations principales pour **${lanName}**`)

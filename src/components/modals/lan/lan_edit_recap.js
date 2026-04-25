@@ -32,8 +32,8 @@ module.exports = {
 
                         const [hour, minute] = config.hours.split('h').map(Number);
 
-                        fieldsValues.startDate = new Date(Date.UTC(startYear, startMonth - 1, startDay, hour, minute));
-                        fieldsValues.endDate = new Date(Date.UTC(endYear, endMonth - 1, endDay, hour, minute));
+                        fieldsValues.startDate = new Date(startYear, startMonth - 1, startDay, hour, minute);
+                        fieldsValues.endDate = new Date(endYear, endMonth - 1, endDay, hour, minute);
                         break;
                     }
 

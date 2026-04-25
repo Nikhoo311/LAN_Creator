@@ -1,6 +1,6 @@
 const { PermissionFlagsBits, EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle, ChannelType, MessageFlags,  ContainerBuilder, TextDisplayBuilder, SeparatorBuilder, SeparatorSpacingSize, MediaGalleryBuilder, MediaGalleryItemBuilder } = require("discord.js");
 const { color } = require('../../../../config/config.json');
-const { getGoogleMapsLink } = require("../../../functions/utils/getLinkAddress.js");
+const { getGoogleMapsLink, getWazeLink } = require("../../../functions/utils/getLinkAddress.js");
 const { Lan } = require("../../../class/Lan.js")
 const logger = require("../../../functions/utils/Logger.js");
 const { decrypt } = require("../../../functions/utils/crypt.js");
@@ -165,15 +165,8 @@ module.exports = {
             // Creation d'un objet LAN
             const channelsArray = [...channels, ...vcChannels];
 
-            const obj = await Lan.model.create({
-                guildId: interaction.guildId,
-                name: nameLAN,
-                config: config._id,
-                channels: channelsArray,
-                startedAt: new Date(),
-                endedAt: null,
-            })
-            const lan = new Lan(nameLAN, channelsArray, config, [], obj._id.toString(), null, null, interaction.guildId)
+            const lan = new Lan(nameLAN, channelsArray, config, [], null, null, null, interaction.guildId)
+            await lan.create();
 
             console.log("=========");
             logger.event(`Nouvelle LAN : ${nameLAN} (${lan.id}) /// Serveur : ${interaction.guild.name} (${interaction.guildId})`);
