@@ -1,5 +1,5 @@
 const dayjs = require("dayjs");
-const { URL, URLSearchParams } = require("url");
+const { formatUrl } = require("../functions/utils/getLinkAddress");
 const { decrypt } = require("../functions/utils/crypt");
 const lanModel = require("../schemas/lan");
 const { createCanvas, loadImage } = require('canvas');
@@ -44,23 +44,31 @@ class Lan {
     }
 
     getAgendaLink() {
-        const getUrl = function(title, desc, locat, start, end) {
-            const uri = new URL('https://www.google.com/calendar/render');
-            const params = new URLSearchParams({
-                action: 'TEMPLATE',
-                text: title,
-                details: desc,
-                location: locat,
-                dates: start + '/' + end
-            });
-            uri.search = params.toString();
-            return uri.toString();
-        };
-
-        let description = `On se donne rendez-vous pour la ${this.name} !\n\nadresse : ${decrypt(this.config.address, process.env.TOKEN)}`;
+        const address = decrypt(this.config.address, process.env.TOKEN);
+        const description = `On se donne rendez-vous pour la ${this.name} !\n\nAdresse : ${address}`;
+        
+        const startDate = dayjs(this.startedAt * 1000).format('YYYYMMDDTHHmmss');
         const estimatedDate = this.endedAt ?? Math.floor(Date.now() / 1000) + (Lan.DEFAULT_DAYS * 24 * 60 * 60);
+        const endDate = dayjs(estimatedDate * 1000).format('YYYYMMDDTHHmmss');
 
-        return getUrl(this.name, description, decrypt(this.config.address, process.env.TOKEN), dayjs(this.startedAt * 1000).format('YYYYMMDDTHHmmss'), dayjs(estimatedDate * 1000).format('YYYYMMDDTHHmmss'));
+        return formatUrl('https://www.google.com/calendar/render', {
+            action: 'TEMPLATE',
+            text: this.name,
+            details: description,
+            location: address,
+            dates: `${startDate}/${endDate}`
+        }, { isAddress: true })
+    }
+
+    getGoogleMapsLink() {
+        return formatUrl('https://www.google.com/maps/search/', { 
+            api: 1, 
+            location: decrypt(this.config.address, process.env.TOKEN)
+        }, { isAddress: true });
+    }
+
+    getWazeLink() {
+        return formatUrl('https://waze.com/ul', { location: decrypt(this.config.address, process.env.TOKEN) }, { isAddress: true });
     }
 
     /**

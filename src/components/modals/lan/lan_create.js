@@ -145,23 +145,6 @@ module.exports = {
                 });
             }
 
-            const logistiqueEmbed = new EmbedBuilder()
-                .setColor(color.red)
-                .setDescription("> Demander à l'hôte les informations pour la logistique")
-                .setTimestamp()
-            
-            const btnaddressMaps = new ButtonBuilder()
-                .setLabel("Adresse Google Maps")
-                .setStyle(ButtonStyle.Link)
-                .setEmoji("📍")
-                .setURL(getGoogleMapsLink(decrypt(config.address, process.env.TOKEN)))
-            
-            const btnaddressWaze = new ButtonBuilder()
-                .setLabel("Itinéraire Waze")
-                .setStyle(ButtonStyle.Link)
-                .setEmoji("📍")
-                .setURL(getWazeLink(decrypt(config.address, process.env.TOKEN)))
-            
             // Creation d'un objet LAN
             const channelsArray = [...channels, ...vcChannels];
 
@@ -192,6 +175,23 @@ module.exports = {
                     }
                 ])
                 .setTimestamp()
+
+            const logistiqueEmbed = new EmbedBuilder()
+                .setColor(color.red)
+                .setDescription("> Demander à l'hôte les informations pour la logistique")
+                .setTimestamp()
+            
+            const btnaddressMaps = new ButtonBuilder()
+                .setLabel("Adresse Google Maps")
+                .setStyle(ButtonStyle.Link)
+                .setEmoji("📍")
+                .setURL(lan.getGoogleMapsLink())
+            
+            const btnaddressWaze = new ButtonBuilder()
+                .setLabel("Itinéraire Waze")
+                .setStyle(ButtonStyle.Link)
+                .setEmoji("📍")
+                .setURL(lan.getWazeLink())
             
             const message = `## Inscription pour la ${lan.name}\n\n> 👉 Clique sur le bouton ci-dessous pour réserver ta place et rejoindre l'aventure !`
             const participantsEmbed = new EmbedBuilder()

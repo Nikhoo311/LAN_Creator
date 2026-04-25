@@ -1,6 +1,5 @@
 const { ButtonStyle, MessageFlags, ChannelType, PermissionFlagsBits, AttachmentBuilder, EmbedBuilder, ButtonBuilder, ActionRowBuilder } = require("discord.js");
 const { Lan } = require("../../../class/Lan");
-const { getGoogleMapsLink, getWazeLink } = require("../../../functions/utils/getLinkAddress");
 const { color } = require("../../../../config/config.json");
 const { getGuildConfig } = require("../../../functions/utils/guildCache");
 const { decrypt } = require("../../../functions/utils/crypt");
@@ -146,6 +145,15 @@ module.exports = {
                 });
             }
 
+            // Creation d'un objet LAN
+            const channelsArray = [...channels, ...vcChannels];
+
+            const startedSec = data.dates?.startDate ? Math.floor(new Date(data.dates.startDate).getTime() / 1000) : null;
+            const endedSec = data.dates?.endDate ? Math.floor(new Date(data.dates.endDate).getTime() / 1000) : null;
+            
+            const lan = new Lan(lanName, channelsArray, config, data.participants, null, startedSec, endedSec, interaction.guildId);
+            await lan.create();
+
             const logistiqueEmbed = new EmbedBuilder()
                 .setColor(color.red)
                 .setDescription(data.googleSheetLink ? `📋 **__Logistique :__**\nToutes les informations logistiques sont disponibles dans ce Google Sheet : [Lien du Google Sheet](${data.googleSheetLink})` : "> Demander à l'hôte les informations pour la logistique")
@@ -163,22 +171,13 @@ module.exports = {
                 .setLabel("Itinéraire Google Maps")
                 .setStyle(ButtonStyle.Link)
                 .setEmoji("📍")
-                .setURL(getGoogleMapsLink(decrypt(config.address, process.env.TOKEN)))
+                .setURL(lan.getGoogleMapsLink())
             
             const btnaddressWaze = new ButtonBuilder()
                 .setLabel("Itinéraire Waze")
                 .setStyle(ButtonStyle.Link)
                 .setEmoji("📍")
-                .setURL(getWazeLink(decrypt(config.address, process.env.TOKEN)))
-            
-            // Creation d'un objet LAN
-            const channelsArray = [...channels, ...vcChannels];
-
-            const startedSec = data.dates?.startDate ? Math.floor(new Date(data.dates.startDate).getTime() / 1000) : null;
-            const endedSec = data.dates?.endDate ? Math.floor(new Date(data.dates.endDate).getTime() / 1000) : null;
-            
-            const lan = new Lan(lanName, channelsArray, config, data.participants, null, startedSec, endedSec, interaction.guildId);
-            await lan.create();
+                .setURL(lan.getWazeLink())
             
             const informationEmbed = new EmbedBuilder()
                 .setColor(color.red)
