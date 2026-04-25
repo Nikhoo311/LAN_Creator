@@ -37,10 +37,6 @@ function formatUrl(baseUrl, queryParams, options = {}) {
         }
     });
 
-    console.log(url);
-    console.log(queryParams)
-    
-
     return url.toString();
 }
 
