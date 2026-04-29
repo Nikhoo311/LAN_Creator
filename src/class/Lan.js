@@ -1,5 +1,5 @@
 const dayjs = require("dayjs");
-const { formatUrl } = require("../functions/utils/getLinkAddress");
+const { formatUrl } = require("../functions/utils/formatUrl");
 const { decrypt } = require("../functions/utils/crypt");
 const lanModel = require("../schemas/lan");
 const { createCanvas, loadImage } = require('canvas');
@@ -68,7 +68,10 @@ class Lan {
     }
 
     getWazeLink() {
-        return formatUrl('https://waze.com/ul', { location: decrypt(this.config.address, process.env.TOKEN) }, { isAddress: true });
+        return formatUrl('https://waze.com/ul', 
+            { location: decrypt(this.config.address, process.env.TOKEN) }, 
+            { isAddress: true, locationQueryParamName: "q" }
+        );
     }
 
     /**

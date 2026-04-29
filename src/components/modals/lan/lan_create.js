@@ -1,6 +1,5 @@
 const { PermissionFlagsBits, EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle, ChannelType, MessageFlags,  ContainerBuilder, TextDisplayBuilder, SeparatorBuilder, SeparatorSpacingSize, MediaGalleryBuilder, MediaGalleryItemBuilder } = require("discord.js");
 const { color } = require('../../../../config/config.json');
-const { getGoogleMapsLink, getWazeLink } = require("../../../functions/utils/getLinkAddress.js");
 const { Lan } = require("../../../class/Lan.js")
 const logger = require("../../../functions/utils/Logger.js");
 const { decrypt } = require("../../../functions/utils/crypt.js");
