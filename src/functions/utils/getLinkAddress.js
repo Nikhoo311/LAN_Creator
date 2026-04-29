@@ -23,7 +23,15 @@ function formatUrl(baseUrl, queryParams, options = {}) {
     const url = new URL(baseUrl);
 
     if (config.isAddress) {
-        const currentVal = queryParams.location.toString();
+        const currentVal = queryParams.location.toString()
+        .split(" ")
+        .map((word, index) =>
+            index === 1
+            ? word.charAt(0).toUpperCase() + word.slice(1)
+            : word
+        )
+        .join(" ");
+
         const hasCountry = currentVal.toLowerCase().includes(config.country.toLowerCase());
 
         if (!hasCountry || config.forceCountry) {
