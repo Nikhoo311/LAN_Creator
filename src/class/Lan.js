@@ -91,6 +91,14 @@ class Lan {
     }
 
     /**
+     * Delete a LAN from database
+     * @param {string} id Id of a Lan that we need to delete
+     */
+    static async deleteById(id) {
+        await Lan.model.findByIdAndDelete(id);
+    }
+
+    /**
      * Add a participant to a LAN
      * @param {string} discordId The discord ID of the participant of the current lan
      */
