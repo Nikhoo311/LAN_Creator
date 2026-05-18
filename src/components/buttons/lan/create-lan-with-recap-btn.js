@@ -233,6 +233,18 @@ module.exports = {
                 .setLabel("Se désinscrire a la LAN")
                 .setStyle(ButtonStyle.Danger)
                 .setEmoji("<:remove_participant:1487896551316787220>");
+            
+            const managementButton = new ButtonBuilder()
+                .setCustomId("lan-management-btn")
+                .setLabel("Gestion de la LAN")
+                .setStyle(ButtonStyle.Secondary)
+                .setEmoji("🪛")
+            
+            const deleteLanButton = new ButtonBuilder()
+                .setCustomId("delete-lan-btn")
+                .setLabel("Supprimer la LAN")
+                .setStyle(ButtonStyle.Danger)
+                .setEmoji("<:trash:1378419101751447582>")
 
             await generalChannel.setTopic(lan.id.toString());
             await generalChannel.send({ 
@@ -241,6 +253,15 @@ module.exports = {
                 components: [new ActionRowBuilder().addComponents(participantsButton, removeParticipantsButton)], 
                 files: attachmentParticipants ? [attachmentParticipants] : []
             });
+
+            const thread = await generalChannel.threads.create({
+                name: "⚙️ Gestion",
+                invitable: false,
+                type: ChannelType.PrivateThread,
+            })
+            await thread.join();
+            await thread.members.add(interaction.user.id);
+            await thread.send({ content: `## ⚙️ Gestion de la LAN ${lan.name}\n\nCe salon est réservé à l'organisation de la LAN. C'est ici que tu pourras supprimer la LAN, modifier les informations, gérer la liste des participants, les accès aux salons, etc...`, components: [new ActionRowBuilder().addComponents(managementButton, deleteLanButton)] } );
 
             await informationChannel.send({ embeds: [informationEmbed], components: [ new ActionRowBuilder().addComponents(btnaddressMaps, btnaddressWaze), new ActionRowBuilder().addComponents(btnGoogleAgenda) ] })
             await informationChannel.send({ embeds: [logistiqueEmbed], components: googleSheetButton ? [new ActionRowBuilder().addComponents(googleSheetButton)] : [] })

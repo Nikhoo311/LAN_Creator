@@ -223,11 +223,14 @@ module.exports = {
 
             await generalChannel.setTopic(lan.id.toString());
             await generalChannel.send({ content: message, embeds: [participantsEmbed], components: [new ActionRowBuilder().addComponents(participantsButton, removeParticipantsButton)] });
-            await generalChannel.threads.create({
-                name: "⚙ Management",
+            const thread = await generalChannel.threads.create({
+                name: "⚙️ Gestion",
                 invitable: false,
-                startMessage: { content: `## ⚙ Management de la LAN ${lan.name}\n\n> Ce salon est réservé à l'organisation de la LAN. C'est ici que tu pourras supprimer la LAN, modifier les informations, gérer la liste des participants, les accès aux salons, etc...`, components: [new ActionRowBuilder().addComponents(managementButton, deleteLanButton)] },
+                type: ChannelType.PrivateThread,
             })
+            await thread.join();
+            await thread.members.add(interaction.user.id);
+            await thread.send({ content: `## ⚙️ Gestion de la LAN ${lan.name}\n\nCe salon est réservé à l'organisation de la LAN. C'est ici que tu pourras supprimer la LAN, modifier les informations, gérer la liste des participants, les accès aux salons, etc...`, components: [new ActionRowBuilder().addComponents(managementButton, deleteLanButton)] } );
 
             await informationChannel.send({ embeds: [informationEmbed], components: [ new ActionRowBuilder().addComponents(btnaddressMaps, btnaddressWaze), new ActionRowBuilder().addComponents(btnGoogleAgenda) ] })
             await informationChannel.send({ embeds: [logistiqueEmbed] })
