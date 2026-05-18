@@ -209,8 +209,25 @@ module.exports = {
                 .setStyle(ButtonStyle.Danger)
                 .setEmoji("<:remove_participant:1487896551316787220>");
 
+            const managementButton = new ButtonBuilder()
+                .setCustomId("lan-management-btn")
+                .setLabel("Gestion de la LAN")
+                .setStyle(ButtonStyle.Secondary)
+                .setEmoji("🪛")
+            
+            const deleteLanButton = new ButtonBuilder()
+                .setCustomId("delete-lan-btn")
+                .setLabel("Supprimer la LAN")
+                .setStyle(ButtonStyle.Danger)
+                .setEmoji("<:trash:1378419101751447582>")
+
             await generalChannel.setTopic(lan.id.toString());
             await generalChannel.send({ content: message, embeds: [participantsEmbed], components: [new ActionRowBuilder().addComponents(participantsButton, removeParticipantsButton)] });
+            await generalChannel.threads.create({
+                name: "⚙ Management",
+                invitable: false,
+                startMessage: { content: `## ⚙ Management de la LAN ${lan.name}\n\n> Ce salon est réservé à l'organisation de la LAN. C'est ici que tu pourras supprimer la LAN, modifier les informations, gérer la liste des participants, les accès aux salons, etc...`, components: [new ActionRowBuilder().addComponents(managementButton, deleteLanButton)] },
+            })
 
             await informationChannel.send({ embeds: [informationEmbed], components: [ new ActionRowBuilder().addComponents(btnaddressMaps, btnaddressWaze), new ActionRowBuilder().addComponents(btnGoogleAgenda) ] })
             await informationChannel.send({ embeds: [logistiqueEmbed] })
