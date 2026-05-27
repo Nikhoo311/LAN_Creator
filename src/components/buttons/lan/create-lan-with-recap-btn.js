@@ -1,9 +1,10 @@
-const { ButtonStyle, MessageFlags, ChannelType, PermissionFlagsBits, AttachmentBuilder, EmbedBuilder, ButtonBuilder, ActionRowBuilder } = require("discord.js");
+const { ButtonStyle, MessageFlags, ChannelType, PermissionFlagsBits, AttachmentBuilder, EmbedBuilder, ButtonBuilder, ActionRowBuilder, TextDisplayBuilder, ContainerBuilder, MediaGalleryBuilder, MediaGalleryItemBuilder } = require("discord.js");
 const { Lan } = require("../../../class/Lan");
 const { color } = require("../../../../config/config.json");
 const { getGuildConfig } = require("../../../functions/utils/guildCache");
 const { decrypt } = require("../../../functions/utils/crypt");
 const logger = require("../../../functions/utils/Logger");
+const { readFileSync } = require("fs");
 
 function parseRecapContainer(recapContainer) {
     const result = {
@@ -254,6 +255,26 @@ module.exports = {
                 files: attachmentParticipants ? [attachmentParticipants] : []
             });
 
+            const textDisplay = new TextDisplayBuilder(
+                { content: `## ⚙️ Gestion de la LAN ${lan.name}\n\nCe salon est réservé à l'organisation de la LAN. C'est ici que tu pourras supprimer la LAN, modifier les informations, gérer la liste des participants, les accès aux salons, etc...` }
+            )
+
+            const imageGestion = new AttachmentBuilder().setFile(readFileSync("./config/gestion_icon.png")).setName("gestion.png");
+            
+            const mediaGallery = new MediaGalleryBuilder()
+                .addItems([
+                    {
+                        media: {
+                            url: `attachment://gestion.png`
+                        }
+                    }
+                ])
+            
+            const container = new ContainerBuilder()
+                .addMediaGalleryComponents(mediaGallery)
+                .addTextDisplayComponents(textDisplay)
+                .addActionRowComponents(new ActionRowBuilder().addComponents(managementButton, deleteLanButton))
+
             const thread = await generalChannel.threads.create({
                 name: "⚙️ Gestion",
                 invitable: false,
@@ -261,7 +282,7 @@ module.exports = {
             })
             await thread.join();
             await thread.members.add(interaction.user.id);
-            await thread.send({ content: `## ⚙️ Gestion de la LAN ${lan.name}\n\nCe salon est réservé à l'organisation de la LAN. C'est ici que tu pourras supprimer la LAN, modifier les informations, gérer la liste des participants, les accès aux salons, etc...`, components: [new ActionRowBuilder().addComponents(managementButton, deleteLanButton)] } );
+            await thread.send({ components: [container], files:[imageGestion], flags: [MessageFlags.IsComponentsV2] });
 
             await informationChannel.send({ embeds: [informationEmbed], components: [ new ActionRowBuilder().addComponents(btnaddressMaps, btnaddressWaze), new ActionRowBuilder().addComponents(btnGoogleAgenda) ] })
             await informationChannel.send({ embeds: [logistiqueEmbed], components: googleSheetButton ? [new ActionRowBuilder().addComponents(googleSheetButton)] : [] })
