@@ -19,44 +19,36 @@ module.exports = {
             return interaction.reply({ content: "❌ LAN introuvable sur ce serveur.", flags: [MessageFlags.Ephemeral] });
         }
 
-        const text = new TextDisplayBuilder({ content: `Voici la liste des options possibles pour gérer la LAN :\n* Modifier la liste des participants\n* Verrouiller l'acces à la LAN à certains membres du serveur (${interaction.guild.name})\n* Modifier le flyer\n* Supprimer la LAN\n\n-# La liste des options n'est pas définitive` });
+        const text = new TextDisplayBuilder({ content: `Voici la liste des options possibles pour gérer la LAN :\n* 📝 Modifier la liste des participants\n* 🔒 Verrouiller l'acces à la LAN à certains membres du serveur (${interaction.guild.name})\n* 🖼️ Modifier le flyer\n* <:trash:1378419101751447582> Supprimer la LAN\n\n-# La liste des options n'est pas définitive` });
 
         const deleteLanButton = new ButtonBuilder()
             .setCustomId("delete-lan-btn")
-            .setLabel("Supprimer la LAN")
             .setStyle(ButtonStyle.Danger)
             .setEmoji("<:trash:1378419101751447582>")
 
         const editParticipantsButton = new ButtonBuilder()
             .setCustomId("edit-participants-btn")
-            .setLabel("Modifier la liste des participants")
             .setStyle(ButtonStyle.Secondary)
             .setEmoji("📝")
         
         const editPermissionsButton = new ButtonBuilder()
             .setCustomId("edit-permissions-btn")
-            .setLabel("Modifier les permissions")
             .setStyle(ButtonStyle.Secondary)
             .setEmoji("🔒")
         
         const editFlyerButton = new ButtonBuilder()
             .setCustomId("edit-flyer-btn")
-            .setLabel("Modifier le flyer")
             .setStyle(ButtonStyle.Secondary)
             .setEmoji("🖼️")
 
         const actionsRowOne = new ActionRowBuilder()
-            .addComponents(editParticipantsButton, editPermissionsButton, editFlyerButton);
+            .addComponents(editParticipantsButton, editPermissionsButton, editFlyerButton, deleteLanButton);
         
-        const actionsRowTwo = new ActionRowBuilder()
-            .addComponents(deleteLanButton);
-
         const separator = new SeparatorBuilder().setDivider(true).setSpacing(SeparatorSpacingSize.Small)
         const container = new ContainerBuilder()
             .addTextDisplayComponents(text)
             .addSeparatorComponents(separator)
             .addActionRowComponents(actionsRowOne)
-            .addActionRowComponents(actionsRowTwo)
         
         return interaction.channel.send({ components: [container], flags: [MessageFlags.IsComponentsV2] });
     }
