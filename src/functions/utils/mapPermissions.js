@@ -12,6 +12,7 @@ const VOICE_PERMISSIONS = {
     'Vidéo / Stream': PermissionFlagsBits.Stream,
     'Soundboard': PermissionFlagsBits.UseSoundboard,
     'Se connecter aux salons': PermissionFlagsBits.Connect,
+    'Utiliser les Activités': PermissionFlagsBits.UseEmbeddedActivities
 };
 
 const LABEL_PERMISSIONS = {
