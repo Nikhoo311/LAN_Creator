@@ -8,7 +8,7 @@ module.exports = {
     async execute (interaction, client) {
         await interaction.deferReply({ withResponse: true, flags: [MessageFlags.Ephemeral] });
         
-        const generalChannel = interaction.guild.channels.cache.get(interaction.channelId)?.parent;
+        const generalChannel = interaction.channel?.parent;
         const lanId = generalChannel?.topic;
         const lan = getLanForGuild(client, lanId, interaction.guildId);
         if (!lan) {

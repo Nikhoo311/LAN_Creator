@@ -1,5 +1,4 @@
 const { MessageFlags, ContainerBuilder, TextDisplayBuilder, ButtonBuilder, ButtonStyle, ActionRowBuilder, SeparatorBuilder, SeparatorSpacingSize } = require('discord.js');
-const { Lan } = require('../../../class/Lan');
 const { getLanForGuild } = require("../../../functions/utils/guildCache");
 const logger = require("../../../functions/utils/Logger");
 const { color } = require("../../../../config/config.json");
@@ -11,7 +10,7 @@ module.exports = {
     async execute (interaction, client) {
         await interaction.deferUpdate();
 
-        const generalChannel = interaction.guild.channels.cache.get(interaction.channelId)?.parent;
+        const generalChannel = interaction.channel?.parent;
         const lanId = generalChannel?.topic;
 
         const lan = getLanForGuild(client, lanId, interaction.guildId);
@@ -50,6 +49,6 @@ module.exports = {
             .addSeparatorComponents(separator)
             .addActionRowComponents(actionsRowOne)
         
-        return interaction.channel.send({ components: [container], flags: [MessageFlags.IsComponentsV2] });
+        return await interaction.channel.send({ components: [container], flags: [MessageFlags.IsComponentsV2] });
     }
 }

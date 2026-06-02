@@ -255,9 +255,7 @@ module.exports = {
                 files: attachmentParticipants ? [attachmentParticipants] : []
             });
 
-            const textDisplay = new TextDisplayBuilder(
-                { content: `## ⚙️ Gestion de la LAN ${lan.name}\n\nCe salon est réservé à l'organisation de la LAN. C'est ici que tu pourras supprimer la LAN, modifier les informations, gérer la liste des participants, les accès aux salons, etc...` }
-            )
+            const textDisplay = new TextDisplayBuilder({ content: `## ⚙️ Gestion de la LAN ${lan.name}\n\nCe salon est réservé à l'organisation de la LAN. C'est ici que tu pourras supprimer la LAN, modifier les informations, gérer la liste des participants, les accès aux salons, etc...` })
 
             const imageGestion = new AttachmentBuilder().setFile(readFileSync("./config/gestion_icon.png")).setName("gestion.png");
             
