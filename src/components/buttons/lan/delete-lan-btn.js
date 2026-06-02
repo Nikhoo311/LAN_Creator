@@ -8,7 +8,7 @@ module.exports = {
         name: "delete-lan-btn"
     },
     async execute (interaction, client) {
-        const generalChannel = interaction.guild.channels.cache.get(interaction.channelId)?.parent
+        const generalChannel = interaction.channel?.parent
         const lanId = generalChannel?.topic;
 
         const lan = getLanForGuild(client, lanId, interaction.guildId);

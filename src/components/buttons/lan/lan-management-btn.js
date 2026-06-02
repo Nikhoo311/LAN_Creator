@@ -15,7 +15,7 @@ module.exports = {
 
         const lan = getLanForGuild(client, lanId, interaction.guildId);
         if (!lan) {
-            return interaction.reply({ content: "❌ LAN introuvable sur ce serveur.", flags: [MessageFlags.Ephemeral] });
+            return interaction.channel.send({ content: "❌ LAN introuvable sur ce serveur.", flags: [MessageFlags.Ephemeral] });
         }
 
         const text = new TextDisplayBuilder({ content: `Voici la liste des options possibles pour gérer la LAN :\n* 📝 Modifier la liste des participants\n* 🔒 Verrouiller l'acces à la LAN à certains membres du serveur (${interaction.guild.name})\n* 🖼️ Modifier le flyer\n* <:trash:1378419101751447582> Supprimer la LAN\n\n-# La liste des options n'est pas définitive` });
