@@ -44,32 +44,33 @@ module.exports = {
                 .setDescription(`Flyer de la LAN ${lan.name}`)
                 .setName(`${flyerName}.${extension}`);
 
+            let messageFlyer;
             if (flyerMessage) {
-                await flyerMessage.edit({ files: [newFlyerAttachment] });
+                messageFlyer = await flyerMessage.edit({ files: [newFlyerAttachment] });
             } else {
-                await generalChannel.send({ files: [newFlyerAttachment] });
+                messageFlyer = await generalChannel.send({ files: [newFlyerAttachment] });
             }
 
-            const text = new TextDisplayBuilder({ content: `# Informations\n\`\`\`diff\n+ Le flyer a été mis à jour avec succès !\`\`\`\n[Cliquer ici pour voir le flyer mis à jour](${flyerMessage.url})` });
+            const text = new TextDisplayBuilder({ content: `# Informations\n\`\`\`diff\n+ Le flyer a été mis à jour avec succès !\`\`\`\n[Cliquer ici pour voir le flyer mis à jour](${messageFlyer.url})` });
 
             const viewFlyerButton = new ButtonBuilder()
                 .setLabel("Voir le flyer")
                 .setStyle(ButtonStyle.Link)
                 .setEmoji("<:see:1511176625214062612>")
-                .setURL(flyerMessage.url);
+                .setURL(messageFlyer.url);
 
             const container = new ContainerBuilder()
                 .addTextDisplayComponents(text)
                 .addSeparatorComponents(new SeparatorBuilder().setDivider(true).setSpacing(SeparatorSpacingSize.Large))
                 .addActionRowComponents(new ActionRowBuilder().addComponents(viewFlyerButton));
-            return interaction.editReply({ components: [container], flags: [MessageFlags.Ephemeral, MessageFlags.IsComponentsV2] });
+            return await interaction.editReply({ components: [container], flags: [MessageFlags.Ephemeral, MessageFlags.IsComponentsV2] });
 
         } catch (error) {
-            const textError = new TextDisplayBuilder({ content: `# Informations\n\`\`\`diff\n- Une erreur est survenue lors de la mise à jour du flyer. Veuillez réessayer.\n\nErreur :\n${error.message}\n${error.cause}\`\`\`` });
+            const textError = new TextDisplayBuilder({ content: `# Informations\n\`\`\`diff\n- Une erreur est survenue lors de la mise à jour du flyer. Veuillez réessayer.\n\nErreur :\n${error.message}\`\`\`` });
             
             const containerError = new ContainerBuilder()
                 .addTextDisplayComponents(textError);
-            return interaction.editReply({ components: [containerError], flags: [MessageFlags.Ephemeral, MessageFlags.IsComponentsV2] });
+            return await interaction.editReply({ components: [containerError], flags: [MessageFlags.Ephemeral, MessageFlags.IsComponentsV2] });
         }
     }
 }
