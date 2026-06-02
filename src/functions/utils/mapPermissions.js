@@ -9,9 +9,8 @@ const TEXT_PERMISSIONS = {
 };
 
 const VOICE_PERMISSIONS = {
-    'Vidéo': PermissionFlagsBits.Stream,
+    'Vidéo / Stream': PermissionFlagsBits.Stream,
     'Soundboard': PermissionFlagsBits.UseSoundboard,
-    'Stream': PermissionFlagsBits.RequestToSpeak,
     'Se connecter aux salons': PermissionFlagsBits.Connect,
 };
 
