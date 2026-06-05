@@ -20,7 +20,7 @@ module.exports = {
             return ButtonStyle.Secondary;
         };
 
-        const text = new TextDisplayBuilder({ content: `Ce panneau permet de gérer les permissions de la LAN. Voici la liste des options disponibles :\n### <:channel:1440082251366010983> Salons textuels\n${Object.keys(TEXT_PERMISSIONS).map((label) => `* ${label}`).join('\n')}\n### <:channel_voice:1511456915312476230> Salons vocaux\n${Object.keys(VOICE_PERMISSIONS).map((label) => `* ${label}`).join('\n')}` });
+        const text = new TextDisplayBuilder({ content: `Ce panneau permet de gérer les permissions de la LAN.\n\nIci, on peut activer/désactiver des permissions pour tout le monde, rôle **everyone** par défaut. Sauf pour certaines permissions uniquement les participants de la LAN on tout de même accès.\nLes permissions concernées sont :\n* Voir les salons\n* Se connecter\n\nVoici la liste des permissions disponibles :\n### <:channel:1440082251366010983> Salons textuels\n${Object.keys(TEXT_PERMISSIONS).map((label) => `* ${label}`).join('\n')}\n### <:channel_voice:1511456915312476230> Salons vocaux\n${Object.keys(VOICE_PERMISSIONS).map((label) => `* ${label}`).join('\n')}` });
 
         const separator = new SeparatorBuilder().setDivider(true).setSpacing(SeparatorSpacingSize.Small);
         const separatorLarge = new SeparatorBuilder().setDivider(true).setSpacing(SeparatorSpacingSize.Large);

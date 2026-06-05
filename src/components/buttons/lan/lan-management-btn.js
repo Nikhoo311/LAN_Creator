@@ -18,7 +18,7 @@ module.exports = {
             return interaction.channel.send({ content: "❌ LAN introuvable sur ce serveur.", flags: [MessageFlags.Ephemeral] });
         }
 
-        const text = new TextDisplayBuilder({ content: `Voici la liste des options possibles pour gérer la LAN :\n* 📝 Modifier la liste des participants\n* 🔒 Verrouiller l'acces à la LAN à certains membres du serveur (${interaction.guild.name})\n* 🖼️ Modifier le flyer\n* <:trash:1378419101751447582> Supprimer la LAN\n\n-# La liste des options n'est pas définitive` });
+        const text = new TextDisplayBuilder({ content: `Voici la liste des options possibles pour gérer la LAN :\n* 📝 Modifier la liste des participants\n* 🔒 Gestion des permissions de la LAN\n* 🖼️ Modifier le flyer\n* <:trash:1378419101751447582> Supprimer la LAN\n\n-# La liste des options n'est pas définitive` });
 
         const deleteLanButton = new ButtonBuilder()
             .setCustomId("delete-lan-btn")
