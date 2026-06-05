@@ -25,6 +25,7 @@ module.exports = (client) => {
                             if (btn.data.multi) {
                                 buttons.set(btn.data.multi, btn);
                             }
+                            if (btn.data.dynamic) continue;
                         }
                     }
                     

@@ -91,11 +91,42 @@ class Lan {
     }
 
     /**
+     * Delete a LAN from database
+     * @param {string} id Id of a Lan that we need to delete
+     */
+    static async deleteById(id) {
+        await Lan.model.findByIdAndDelete(id);
+    }
+
+    /**
      * Add a participant to a LAN
      * @param {string} discordId The discord ID of the participant of the current lan
      */
     async addParticipants(discordId) {
         this.participants.push(discordId);
+
+        await Lan.model.findByIdAndUpdate(this.id, {
+            participants: this.participants
+        })
+    }
+
+    /**
+     * Reset the participants of a LAN
+     */
+    async resetParticipants() {
+        this.participants = [];
+
+        await Lan.model.findByIdAndUpdate(this.id, {
+            participants: []
+        })
+    }
+
+    /**
+     * Set the participants of a LAN
+     * @param {Array<string>} participants List of participants
+     */
+    async setParticipants(participants) {
+        this.participants = participants;
 
         await Lan.model.findByIdAndUpdate(this.id, {
             participants: this.participants
@@ -118,17 +149,19 @@ class Lan {
      * Generate participants list in an image
      * @param {Guild} guild - guild Discord
      * @param {number} size - width/height avatar (64 recommended)
+     * @param {Array<string>} usersIdArray - If you wish to generate the image including only certain participants without affecting the final list of participants, please enter their usernames in this Array
      * @returns {Promise<Buffer>}
      */
-    async generateParticipantsImage(guild, size = 64) {
-        if (!this.participants.length) throw new Error("No participants provided");
+    async generateParticipantsImage(guild, size = 64, usersIdArray = null) {
+        const paticipantsList = usersIdArray ?? this.participants;
+        if (!paticipantsList.length) throw new Error("No participants provided");
 
         const spacing = 10;
         const textPadding = 10;
         const fontSize = 20;
 
-        const columns = this.participants.length > 6 ? 3 : 2;
-        const rows = Math.ceil(this.participants.length / columns);
+        const columns = paticipantsList.length > 6 ? 3 : 2;
+        const rows = Math.ceil(paticipantsList.length / columns);
 
         const cellWidth = size + 200;
 
@@ -146,14 +179,14 @@ class Lan {
         ctx.fillStyle = '#ffffff';
         ctx.textBaseline = 'middle';
 
-        for (let i = 0; i < this.participants.length; i++) {
+        for (let i = 0; i < paticipantsList.length; i++) {
             const col = i % columns;
             const row = Math.floor(i / columns);
 
             const x = col * cellWidth;
             const y = row * (size + spacing);
 
-            const member = await guild.members.fetch(this.participants[i]).catch(() => null);
+            const member = await guild.members.fetch(paticipantsList[i]).catch(() => null);
             if (!member) continue;
 
             const avatarURL = member.user.displayAvatarURL({ extension: 'png', size: 256 });
