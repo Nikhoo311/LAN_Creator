@@ -157,15 +157,16 @@ module.exports = {
 
             const logistiqueEmbed = new EmbedBuilder()
                 .setColor(color.red)
-                .setDescription(data.googleSheetLink ? `📋 **__Logistique :__**\nToutes les informations logistiques sont disponibles dans ce Google Sheet : [Lien du Google Sheet](${data.googleSheetLink})` : "> Demander à l'hôte les informations pour la logistique")
+                .setDescription(data.googleSheetLink ? `📋 **__Logistique :__**\nToutes les informations logistiques sont disponibles dans ce Google Sheets : [Lien du Google Sheets](${data.googleSheetLink})` : "> Demander à l'hôte les informations pour la logistique")
                 .setTimestamp()
             let googleSheetButton = null;
 
             if (data.googleSheetLink) {
                 googleSheetButton = new ButtonBuilder()
-                    .setLabel("Google Sheet")
+                    .setLabel("Google Sheets")
                     .setStyle(ButtonStyle.Link)
                     .setURL(data.googleSheetLink)
+                    .setEmoji("<:google_sheets:1512984892017741924>")
             }
             
             const btnaddressMaps = new ButtonBuilder()
@@ -204,6 +205,7 @@ module.exports = {
                 .setLabel("Rappel Google Agenda")
                 .setStyle(ButtonStyle.Link)
                 .setURL(lan.getAgendaLink())
+                .setEmoji("<:google_agenda:1512567126303440966>")
             
             const message = `## Inscription pour la ${lan.name}\n\n> 👉 Clique sur le bouton ci-dessous pour réserver ta place et rejoindre l'aventure !`
             const participantsEmbed = new EmbedBuilder()

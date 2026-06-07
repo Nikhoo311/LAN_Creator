@@ -45,13 +45,14 @@ module.exports = {
                         const link = interaction.fields.getTextInputValue("lan_google_sheet_link");
 
                         if (link && !(/https:\/\/docs\.google\.com\/spreadsheets\/d\/[a-zA-Z0-9_-]+\/?/.test(link))) {
-                            return interaction.reply({content: "❌ Veuillez saisir un lien Google Sheet correct !", flags: [MessageFlags.Ephemeral]})
+                            return interaction.reply({content: "❌ Veuillez saisir un lien Google Sheets correct !", flags: [MessageFlags.Ephemeral]})
                         }
 
                         fieldsValues.googleSheetLink = new ButtonBuilder()
-                            .setLabel("Google Sheet")
+                            .setLabel("Google Sheets")
                             .setStyle(ButtonStyle.Link)
                             .setURL(`${link}`)
+                            .setEmoji("<:google_sheets:1512984892017741924>")
                         break;
 
                     default:

@@ -60,7 +60,7 @@ module.exports = {
         const archivageBtn = new ButtonBuilder()
             .setCustomId("archive-lan-btn")
             .setLabel("Archiver la LAN")
-            .setEmoji("📂")
+            .setEmoji("🗃️")
             .setStyle(ButtonStyle.Success)
 
         if (lan.endedAt) {

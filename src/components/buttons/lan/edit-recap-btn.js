@@ -39,7 +39,7 @@ module.exports = {
         
         const textInputGoogleLinkLabel = new LabelBuilder()
             .setTextInputComponent(textInputGoogleLink)
-            .setLabel("Lien du Google Sheet :")
+            .setLabel("Lien du Google Sheets :")
 
         const defaultParticipantInput = new UserSelectMenuBuilder()    
             .setCustomId("lan_participants")

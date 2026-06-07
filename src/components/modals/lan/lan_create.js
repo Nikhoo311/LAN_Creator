@@ -159,6 +159,7 @@ module.exports = {
                 .setLabel("Rappel Google Agenda")
                 .setStyle(ButtonStyle.Link)
                 .setURL(lan.getAgendaLink())
+                .setEmoji("<:google_agenda:1512567126303440966>")
             
             const informationEmbed = new EmbedBuilder()
                 .setColor(color.red)
