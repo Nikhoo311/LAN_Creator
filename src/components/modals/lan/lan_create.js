@@ -23,7 +23,7 @@ module.exports = {
         const lanOptions = interaction.fields.getCheckboxGroup("lan_options") || [];
         const guild = interaction.guild;
 
-        if (fileImage?.contentType && !["image/png", "image/jpg", "image/jpeg", "image/gif"].includes(fileImage.contentType)) {
+        if (fileImage?.contentType && !["image/png", "image/jpg", "image/jpeg", "image/gif", "image/webp"].includes(fileImage.contentType)) {
             return await interaction.reply({ content: `❌ Le type de fichier \`${fileImage.name.split(".").pop()}\` n'est pas prit en compte`, flags: [MessageFlags.Ephemeral] });
         }
 

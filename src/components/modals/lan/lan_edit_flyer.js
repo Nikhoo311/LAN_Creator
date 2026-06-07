@@ -19,7 +19,7 @@ module.exports = {
         const flyerName = interaction.fields.getTextInputValue("flyer_name") || fileImage?.name || "flyer.png";
     
         try {
-            if (fileImage?.contentType && !["image/png", "image/jpg", "image/jpeg", "image/gif"].includes(fileImage.contentType)) {
+            if (fileImage?.contentType && !["image/png", "image/jpg", "image/jpeg", "image/gif", "image/webp"].includes(fileImage.contentType)) {
                 throw new Error(`Le type de fichier \`${fileImage.name.split(".").pop()}\` n'est pas prit en compte.`);
             }
             const extension = fileImage?.name.split(".").pop().toLowerCase();
