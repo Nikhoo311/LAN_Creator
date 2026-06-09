@@ -18,7 +18,7 @@ module.exports = {
             return interaction.channel.send({ content: "❌ LAN introuvable sur ce serveur.", flags: [MessageFlags.Ephemeral] });
         }
 
-        const text = new TextDisplayBuilder({ content: `Voici la liste des options possibles pour gérer la LAN :\n* 📝 Modifier la liste des participants\n* 🔒 Gestion des permissions de la LAN\n* 🖼️ Modifier le flyer\n* <:trash:1378419101751447582> Supprimer la LAN\n* <:add_participant:1472756154730938388> **Ajouter** un administrateur dans ce fil de gestion\n* <:remove_participant:1487896551316787220> **Retirer** un administrateur de ce fil de gestion\n\n-# La liste des options n'est pas définitive` });
+        const text = new TextDisplayBuilder({ content: `Voici la liste des options possibles pour gérer la LAN :\n* 📝 Modifier la liste des participants\n* 🔒 Gestion des permissions de la LAN\n* 🖼️ Modifier le flyer\n* <:trash:1378419101751447582> Supprimer la LAN\n* <:add_participant:1472756154730938388> Ajouter un administrateur dans ce fil de gestion\n* <:remove_participant:1487896551316787220> Retirer un administrateur de ce fil de gestion\n* <:channel_add:1513283429930762482> Ajouter un salon **textuel**\n* <:channel_remove:1513283431684116541> Retirer / Supprimer un salon **textuel**\n* <:voice_add:1379566685681618975> Ajouter un salon **vocal**\n* <:voice_remove:1379573487655587921> Retirer / Supprimer un salon **vocal**\n\n-# La liste des options n'est pas définitive` });
 
         const deleteLanButton = new ButtonBuilder()
             .setCustomId("delete-lan-btn")
@@ -60,6 +60,16 @@ module.exports = {
             .setStyle(ButtonStyle.Secondary)
             .setEmoji("<:channel_remove:1513283431684116541>")
 
+        const addVoiceChannelsButton = new ButtonBuilder()
+            .setCustomId("add-lan-voice-channels-btn")
+            .setStyle(ButtonStyle.Secondary)
+            .setEmoji("<:voice_add:1379566685681618975>")
+
+        const removeVoiceChannelsButton = new ButtonBuilder()
+            .setCustomId("remove-lan-voice-channels-btn")
+            .setStyle(ButtonStyle.Secondary)
+            .setEmoji("<:voice_remove:1379573487655587921>")
+
         const buttons = [
             editParticipantsButton,
             editPermissionsButton,
@@ -68,7 +78,9 @@ module.exports = {
             addAdminButton,
             removeAdminButton,
             addChannelsButton,
-            removeChannelsButton
+            removeChannelsButton,
+            addVoiceChannelsButton,
+            removeVoiceChannelsButton
         ];
 
         const rows = [];
