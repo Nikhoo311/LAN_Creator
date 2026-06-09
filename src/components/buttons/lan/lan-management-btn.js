@@ -50,17 +50,37 @@ module.exports = {
             .setStyle(ButtonStyle.Secondary)
             .setEmoji("🖼️")
 
-        const actionsRowOne = new ActionRowBuilder()
-            .addComponents(editParticipantsButton, editPermissionsButton, editFlyerButton, deleteLanButton);
-        
-        const actionsRowTwo = new ActionRowBuilder()
-            .addComponents(addAdminButton, removeAdminButton);
-        
+        const addChannelsButton = new ButtonBuilder()
+            .setCustomId("add-lan-channels-btn")
+            .setStyle(ButtonStyle.Secondary)
+            .setEmoji("<:channel_add:1513283429930762482>")
+
+        const removeChannelsButton = new ButtonBuilder()
+            .setCustomId("remove-lan-channels-btn")
+            .setStyle(ButtonStyle.Secondary)
+            .setEmoji("<:channel_remove:1513283431684116541>")
+
+        const buttons = [
+            editParticipantsButton,
+            editPermissionsButton,
+            editFlyerButton,
+            deleteLanButton,
+            addAdminButton,
+            removeAdminButton,
+            addChannelsButton,
+            removeChannelsButton
+        ];
+
+        const rows = [];
+        for (let i = 0; i < buttons.length; i += 4) {
+            rows.push(new ActionRowBuilder().addComponents(buttons.slice(i, i + 4)));
+        }
+
         const separator = new SeparatorBuilder().setDivider(true).setSpacing(SeparatorSpacingSize.Small)
         const container = new ContainerBuilder()
             .addTextDisplayComponents(text)
             .addSeparatorComponents(separator)
-            .addActionRowComponents(actionsRowOne, actionsRowTwo);
+            .addActionRowComponents(...rows);
         
         return await interaction.channel.send({ components: [container], flags: [MessageFlags.IsComponentsV2] });
     }

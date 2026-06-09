@@ -3,6 +3,7 @@ const { formatUrl } = require("../functions/utils/formatUrl");
 const { decrypt } = require("../functions/utils/crypt");
 const lanModel = require("../schemas/lan");
 const { createCanvas, loadImage } = require('canvas');
+const { ChannelType } = require("discord.js");
 
 class Lan {
     /**
@@ -135,7 +136,7 @@ class Lan {
 
     /**
      * Remove a participant from a LAN
-     * @param {string} discordId The discord ID of the participant of the current lan
+     * @param {string} discordId - The discord ID of the participant of the current lan
      */
     async removeParticipants(discordId) {
         this.participants = this.participants.filter(p => p !== discordId);
@@ -143,6 +144,59 @@ class Lan {
         await Lan.model.findByIdAndUpdate(this.id, {
             participants: this.participants
         })
+    }
+
+
+    /**
+     * Add a channel to the LAN channels list
+     * @param {object} channel - Channel to add to the LAN channels list
+     */
+    
+    async addChannel(channelName, guild) {
+        if (this.channels.some(c => c.name === channelName))
+            throw new Error(`Un salon "${channelName}" existe déjà.`);
+
+        const generalChannelId = this.channels.find(c => c.name === "général").channelId;
+
+        const category = await guild.channels.cache.get(generalChannelId).parent;
+        const channel = await guild.channels.create({
+            name: channelName,
+            type: ChannelType.GuildText,
+            parent: category.id,
+        });
+
+        const channelObjet = {
+            name: channelName,
+            channelId: channel.id,
+        }
+
+        this.channels.push(channelObjet);
+
+        await Lan.model.findByIdAndUpdate(this.id, {
+            channels: this.channels
+        })
+    }
+
+    /**
+     * Remove channels from the LAN channels list
+     * @param {Array<string>} channelIds - Channel IDs to remove from the LAN channels list
+     * @param {Guild} guild - guild Discord
+     */
+    async removeChannels(channelIds, guild) {
+        const alwaysActiveIds = new Set(
+            this.channels.filter(c => c.alwaysActive).map(c => c.channelId)
+        );
+
+        const forbidden = channelIds.filter(id => alwaysActiveIds.has(id));
+        if (forbidden.length)
+            throw new Error(`Certains salons sont obligatoires et ne peuvent pas être supprimés.`);
+
+        this.channels = this.channels.filter(c => !channelIds.includes(c.channelId));
+
+        await Promise.all([
+            ...channelIds.map(id => guild.channels.cache.get(id)?.delete().catch(() => {})),
+            Lan.model.findByIdAndUpdate(this.id, { channels: this.channels })
+        ]);
     }
 
     /**
@@ -186,7 +240,7 @@ class Lan {
             const x = col * cellWidth;
             const y = row * (size + spacing);
 
-            const member = await guild.members.fetch(paticipantsList[i]).catch(() => null);
+            const member = await guild.members.fetch(paticipantsList[i]).catch(() => {});
             if (!member) continue;
 
             const avatarURL = member.user.displayAvatarURL({ extension: 'png', size: 256 });
