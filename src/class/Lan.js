@@ -152,7 +152,7 @@ class Lan {
      * @param {object} channel - Channel to add to the LAN channels list
      */
     
-    async addChannel(channelName, guild) {
+    async addChannel(channelName, guild, type=ChannelType.GuildText) {
         if (this.channels.some(c => c.name === channelName))
             throw new Error(`Un salon "${channelName}" existe déjà.`);
 
@@ -160,8 +160,8 @@ class Lan {
 
         const category = await guild.channels.cache.get(generalChannelId).parent;
         const channel = await guild.channels.create({
-            name: channelName,
-            type: ChannelType.GuildText,
+            name: type === ChannelType.GuildVoice  ? `🔊 ${channelName}` : channelName,
+            type: type,
             parent: category.id,
         });
 

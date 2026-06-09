@@ -1,12 +1,12 @@
-const { MessageFlags, TextDisplayBuilder, ContainerBuilder, EmbedBuilder, AttachmentBuilder, ButtonBuilder, ButtonStyle, ActionRowBuilder, SeparatorBuilder, SeparatorSpacingSize } = require('discord.js');
+const { ActionRowBuilder, TextDisplayBuilder, MessageFlags, ContainerBuilder, SeparatorBuilder, SeparatorSpacingSize, ButtonBuilder, ButtonStyle, ChannelType } = require("discord.js");
 const { getLanForGuild } = require("../../../functions/utils/guildCache");
 
 module.exports = {
     data: {
-        name: "add-lan-channels-btn",
-        multi: "retry-add-lan-channels-btn"
+        name: "add-lan-voice-channels-btn",
+        multi: "retry-add-lan-voice-channels-btn"
     },
-    async execute (interaction, client) {
+    async execute(interaction, client) {
         const generalChannel = interaction.channel?.parent;
         const lanId = generalChannel?.topic;
         const lan = getLanForGuild(client, lanId, interaction.guildId);
@@ -15,12 +15,12 @@ module.exports = {
         }
 
         if (lan.channels.length > 25) {
-            return interaction.reply({ content: "❌ La LAN comporte beaucoup de salon textuel (+25 salons). Impossible d'ajouter d'avantage de salons.", flags: [MessageFlags.Ephemeral] });
+            return interaction.reply({ content: "❌ La LAN comporte beaucoup de salon textuel (+25 salons textuels). Impossible d'ajouter d'avantage de salons.", flags: [MessageFlags.Ephemeral] });
         }
 
-        const text = new TextDisplayBuilder({ content: "Envoie le nom du salon que tu souhaites ajouter à la LAN\nSeul le nom du salon est requis (ex : `tournois`, `salon-équipe`, etc.).\n\n-# Chaque nom de salon doit être **unique** au sein de la LAN\n\n-# ⚠️ Temps maximum de saisie : 15 secondes" });
+        const text = new TextDisplayBuilder({ content: "Envoie le nom du salon vocal que tu souhaites ajouter à la LAN, il sera précédé de \"🔊\".\nExemple : `🔊 Vocal tournois`\n\nSeul le nom du salon est requis (ex : `tournois`, `salon-équipe`, etc.).\n\n-# Chaque nom de salon doit être **unique** au sein de la LAN\n\n-# ⚠️ Temps maximum de saisie : 15 secondes" });
         
-        if (interaction.customId === "retry-add-lan-channels-btn") {
+        if (interaction.customId === "retry-add-lan-voice-channels-btn") {
             await interaction.update({ components: [text], flags: [MessageFlags.Ephemeral, MessageFlags.IsComponentsV2]});
         } else {
             await interaction.reply({ components: [text], flags: [MessageFlags.Ephemeral, MessageFlags.IsComponentsV2]});
@@ -42,8 +42,8 @@ module.exports = {
                 if (channelName.length >= 60) {
                     throw new Error("Le nom du salon est trop grand... (max 60 caractères).");
                 }
-                await lan.addChannel(channelName, interaction.guild);
-                const textSuccess = new TextDisplayBuilder({ content: `# Informations\n\`\`\`diff\n+ Le salon #${channelName} a été créé avec succès !\`\`\``} )
+                await lan.addChannel(channelName, interaction.guild, ChannelType.GuildVoice);
+                const textSuccess = new TextDisplayBuilder({ content: `# Informations\n\`\`\`diff\n+ Le salon 🔊 ${channelName} a été créé avec succès !\`\`\``} )
                 
                 const container = new ContainerBuilder()
                     .addTextDisplayComponents(textSuccess);
@@ -52,7 +52,7 @@ module.exports = {
                 const textError = new TextDisplayBuilder({ content: `# Informations\n\`\`\`diff\n- Une erreur est survenue lors de l'ajout du salon dans la LAN \`${lan.name}\`. Veuillez réessayer.\n\nErreur :\n${error.message}\`\`\`` });
                 const separator = new SeparatorBuilder().setDivider(true).setSpacing(SeparatorSpacingSize.Small);
                 const retryButton = new ButtonBuilder()
-                    .setCustomId("retry-add-lan-channels-btn")
+                    .setCustomId("retry-add-lan-voice-channels-btn")
                     .setStyle(ButtonStyle.Secondary)
                     .setEmoji("🔁")
                     .setLabel("Réessayer")
