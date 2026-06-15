@@ -24,7 +24,7 @@ module.exports = {
             await Lan.deleteById(lan.id);
             client.lans.delete(lan.id);
 
-            interaction.update({ components: [], flags: [MessageFlags.Ephemeral, MessageFlags.IsComponentsV2] });
+            // interaction.update({ components: [], flags: [MessageFlags.Ephemeral, MessageFlags.IsComponentsV2] });
             // await interaction.user.send({ content: `✅ La LAN **${lan.name}** a été supprimée avec succès. Tous les salons associés ont été supprimés également.` });
             return;
             

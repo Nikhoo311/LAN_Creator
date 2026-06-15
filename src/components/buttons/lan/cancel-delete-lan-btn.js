@@ -17,6 +17,6 @@ module.exports = {
         const text = new TextDisplayBuilder({ content: `# Informations\n\`\`\`diff\n- Annulation de la suppression de la LAN \`${lan.name}\`.\`\`\`` });
         const container = new ContainerBuilder()
             .addTextDisplayComponents(text)
-        return await interaction.reply({ components: [container], flags: [MessageFlags.Ephemeral, MessageFlags.IsComponentsV2] });
+        return await interaction.update({ components: [container], flags: [MessageFlags.Ephemeral, MessageFlags.IsComponentsV2] });
     }
 }
